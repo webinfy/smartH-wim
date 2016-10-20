@@ -1,0 +1,167 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content">
+    <div class="main-content-inner">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="javascript:;"> Home </a>
+                </li>
+                <li>
+                    <a href="javascript:;"> Payments </a>
+                </li>
+                <li>
+                    <a href="merchant/#/view-payment-files"> View Payment Uploads </a>
+                </li>
+                <li class="active"> View Payments </li>
+            </ul><!-- /.breadcrumb -->
+        </div>
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <!--<div ng-include="'views/common/change_skin.html'"></div>-->
+            <!-- /.ace-settings-container -->
+            <!-- /section:settings.box -->
+            <div class="page-header">
+                <h1>
+                    View Payments   
+                    <!--<a class="btn btn-info pull-right" style="padding: 0 !important; margin-right: 40px;" href="merchant/#/add-customer" > Add New Customer </a>-->
+                </h1>
+            </div><!-- /.page-header -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+
+                    <div class="box-header">
+                        <form action="merchant/#/view-payments/2" onsubmit="return false;" ng-submit="viewPayments()">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-4">
+                                    <select class=" form-control input-sm" name="searchby" id='searchby' required="">
+                                        <option value="">Search By</option>
+                                        <option value="name">Name</option>
+                                        <option value="email">Email</option>                                      
+                                        <option value="phone">Phone</option> 
+                                        <option value="bill_amount">Bill Amount</option>    
+                                        <!--<option value="due_date">Due Date</option>-->  
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-5">
+                                    <input  type="text" required="" value="" placeholder="Search Keyword" id='keyword' class="form-control input-sm" name="keyword">
+                                </div>
+                                <div class="col-xs-12 col-sm-3">
+                                    <button  class="btn btn-sm btn-default" type="submit" ><i class="fa fa-search"></i> Search</button>
+                                    <a class="btn btn-default btn-sm" href="javascript:;" onclick="$('#searchby').val(''), $('#keyword').val('');" ng-click="viewPayments()" ><i class="fa fa-list"></i> View All</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="hr hr-24"></div>
+                    <br>
+
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="simple-table" class="table  table-bordered table-hover" style="width: 100%; overflow: scroll;">
+                                <thead  ng-init="fetchCustomFields()">
+                                    <tr>                                         
+                                        <th style="text-align: left;"> Name </th>
+                                        <th style="text-align: left;"> Email </th>
+                                        <th style="text-align: left;"> Phone </th>
+
+                                        <th style="text-align: left;" ng-repeat="custom_field in custom_fields"> {{custom_field}} </th> 
+
+                                        <th style="text-align: center;"> Total </th>    
+                                        <th style="text-align: center;">
+                                            <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
+                                            Due date
+                                        </th>
+                                        <th style="text-align: center;" class="hidden-480"> Status </th>
+                                        <th style="text-align: center;" class="hidden-480"> Action </th>
+                                        <!--<th style="text-align: center;"> Actions </th>-->
+                                    </tr>
+                                </thead>
+                                <tbody ng-init="viewPayments()">
+                                    <tr ng-repeat="payment in payments" id="payment-{{payment.uniq_id}}">                                        
+                                        <td style="text-align: left;"> {{payment.name}} </td>
+                                        <td style="text-align: left;"> {{payment.email}} </td>                                        
+                                        <td style="text-align: left;"> {{payment.phone}} </td>
+
+                                        <td style="text-align: left;" ng-repeat="(key, value) in custom_fields"> Rs. {{payment.custom_fields[key]}} </td>                                       
+
+
+                                        <td style="text-align: right;"> Rs. {{payment.total_fee}} </td>
+                                        <td style="text-align: center;">{{payment.due_date| date}}</td>                                      
+                                        <td style="text-align: center;" class="hidden-480">
+                                            <span ng-if="payment.status == 1" class="label label-sm label-primary" style="padding-top: 4px;">Paid</span>
+                                            <span ng-if="payment.status == 0" class="label label-sm label-warning" style="padding-top: 4px;">Unpaid</span>
+                                        </td>  
+
+                                        <td style="text-align: center;" class="hidden-480">
+                                            <!--                                            <a title="Delete" class="btn btn-xs btn-danger" ng-click="deletePaymentUpload(uploaded_payment_file.id)" href="javascript:;">
+                                                                                            Delete
+                                                                                        </a>-->
+                                            <a title="Delete" style="padding-top: 4px;" class="label label-sm label-danger" ng-click="deletePayment(payment)" href="javascript:;"> Delete </a>
+                                        </td>    
+                                        <!--
+                                        <td style="text-align: center;">                                                
+                                            <div class="hidden-sm hidden-xs btn-group">                                                    
+                                                <button class="btn btn-xs btn-success" title="Active" ng-click="active(customer.id)" ng-if="customer.is_active == 1">
+                                                    <i class="ace-icon fa fa-check bigger-120"></i>
+                                                </button>
+                                                <button class="btn btn-xs btn-warning" title="InActive" ng-click="inactive(customer.id)" ng-if="customer.is_active == 0">
+                                                    <i class="ace-icon fa fa-times bigger-120"></i>
+                                                </button>
+                                                <a href="merchant/#/edit-customer/{{customer.id}}" class="btn btn-xs btn-info" title="Edit">
+                                                    <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                </a>
+                                                <a href="javascript:;"  class="btn btn-xs btn-danger" title="Delete" ng-click="delete(customer.user_id)">
+                                                    <i class="ace-icon fa fa-trash-o bigger-120" ng-value=""></i>
+                                                </a>                                      
+                                            </div>                                                 
+                                        </td>
+                                        -->
+                                    </tr>   
+                                    <tr ng-hide="payments.length"><td colspan="8" style="text-align:center; color: red;">No items found</td></tr>
+                                </tbody>
+                            </table>
+
+                            <div class="row" id='pagination'>
+                                <div class="col-xs-3">
+                                    <div class="dataTables_info" role="status" aria-live="polite">{{counter}}</div>                                        
+                                </div>
+                                <div class="col-xs-9">
+                                    <div class="dataTables_paginate paging_simple_numbers" id="pagination-paginate">                                        
+                                        <ul class="pagination" ng-click="viewPaymentsPagination($event);" onclick="return false;">   
+                                            <!--
+                                            <li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="javascript:;">Previous</a></li>
+                                            <li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">1</a></li>
+                                            <li class="paginate_button" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">2</a></li>
+                                            <li class="paginate_button" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">3</a></li>
+                                            <li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="javascript:;">Next</a></li>
+                                            -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--<div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="javascript:;">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="javascript:;">Next</a></li></ul></div></div></div>-->
+
+                            <!--
+                            <div class="clearfix form-actions" ng-show="file.is_confirmed == 0" >
+                                <div class="col-md-offset-3 col-md-9">
+                                    <a href="javascript:;" ng-click="cancelUpload()" class="btn"><i class="ace-icon fa fa-undo bigger-110"></i>Cancel & Upload Again</a>                                    
+                                    &nbsp; &nbsp; &nbsp;                                    
+                                    <a href="javascript:;" ng-click="confirmUpload()" class="btn btn-info"><i class="ace-icon fa fa-check bigger-110"></i> Confirm </a>
+                                </div>
+                            </div>
+                            -->
+
+                        </div><!-- /.span -->
+                    </div><!-- /.row -->
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->

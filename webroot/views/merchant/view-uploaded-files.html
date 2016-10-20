@@ -1,0 +1,164 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content">
+    <div class="main-content-inner">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="javascript:;">Home</a>
+                </li>
+                <li>
+                    <a href="javascript:;">Payments</a>
+                </li>
+                <li class="active">Files Uploaded</li>
+            </ul><!-- /.breadcrumb -->
+        </div>
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">           
+            <div class="page-header">
+                <h1>
+                    Payment Files Uploaded    
+                    <!--<a class="btn btn-info pull-right" style="padding: 0 !important; margin-right: 40px;" href="merchant/#/add-customer" > Add New Customer </a>-->
+                </h1>
+            </div><!-- /.page-header -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <!--
+                    <div class="box-header">
+                        <form action="" ng-submit="MyCustomerSearch()">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-4">
+                                    <select class=" form-control input-sm" name="search_by">
+                                        <option value="">Search By</option>
+                                        <option value="customer_group">Customer Group</option>
+                                        <option value="customer_name">Customer Name</option>                                      
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-5">
+                                    <input  type="text" required="" value="" placeholder="Search" class="form-control input-sm" name="search_keyword">
+                                </div>
+                                <div class="col-xs-12 col-sm-3">
+                                    <button  class="btn btn-sm btn-default" type="submit" ><i class="fa fa-search"></i> Search</button>
+                                    <a class="btn btn-default btn-sm" href="#"><i class="fa fa-list"></i> View All</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    -->
+                    <!--<div class="hr hr-24"></div>-->
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="simple-table" class="table  table-bordered table-hover" ng-init="myCustomer()">
+                                <thead>
+                                    <tr>  
+                                        <th style="text-align: left;"> File Name </th>
+                                        <th style="text-align: left;"> Note </th>
+                                        <th style="text-align: center;"> Total Record </th>
+                                        <th style="text-align: center;"> Upload Date </th>                                   
+                                        <th style="text-align: center;"> Status </th>                                   
+                                        <th style="text-align: center;"> Actions </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody ng-init="getUploadedFiles()">                               
+                                    <tr ng-repeat="uploaded_payment_file in uploaded_payment_files" id="file-no-{{uploaded_payment_file.id}}">                                   
+                                        <td style="text-align: left;"> {{uploaded_payment_file.title}} </td>
+                                        <td style="text-align: left;"> {{uploaded_payment_file.note}} </td>
+                                        <td style="text-align: center;"> {{uploaded_payment_file.payment_count ? uploaded_payment_file.payment_count : 0}} </td>
+                                        <td style="text-align: center;"> {{uploaded_payment_file.created| date}} </td>
+                                        <td style="text-align: center;">
+                                            <span style="padding-top: 4px;" class="label label-sm label-danger ng-scope" ng-show="{{uploaded_payment_file.upload_completed == 0}}" >Processing</span>
+                                            <span style="padding-top: 4px;" class="label label-sm label-success ng-scope" ng-show="{{uploaded_payment_file.upload_completed == 1}}">Completed</span>
+                                        </td>
+                                        <td style="text-align: center;">                                                
+                                            <div class="hidden-sm hidden-xs btn-group">                                                    
+                                                <a href="merchant/#/view-payments/{{uploaded_payment_file.id}}" class="btn btn-xs btn-success" title="View All Payments">
+                                                    View <!--<i class="ace-icon fa fa-eye bigger-120"></i>-->
+                                                </a>  
+
+                                                <a href="javascript:;" ng-click="deletePaymentUpload(uploaded_payment_file.id)"  class="btn btn-xs btn-danger" title="Delete">
+                                                    Delete <!--<i class="ace-icon fa fa-trash-o bigger-120" ng-value=""></i>-->
+                                                </a>  
+
+                                                <a href="merchant/payments/download-report/{{uploaded_payment_file.id}}"  class="btn btn-xs btn-primary" title="Download Report">
+                                                    Download <!--<i class="ace-icon fa fa-download bigger-120" ng-value=""></i>-->
+                                                </a>                                                
+
+                                                <!--                                                <a href="merchant/#/update-excel/{{uploaded_payment_file.id}}"  class="btn btn-xs btn-warning" title="Download Report">
+                                                                                                    Update <i class="ace-icon fa fa-download bigger-120" ng-value=""></i>
+                                                                                                </a>  
+                                                -->
+
+                                                <a href="javascript:;" data-modal-id='updateExcel{{uploaded_payment_file.id}}' onclick="$('#' + $(this).attr('data-modal-id')).show();" class="btn btn-xs btn-warning" title="Download Report">
+                                                    Update <!--<i class="ace-icon fa fa-download bigger-120" ng-value=""></i>-->
+                                                </a>  
+
+                                                <a href="merchant/payments/download-error/{{uploaded_payment_file.id}}"  class="btn btn-xs btn-primary" title="Download Report">
+                                                    Error Log <!--<i class="ace-icon fa fa-download bigger-120" ng-value=""></i>-->
+                                                </a>                                                 
+
+                                            </div>                                                 
+                                        </td>
+                                    </tr>
+
+                                    <tr ng-hide="uploaded_payment_files.length"><td style="text-align:center; color:red;" colspan="8">No files are uploaded yet.</td></tr>
+
+                                </tbody>
+                            </table>
+                            <!--<div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="javascript:;">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="javascript:;">Next</a></li></ul></div></div></div>-->
+                        </div><!-- /.span -->
+                    </div><!-- /.row -->
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+
+
+
+<div class="modal fadeXX"  role="dialog" style="display: none;" ng-repeat="uploaded_payment_file in uploaded_payment_files" id="updateExcel{{uploaded_payment_file.id}}" >
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form action="merchant/payments/update-excel" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="{{uploaded_payment_file.id}}" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                    <h4 class="modal-title">Update Excel</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">  
+                        <table align='center' style="width: 100%;">
+                            <tr>
+                                <td style="padding: 10px;"><label>File Name </label>:</td>
+                                <td style="padding: 10px;"><label>{{uploaded_payment_file.title}}</label></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;"><label>Note </label>:</td>
+                                <td style="padding: 10px;"><label>{{uploaded_payment_file.note}}</label></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;"><label>Browse File </label> : </td>
+                                <td style="padding: 10px;"><input type="file" id="file" class="file"  name="file" required="" /> </td>
+                            </tr>
+                        </table>
+                    </div>   
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Update</button>-->
+                    <button type="submit" class="btn btn-info"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>                    
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal" onclick="$('#updateExcel').hide();">Cancel</button>-->
+                    <button type="button" class="btn" onclick="$(this).parents('.modal').hide();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+

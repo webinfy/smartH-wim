@@ -1,0 +1,135 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content">
+    <div class="main-content-inner">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="javascript:;">Home</a>
+                </li>
+                <li>
+                    <a href="javascript:;">Account Setup </a>
+                </li>
+                <li class="active"> Profile Setting </li>
+            </ul><!-- /.breadcrumb -->
+
+            <!-- #section:basics/content.searchbox -->
+            <!--
+             <div class="nav-search" id="nav-search">
+                 <form class="form-search">
+                     <span class="input-icon">
+                         <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                         <i class="ace-icon fa fa-search nav-search-icon"></i>
+                     </span>
+                 </form>
+             </div>
+            -->
+            <!-- /.nav-search -->
+            <!-- /section:basics/content.searchbox -->
+        </div>
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <!-- /section:settings.box -->
+            <div class="page-header">
+                <h1>
+                    Profile Setting                         
+                </h1>
+            </div><!-- /.page-header -->
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+
+<!--                    <form name="myForm">
+                        <fieldset>
+                            <legend>Upload on form submit</legend>
+                            Username: <input type="text" name="userName" ng-model="username" size="39" required>
+                            <i ng-show="myForm.userName.$error.required">*required</i><br>
+                            Profile Picture: <input type="file" ngf-select ng-model="picFile" name="file" ngf-accept="'image/*'"  required>
+                            <i ng-show="myForm.file.$error.required">*required</i>
+                            <br/>
+
+                            <button ng-disabled="!myForm.$valid" ng-click="uploadPic(picFile)">Submit</button>
+
+                            <img ngf-src="picFile" class="thumb" />
+                            <span class="progress" ng-show="picFile.progress >= 0">
+                                <div style="width:{{picFile.progress}}%" ng-bind="picFile.progress + '%'"></div>
+                            </span>
+                            <span ng-show="picFile.result">Upload Successful</span>
+                        </fieldset>
+                        <br/>
+                    </form>-->
+
+                    <form name="userForm" class="form-horizontal" role="form" ng-submit=" userForm.$valid && updateProfile()" ng-init="getProfileData()">
+
+                        <div class="alert alert-danger" id="error-msg" style="display: none;">
+                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                            <p><i class="ace-icon fa fa-times"></i> <span id="err-msg-content"></span></p>                            
+                        </div>
+
+                        <div class="alert alert-success" id="success-msg" style="display: none;">
+                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                            <p><i class="ace-icon fa fa-check"></i>&nbsp;Profile updated successfully!!.</p>                            
+                        </div>
+
+                        <!-- #section:elements.form -->
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Logo : </label>
+                            <div class="col-sm-9">                            
+                                <input type="file" id="logo" ngf-select ng-model="picFile" name="file" ngf-accept="'image/*'" class="col-xs-10 col-sm-5" style="padding: 5px 0;" >                                
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Name : </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="name" id="name" required=""  placeholder="Name" ng-model="user.name" ng-minlength="3" class="col-xs-10 col-sm-5" autocomplete="off" />
+                                <p ng-show="userForm.name.$error.required"><font color="red">&nbsp;&nbsp;Name is required!</font></p>
+                                <p ng-show="userForm.name.$error.minlength"><font color="red">&nbsp;&nbsp;Name is too short!</font></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email : </label>
+                            <div class="col-sm-9">
+                                <input type="email" name="email" id="email" required="" placeholder="Email" ng-model="user.email" class="col-xs-10 col-sm-5" />
+                                <p ng-show="userForm.email.$error.required"><font color="red">&nbsp;&nbsp;Email is required!</font></p>
+                                <p ng-show="userForm.email.$error.email"><font color="red">&nbsp;&nbsp;Please enter valid Email!</font></p>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Phone No. : </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="phone" id="address" required="" placeholder="Phone No." ng-model="user.phone" ng-minlength="10" maxlength="15" class="col-xs-10 col-sm-5" />
+                                <p ng-show="userForm.phone.$error.required"><font color="red">&nbsp;&nbsp;Phone number is required!</font></p>
+                                <p ng-show="userForm.phone.$error.minlength"><font color="red">&nbsp;&nbsp;Number is too short!</font></p>
+                            </div>
+                        </div>   
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Address : </label>
+                            <div class="col-sm-9">                                           
+                                <textarea name="address" class="col-xs-20 col-sm-5" required="" ng-model="user.address" style="padding-left: 5px;" ></textarea>
+                                <p ng-show="userForm.address.$error.required"><font color="red">&nbsp;&nbsp;Address is required!</font></p>
+                            </div>
+                        </div>
+
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9"> 
+                                <button class="btn btn-info" ng-disabled="!userForm.$valid" ng-click="uploadPic(picFile)" type="button"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>  &nbsp; &nbsp; &nbsp;
+                                <a class="btn" href="merchant/#/dashboard"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->

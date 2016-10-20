@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Example Custom Alert</title>
+        <!--<link href="dist/css/custom-alert.min.css" rel="stylesheet">-->
+        <link href="dist/css/custom-alert.min.css" rel="stylesheet">
+    </head>
+    <body>       
+
+        <script src="dist/js/custom-alert.js" language="javascript"></script>
+
+        <a href="http://localhost/2016/confirm/custom-alert-master/example.html" data-href='' onclick="return confirm('Are you Sure ? ');"> Click  </a>
+        <br/>
+        <a href="javascript:;" data-hrefxx='http://localhost/2016/confirm/custom-alert-master/example.html' onclick="return isConfirm('Are you Sure ? ', this);"> Click to Activate on page refresh </a>
+        <br/>
+        <a href="javascript:;" data-href='http://localhost/2016/confirm/custom-alert-master/example.html' onclick="return callMe();"> Normal Confirm </a>
+
+        <script>
+            function isConfirm(msg, $this) {
+                confirm(msg, function (data) {
+                    if (data) {
+                        var link = $this.getAttribute("data-href");
+                        if (typeof link != 'undefined' && link != '' && link != null) {
+                            location.href = link;
+                        } else {
+                            alert('The link is not correct!!');
+                        }
+
+                    } else {
+                        //Do Nothing
+                    }
+                }, {return: true});
+            }
+
+            function callMe() {
+                confirm("Are you sure you want to delete ? ", function (data) {
+                    if (data) {
+                        alert('Jay Jagannath');
+                    } else {
+                        return false;
+                    }
+                }, {return: true});
+            }
+        </script>
+    </body>
+</html>
