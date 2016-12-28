@@ -79,13 +79,16 @@ class RequestHandlerComponent extends Component
      *   json, xml, and ajax will be mapped. Defining any types will omit the defaults.
      * - `inputTypeMap` - A mapping between types and deserializers for request bodies.
      *   If undefined json & xml will be mapped. Defining any types will omit the defaults.
+     * - `enableBeforeRedirect` - Set to false to disable the `beforeRedirect` callback. The
+     *   `beforeRedirect` functionality has been deprecated.
      *
      * @var array
      */
     protected $_defaultConfig = [
         'checkHttpCache' => true,
         'viewClassMap' => [],
-        'inputTypeMap' => []
+        'inputTypeMap' => [],
+        'enableBeforeRedirect' => true
     ];
 
     /**
@@ -238,6 +241,7 @@ class RequestHandlerComponent extends Component
             if (isset($xml->data)) {
                 return Xml::toArray($xml->data);
             }
+
             return Xml::toArray($xml);
         } catch (XmlException $e) {
             return [];
@@ -251,9 +255,14 @@ class RequestHandlerComponent extends Component
      * @param string|array $url A string or array containing the redirect location
      * @param \Cake\Network\Response $response The response object.
      * @return \Cake\Network\Response|null The response object if the redirect is caught.
+     * @deprecated 3.3.5 This functionality will be removed in 4.0.0. You can disable this function
+     *   now by setting the `enableBeforeRedirect` config option to false.
      */
     public function beforeRedirect(Event $event, $url, Response $response)
     {
+        if (!$this->config('enableBeforeRedirect')) {
+            return null;
+        }
         $request = $this->request;
         if (!$request->is('ajax')) {
             return null;
@@ -280,6 +289,7 @@ class RequestHandlerComponent extends Component
             'cookies' => $request->cookies
         ]));
         $response->statusCode(200);
+
         return $response;
     }
 
@@ -365,6 +375,7 @@ class RequestHandlerComponent extends Component
     public function isMobile()
     {
         $request = $this->request;
+
         return $request->is('mobile') || $this->accepts('wap');
     }
 
@@ -420,11 +431,13 @@ class RequestHandlerComponent extends Component
                     return true;
                 }
             }
+
             return false;
         }
         if (is_string($type)) {
             return in_array($this->mapAlias($type), $accepted);
         }
+
         return false;
     }
 
@@ -452,6 +465,7 @@ class RequestHandlerComponent extends Component
                     return $t;
                 }
             }
+
             return false;
         }
 
@@ -496,6 +510,7 @@ class RequestHandlerComponent extends Component
             if (empty($this->ext) && !empty($accepts)) {
                 return $accepts[0];
             }
+
             return $this->ext;
         }
 
@@ -505,6 +520,7 @@ class RequestHandlerComponent extends Component
             if (!empty($this->ext)) {
                 return in_array($this->ext, $types);
             }
+
             return in_array($types[0], $accepts);
         }
 
@@ -512,6 +528,7 @@ class RequestHandlerComponent extends Component
         if (empty($intersect)) {
             return false;
         }
+
         return $intersect[0];
     }
 
@@ -640,6 +657,7 @@ class RequestHandlerComponent extends Component
         if (!empty($options['attachment'])) {
             $response->download($options['attachment']);
         }
+
         return true;
     }
 
@@ -652,6 +670,7 @@ class RequestHandlerComponent extends Component
     public function responseType()
     {
         $response = $this->response;
+
         return $response->mapType($response->type());
     }
 
@@ -674,8 +693,10 @@ class RequestHandlerComponent extends Component
             if (is_array($type)) {
                 return $type[0];
             }
+
             return $type;
         }
+
         return null;
     }
 
@@ -725,6 +746,7 @@ class RequestHandlerComponent extends Component
         } elseif (is_array($type)) {
             $this->config('viewClassMap', $type, true);
         }
+
         return $this->config('viewClassMap');
     }
 }

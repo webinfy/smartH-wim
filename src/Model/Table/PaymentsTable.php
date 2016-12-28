@@ -17,36 +17,28 @@ class PaymentsTable extends Table {
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+
         $this->addBehavior('CounterCache', [
-            'UploadedPaymentFiles' => ['payment_count']
+            'UploadedPaymentFiles' => ['upload_count']
         ]);
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER'
-        ]);
-
-        $this->belongsTo('Users', [
-            'propertyName' => 'merchant',
-            'class' => 'Users',
-            'bindingKey' => 'id',
-            'foreignKey' => 'merchant_id',
-            'joinType' => 'INNER'
+        $this->belongsTo('Webfronts', [
+            'foreignKey' => 'webfront_id',
+            'joinType' => 'LEFT'
         ]);
 
         $this->belongsTo('UploadedPaymentFiles', [
             'foreignKey' => 'uploaded_payment_file_id',
-            'joinType' => 'INNER'
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('Users', [
+            'foreignKey' => 'customer_id',
+            'joinType' => 'LEFT'
         ]);
     }
 
     public function validationDefault(Validator $validator) {
-
-
-        $validator
-                ->integer('customer_code')
-                ->requirePresence('customer_code', 'create')
-                ->notEmpty('customer_code');
 
         $validator
                 ->requirePresence('name', 'create')
@@ -60,27 +52,25 @@ class PaymentsTable extends Table {
         $validator
                 ->requirePresence('phone', 'create')
                 ->notEmpty('phone');
-
-        $validator
-                ->decimal('total_fee')
-                ->requirePresence('total_fee', 'create')
-                ->notEmpty('total_fee');
-
-        $validator
-                ->date('due_date')
-                ->requirePresence('due_date', 'create')
-                ->notEmpty('due_date');
+//
+//        $validator
+//                ->decimal('convenience_fee_amount')
+//                ->requirePresence('convenience_fee_amount', 'create')
+//                ->notEmpty('convenience_fee_amount');
+//
+//        $validator
+//                ->decimal('fee')
+//                ->requirePresence('fee', 'create')
+//                ->notEmpty('fee');
 
 
         return $validator;
     }
 
-    public function buildRules(RulesChecker $rules) {
-//        $rules->add($rules->isUnique(['email']));
-        $rules->add($rules->existsIn(['uploaded_payment_file_id'], 'UploadedPaymentFiles'));
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
-
-        return $rules;
-    }
-
+//    public function buildRules(RulesChecker $rules) {      
+//        $rules->add($rules->existsIn(['uploaded_payment_file_id'], 'UploadedPaymentFiles'));
+//        $rules->add($rules->existsIn(['customer_id'], 'Users'));
+//
+//        return $rules;
+//    }
 }

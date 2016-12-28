@@ -10,7 +10,7 @@ return [
      * Development Mode:
      * true: Errors and warnings shown.
      */
-    'debug' => filter_var(env('DEBUG', FALSE), FILTER_VALIDATE_BOOLEAN),
+    'debug' => filter_var(env('DEBUG', TRUE), FILTER_VALIDATE_BOOLEAN),
     /**
      * Configure basic information about the application.
      *
@@ -63,7 +63,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '321a9c97d4e59db5bbabc09a177d671c2b95ce26c495a2f97e54e20d473dc981'),
+        'salt' => env('SECURITY_SALT', '61806f27796b21c2d84bb74a83e8604b44963df23b9b63b1f9e0787032226ee4'),
     ],
     /**
      * Apply timestamps with the last modified time to static assets (js, css, images).
@@ -89,6 +89,7 @@ return [
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
          * Duration will be set to '+1 year' in bootstrap.php when debug = false
+         * If you set 'className' => 'Null' core cache will be disabled.
          */
         '_cake_core_' => [
             'className' => 'File',
@@ -143,7 +144,7 @@ return [
      *   breathing room to complete logging or error handling.
      */
     'Error' => [
-        'errorLevel' => E_ALL & ~E_DEPRECATED,
+        'errorLevel' => E_ALL,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => true,
@@ -202,6 +203,8 @@ return [
     /**
      * Connection information used by the ORM to connect
      * to your application's datastores.
+     * Do not use periods in database name - it may lead to error.
+     * See https://github.com/cakephp/cakephp/issues/6471 for details.
      * Drivers include Mysql Postgres Sqlite Sqlserver
      * See vendor\cakephp\cakephp\src\Database\Driver for complete list
      */
@@ -217,9 +220,9 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => 'raddyx_smarthub',
-            'password' => 'smarthub',
-            'database' => 'raddyx_smarthub',
+            'username' => 'root',
+            'password' => '',
+            'database' => 'smarthub_phase2',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'flags' => [],
@@ -324,5 +327,6 @@ return [
      */
     'Session' => [
         'defaults' => 'php',
+        'timeout' => 24 * 60//in minutes i.e. 1day here
     ],
 ];

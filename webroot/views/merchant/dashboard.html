@@ -1,61 +1,33 @@
 <!-- /section:basics/sidebar -->
-<div class="main-content">
-    <div class="main-content-inner">
-        <!-- #section:basics/content.breadcrumbs -->
-        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-            <ul class="breadcrumb">
-                <li>
-                    <i class="ace-icon fa fa-home home-icon"></i>
-                    <a href="javascript:;">Home</a>
-                </li>
-                <li class="active">Dashboard</li>
-            </ul><!-- /.breadcrumb -->
-            <!-- #section:basics/content.searchbox -->
-            <!--
-            <div class="nav-search" id="nav-search">
-                <form class="form-search">
-                    <span class="input-icon">
-                        <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
-                        <i class="ace-icon fa fa-search nav-search-icon"></i>
-                    </span>
-                </form>
-            </div>
-            -->
-            <!-- /.nav-search -->
-            <!-- /section:basics/content.searchbox -->
-        </div>
-        <!-- /section:basics/content.breadcrumbs -->
-        <div class="page-content">
+<div class="main-content" style="background: #BBBBBB;">
+    <div class="main-content-inner">   
+        <div class="page-content" ng-init="getMerchantData()">
             <!-- #section:settings.box -->
-
             <!-- /section:settings.box -->
-            <div class="page-header">
-                <h1>
-                    Merchant Dashboard
-                </h1>
-            </div><!-- /.page-header -->
-
             <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Merchant Dashboard                     
+                    </h1>                    
+                </div>
                 <div class="col-xs-12">
                     <!-- PAGE CONTENT BEGINS -->
-                    <!--
-                    <div class="alert alert-block alert-success">
-                        <button type="button" class="close" data-dismiss="alert">
-                            <i class="ace-icon fa fa-times"></i>
-                        </button>
-                        <i class="ace-icon fa fa-check green"></i>
-                        Welcome SmartHub Merchant Panel
-                    </div>
-                    -->
-                    <div class="row">
-                        <h1 style="text-align: center; margin-top: 50px;">Welcome <span style="color: green;" >SmartHub</span> Merchant Panel</h1>
-                        <div style="width: 200px; position: relative; margin: auto;"><img style="width: 180px;" src="img/logo/web-info-mart-logo.png"></div>
-                    </div><!-- /.row -->
-                    <!-- PAGE CONTENT ENDS -->
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.page-content -->
-    </div>
-</div><!-- /.main-content -->
+                    <div class="content-main-area" style="padding: 20px;">  
 
+                        <div class="row">
+                            <h1 style="text-align: center; margin-top: 50px;">Welcome <span style="color: green;" >SmartHub</span> Merchant Panel</h1>
+                            <div style="width: 200px; position: relative; margin: auto;">
+                                <img ng-if="merchant.merchant_profile.logo"  style="width: 180px;" ng-src="files/merchant_logo/{{merchant.merchant_profile.logo}}">
+                                <!--<img ng-if="!merchant.merchant_profile.logo"  style="width: 180px;" src="img/logo/web-info-mart-logo.png">-->                                 
+                            </div>
+                            <!-- #section:elements.form -->                          
+                            <!--<br class="clear"/>-->    
+                        </div>
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div>
+    </div><!-- /.main-content -->
+</div><!-- /.main-content -->
 

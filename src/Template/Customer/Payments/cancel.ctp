@@ -3,9 +3,9 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>SmartHub : Payment Success</title>
+        <title><?= SITE_NAME ?> : Transaction Canceled</title>
 
-        <base href="<?= HTTP_ROOT; ?>" target="">
+        <base href="<?= HTTP_ROOT; ?>" target="_self">
         <meta name="description" content="overview &amp; stats" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
@@ -22,43 +22,17 @@
         <?php echo $this->element('script_file'); ?>
     </head>
 
-    <body class="skin-2">        
+    <body class="skin-2">  
 
-        <!--
-        <div id="navbar" class="navbar navbar-default ace-save-state">
-            <div class="navbar-container ace-save-state" id="navbar-container">               
-                <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
-                    <span class="sr-only">Toggle sidebar</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>              
-                <div class="navbar-header pull-left">                   
-                    <a href="<?= HTTP_ROOT ?>" class="navbar-brand"> <small> <i class="fa fa-leaf"></i> SmartHub Customer </small> </a>
-                </div>
-            </div>
-        </div>  
-        
-        -->
 
         <div class="main-container ace-save-state container" id="main-container">
             <div class="main-content">
 
-                <div id="navbar" class="navbar navbar-default ace-save-state" style="background: #bbb;">
-                    <div class="main-container ace-save-state container" id="main-container" style="background: #f1f1f1;">
-                        <div style="width: 100%; float: left;  padding: 10px;">
-                            <div style="width: 30%; float: left;"> <img style="margin-top: 20px;" src="img/logo/smarthub-logo.png" /></div>
-                            <div style="width: 40%; float: left; text-align: center;">
-                                 <img style="width: 250px;" src="<?= !empty($merchant['merchant_profile']['logo']) ? MERCHANT_LOGO . $merchant['merchant_profile']['logo'] : 'img/logo/web-info-mart-logo.png' ?>" />
-                            </div>
-                            <div style="width: 30%; float: left;"><img style="float:right; margin-top: 20px;" src="img/logo/hdfc-logo.png" /></div>
-                        </div>
-                    </div>
-                </div>
+                <?php echo $this->cell('Merchants::header', [$payment->webfront->merchant_id]); ?> 
 
                 <div class="main-content-inner">               
                     <div class="page-content">    
-                        <!--<div ng-include=""></div>-->
+
                         <div class="page-header">
                             <h1 style="text-align: center; font-size: 30px; color: #DC4B3E;"> Canceled !! </h1>
                         </div><!-- /.page-header -->
@@ -70,34 +44,87 @@
                                             <h2 style="color: #72BDEF; font-size: 25px;">You have canceled your last Transaction. </h2>     
                                             <table align="center" style="line-height: 35px; font-size: 14px;">
                                                 <tr>
-                                                    <td> Merchant </td>
-                                                    <td> &nbsp;: <?= $merchant->name ?> </td>
+                                                    <td colspan="2">
+                                                        <h3>Customer Information</h3>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td> Customer Name </td>
+                                                    <td> Name </td>
                                                     <td> &nbsp;: <?= $payment->name ?> </td>
                                                 </tr>
                                                 <tr>
-                                                    <td> Customer Id </td>
-                                                    <td> &nbsp;: <?= $payment->user->cust_id ?> </td>
+                                                    <td> Email </td>
+                                                    <td> &nbsp;: <?= $payment->email ?> </td>
                                                 </tr>
                                                 <tr>
-                                                    <td> Payment Amount </td>
-                                                    <td> &nbsp;: Rs. <?= $payment->total_fee ?> </td>
+                                                    <td> Phone No. </td>
+                                                    <td> &nbsp;: <?= $payment->phone ?> </td>
                                                 </tr>
+
+                                                <?php
+                                                $payeeCustomFields = json_decode($payment->payee_custom_fields, true);
+                                                if (count($payeeCustomFields)) {
+                                                    foreach ($payeeCustomFields as $payeeCustomField) {
+                                                        ?>
+                                                        <tr>
+                                                            <td> <?= $payeeCustomField['field'] ?> </td>
+                                                            <td> &nbsp;: <?= $payeeCustomField['value'] ?> </td>
+                                                        </tr>
+                                                    <?php } ?>
+                                                <?php } ?>
+
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <h3>Payment Information</h3>
+                                                    </td>
+                                                </tr>
+
+                                                <?php
+                                                $paymentCustomFields = json_decode($payment->payment_custom_fields, true);
+                                                if (count($paymentCustomFields)) {
+                                                    foreach ($paymentCustomFields as $paymentCustomField) {
+                                                        ?>
+                                                        <tr>
+                                                            <td> <?= $paymentCustomField['field'] ?> </td>
+                                                            <td> &nbsp;: Rs. <?= $paymentCustomField['value'] ?> </td>
+                                                        </tr>
+                                                    <?php } ?>
+                                                <?php } ?>
+
+                                                <tr>
+                                                    <td> Convenience Fee </td>
+                                                    <td> &nbsp;: Rs. <?= $payment->convenience_fee_amount ?> </td>
+                                                </tr>
+
+                                                <?php if (!empty($payment->late_fee_amount)) { ?>
+                                                    <tr>
+                                                        <td> Late Fee </td>
+                                                        <td> &nbsp;: Rs. <?= $payment->late_fee_amount ?> </td>
+                                                    </tr>
+                                                <?php } ?>
+
+                                                <tr>
+                                                    <td> Total Amount. </td>
+                                                    <td> &nbsp;: Rs. <?= ($payment->fee + $payment->convenience_fee_amount + $payment->late_fee_amount) ?> </td>
+                                                </tr>
+
                                             </table>
                                         </td>                                       
                                     </tr>                                   
-                                </table>                          
+                                </table>   
+
+                                <?php if ($this->request->session()->read('Auth.User.id')) { ?>
+                                    <h2 style="color: #72BDEF; font-size: 16px; text-align: center; color: green;"><a href="">Go Back To Dashboard</a>. </h2>     
+                                <?php } ?>
 
                             </div><!-- /.row -->     
-                        </div><!-- /.row -->     
+                        </div><!-- /.row -->    
 
                     </div><!-- /.page-content -->
                 </div>
             </div><!-- /.main-content -->
 
-            <?= $this->element('Customer/footer'); ?>
+            <?= $this->element('footer'); ?>
 
             <a href="javascript:;" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
                 <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>

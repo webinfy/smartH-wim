@@ -1,15 +1,18 @@
 <?php
-$key = "xlIeC9";
-$salt = "qVCckzCA";
-$txn = "TXN" . time();
+$key = $payment->webfront->user->merchant_profile->payu_key; //"xlIeC9";
+$salt = $payment->webfront->user->merchant_profile->payu_salt; //"qVCckzCA";
+$txn = "TXN" . time() . rand(1111, 9999);
 
-$amount = $payment->total_fee;
+$amount = $payment->fee + $payment->convenience_fee_amount;
+if (date('Y-m-d') > date('Y-m-d', strtotime($payment->uploaded_payment_file->payment_cycle_date))) {
+    $amount += $payment->late_fee_amount;
+}
+
 $email = $payment->email;
 $name = $payment->name;
 $phone = $payment->phone;
 
-$productName = $payment->uploaded_payment_file->note; //"tshirt";
-
+$productName = SITE_NAME . " Bill Payment";
 $successUrl = HTTP_ROOT . "customer/payments/success/" . $payment->uniq_id;
 $failureUrl = HTTP_ROOT . "customer/payments/failure/" . $payment->uniq_id;
 $cancelUrl = HTTP_ROOT . "customer/payments/cancel/" . $payment->uniq_id;
@@ -17,7 +20,7 @@ $cancelUrl = HTTP_ROOT . "customer/payments/cancel/" . $payment->uniq_id;
 $text = "{$key}|{$txn}|{$amount}|{$productName}|{$name}|{$email}|||||||||||{$salt}";
 $output = strtolower(hash("sha512", $text));
 ?>
-<form action='https://test.payu.in/_payment' method='post' id="payUForm">
+<form action='<?= PAYU_PAYMENT_URL ?>' method='post' id="payUForm">
 
     <input type="hidden" name="key" value="<?= $key; ?>" />
     <input type="hidden" name="txnid" value="<?php echo $txn; ?>" />

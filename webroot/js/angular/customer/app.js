@@ -49,6 +49,24 @@ var app = angular
                     })
         })
         .run(['$rootScope', '$location', '$state', function ($rootScope, $location, $state) {
+
+                $rootScope.success = function (msg) {
+                    $html = "";
+                    $html += '<div style="display: block;" id="success-msg" class="alert alert-info">';
+                    $html += '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>';
+                    $html += '<p><i class="ace-icon fa fa-check"></i>&nbsp;' + msg + '</p>';
+                    $html += '</div>';
+                    $('#flash-msg').html($html).show();//.delay(8000).fadeOut();
+                };
+                $rootScope.error = function (msg) {
+                    $html = "";
+                    $html += '<div style="display: block;" id="success-msg" class="alert alert-danger">';
+                    $html += '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>';
+                    $html += ' <p><i class="ace-icon fa fa-times"></i>&nbsp;' + msg + '</p>';
+                    $html += '</div>';
+                    $('#flash-msg').html($html).show();//.delay(8000).fadeOut();
+                };
+
                 $rootScope.$state = $state;
                 $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
 
@@ -81,7 +99,7 @@ var app = angular
 
             }]);
 //////////////////////////////////Controller Code/////////////////////////////
-app.controller('PaymentsCtrl', function ($scope, $http, $stateParams) {
+app.controller('PaymentsCtrl', function ($scope, $http, $stateParams, $window) {
 
     $scope.viewUpcomingPayments = function () {
         $http.get(siteUrl + "customer/payments/ajaxUpcomingPayments", {
@@ -110,39 +128,49 @@ app.controller('PaymentsCtrl', function ($scope, $http, $stateParams) {
         $http.get(siteUrl + "customer/payments/ajaxViewPaymentDetails/" + uniqId, {
         }).success(function (data, status, headers, config) {
             if (data.status == 'success') {
-                var payment = data.data;
+                console.log(data.payment);
+                var payment = data.payment;
                 $scope.payment = payment
-                $scope.custom_fields = JSON.parse(payment.uploaded_payment_file.custom_fields);
-                $scope.custom_field_values = JSON.parse(payment.custom_fields);
+                if (payment.payee_custom_fields) {
+                    $scope.payment.payee_custom_fields = JSON.parse(payment.payee_custom_fields);
+                }
+                if (payment.payment_custom_fields) {
+                    $scope.payment.payment_custom_fields = JSON.parse(payment.payment_custom_fields);
+                }
             } else {
 //                $('#payment-history tbody').html("<tr><td colspan='8' style='text-align:center;color:red;'>No Data Found</td></tr>");
             }
         });
+    };
+
+    $scope.paypalRedirect = function (payment) {
+        //window.location.href = siteUrl + "customer/payments/pay-now-redirect/" + payment.uniq_id;
+        $window.location.href = "customer/payments/pay-now-redirect/" + payment.uniq_id;
+
     }
 
 });
 
-app.controller('ProfileCtrl', function ($scope, $http) {
+app.controller('ProfileCtrl', function ($scope, $rootScope, $http) {
 //    $scope.getProfileData = function () {
 //        $http.post(siteUrl + "users/ajaxGetProfileData").then(function (response) {
 //            $scope.user = response.data;
 //            $scope.user_detail = response.data.user_detail;
 //        }, 'json');
 //    }
+
     $scope.changePassword = function () {
         $http.post(siteUrl + "users/ajaxChangePasssword", {
             'old_password': $scope.old_password,
             'password1': $scope.password1,
             'password2': $scope.password2
-        }).success(function (data, status, headers, config) {
-            if (data.status == 'success') {
-                $('#success-msg').show().delay(2000).slideUp();
-                $scope.old_password = '';
-                $scope.password1 = '';
-                $scope.password2 = '';
+        }).success(function (response, status, headers, config) {
+            console.log(response);
+            if (response.status == 'success') {
+                $rootScope.success('Password Changed Successfully!!');
+                $('#changePassword')[0].reset();
             } else {
-                $('#err-msg-content').html(data.msg);
-                $('#error-msg').show().delay(4000).slideUp();
+                $rootScope.error(response.msg);
             }
         });
         return false;
@@ -157,6 +185,7 @@ $(function () {
 
         $('.nav-list').find('li').removeClass('active');
         $(this).parent('li').addClass('active');
+        $('#sidebar').removeClass('display');
     });
 });
 

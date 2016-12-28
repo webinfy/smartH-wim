@@ -3,9 +3,9 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>Login Page - Smarthub by HDFC Bank</title>
+        <title><?= SITE_NAME ?> : Merchant Login </title>
 
-        <base href="<?= HTTP_ROOT; ?>" target="">
+        <base href="<?= HTTP_ROOT; ?>" target="_self">
 
         <meta name="description" content="User login page" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -49,9 +49,9 @@
                 font-weight: normal;
                 overflow: hidden;
                 padding: 5px 15px;
-                /*                position: fixed;
-                                right: 15px;
-                                top: 40px;*/
+                position: relative !important;
+                left: 0;
+                top: -10px;              
                 transition: height 300ms ease-out 0s;
                 z-index: 999;
             }
@@ -63,32 +63,45 @@
                 color: #C3232D;
                 content: "x";
             }
+            .logo-row-1 {
+                width: 100%;
+                float: left;
+                padding: 10px;
+            }
         </style>
     </head>
 
-    <body class="login-layout light-login">
+    <body class="login-layout light-login loginbg-1">
         <div class="main-container">
             <div class="main-content">
                 <div class="row">
                     <div class="col-sm-10 col-sm-offset-1">
                         <div class="login-container">
+
                             <div class="center">
-                                <!--<h1>-->
-                                        <!--<i class="ace-icon fa fa-leaf green"></i>-->
-                                    <!--<span class="red"><img src="https://smarthubeducation.hdfcbank.com/SmartFees/images/smarthublogo.png" /></span>-->
-                                    <!--<span class="white" id="id-text2"><img src="https://smarthubeducation.hdfcbank.com/SmartFees/images/EDUTEST_HeaderImage.png" /></span>-->
-                                <!--</h1>-->
-                                <!--<h4 class="blue" id="id-company-text">&copy; <img src="https://smarthubeducation.hdfcbank.com/SmartFees/images/logo_hdfcbank.gif" /></h4>-->
+                                <h4 class="blue" style="margin-top: 10px;" id="id-company-text">     
+                                    <?php if (!empty($merchant->merchant_profile->logo)) { ?>
+                                        <img style="max-height: 200px;" src="<?= MERCHANT_LOGO . $merchant->merchant_profile->logo ?>" />
+                                    <?php } else { ?>
+                                        <span style="display: block; margin-top: 50px;">&nbsp;</span>
+                                    <?php } ?>
+                                </h4>
                             </div>
 
                             <div class="space-6"></div>                           
 
-                            <div class="position-relative" style="margin-top: 60px;">
+                            <div class="position-relative">
                                 <div id="login-box" class="login-box visible widget-box no-border">
                                     <div class="widget-body">
+                                        <div class="logo-row-1">
+                                            <img src="img/logo/smarthub-logo.png" />
+                                            <img style="float:right;" src="img/logo/hdfc-logo.png" />
+                                        </div>
                                         <div class="widget-main">
 
                                             <h4 class="header blue lighter bigger">
+                                                <br/>
+                                                <br/>
                                                 <i class="ace-icon fa fa-coffee green"></i>
                                                 Please Enter Your Information
                                             </h4>
@@ -97,39 +110,42 @@
 
                                             <div class="space-6"></div>
 
-                                            <form method="post">
-                                                <fieldset>
-                                                    <label class="block clearfix">
-                                                        <span class="block input-icon input-icon-right">
-                                                            <input name="username" type="text" class="form-control" placeholder="Username" required="required" />
-                                                            <i class="ace-icon fa fa-user"></i>
-                                                        </span>
+                                            <!--<form method="post">-->
+                                            <?php echo $this->Form->create(NULL, ['type' => 'post']); ?>
+                                            <fieldset>
+                                                <label class="block clearfix">
+                                                    <span class="block input-icon input-icon-right">
+                                                        <?php echo $this->Form->input('email', ['type' => 'email', 'class' => 'form-control', 'label' => FALSE, 'placeholder' => 'Email', 'required' => TRUE]); ?>
+                                                        <i class="ace-icon fa fa-user"></i>
+                                                    </span>
+                                                </label>
+
+                                                <label class="block clearfix">
+                                                    <span class="block input-icon input-icon-right">
+                                                        <?php echo $this->Form->input('password', ['type' => 'password', 'class' => 'form-control', 'label' => FALSE, 'placeholder' => 'Password', 'required' => TRUE]); ?>
+                                                        <i class="ace-icon fa fa-lock"></i>
+                                                    </span>
+                                                </label>
+
+                                                <div class="space"></div>
+
+                                                <div class="clearfix">
+                                                    <!--
+                                                    <label class="inline">                                                       
+                                                    <?php echo $this->Form->checkbox('rememberme', ['value' => 1, 'class' => 'ace']); ?>
+                                                        <span class="lbl"> Remember Me</span>
                                                     </label>
+                                                    -->
+                                                    <button type="submit" name="login" class="width-35 pull-right btn btn-sm btn-primary button-red">
+                                                        <i class="ace-icon fa fa-key"></i>
+                                                        <span class="bigger-110">Login</span>
+                                                    </button>
+                                                </div>
 
-                                                    <label class="block clearfix">
-                                                        <span class="block input-icon input-icon-right">
-                                                            <input name="password" type="password" class="form-control" placeholder="Password" required="required" />
-                                                            <i class="ace-icon fa fa-lock"></i>
-                                                        </span>
-                                                    </label>
-
-                                                    <div class="space"></div>
-
-                                                    <div class="clearfix">
-                                                        <label class="inline">
-                                                            <input type="checkbox" class="ace" />
-                                                            <span class="lbl"> Remember Me</span>
-                                                        </label>
-
-                                                        <button type="submit" name="login" class="width-35 pull-right btn btn-sm btn-primary">
-                                                            <i class="ace-icon fa fa-key"></i>
-                                                            <span class="bigger-110">Login</span>
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="space-4"></div>
-                                                </fieldset>
-                                            </form>
+                                                <div class="space-4"></div>
+                                            </fieldset>
+                                            <!--</form>-->
+                                            <?php echo $this->Form->end(); ?>
 
 
                                             <!--<div class="social-or-login center">
@@ -155,7 +171,8 @@
 
                                         <div class="toolbar clearfix">
                                             <div>
-                                                <a href="#" data-target="#forgot-box" class="forgot-password-link">
+                                                <a href="<?= HTTP_ROOT . "forgot-password" ?>"  class="forgot-password-link">
+                                                    <!--<a href="#" data-target="#forgot-box" class="forgot-password-link">-->
                                                     <i class="ace-icon fa fa-arrow-left"></i>
                                                     I forgot my password
                                                 </a>

@@ -15,6 +15,14 @@ class CustomHelper extends Helper {
         }
     }
 
+    function dateTimeDisplay($datetime) {
+        if ($datetime != "" && $datetime != "NULL" && $datetime != "0000-00-00 00:00:00") {
+            return date("M d, Y h:i A", strtotime($datetime));
+        } else {
+            return false;
+        }
+    }
+
     public static function makeSeoUrl($url) {
         if ($url) {
             $url = trim($url);
@@ -77,6 +85,16 @@ class CustomHelper extends Helper {
                 return "$years years ago";
             }
         }
+    }
+
+    public function encrypt($text) {
+        $text = urlencode(base64_encode($text));
+        return $text;
+    }
+
+    public function decrypt($text) {
+        $text = base64_decode(urldecode($text));
+        return $text;
     }
 
 }

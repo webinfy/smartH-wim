@@ -1,230 +1,172 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta charset="utf-8" />
-        <title>SmartHub</title>
-
-        <base href="<?= HTTP_ROOT; ?>" target="">
-        <meta name="description" content="overview &amp; stats" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
-        <!-- bootstrap & fontawesome -->
-        <link rel="stylesheet" href="assets/css/bootstrap.css" />
-        <link rel="stylesheet" href="components/font-awesome/css/font-awesome.css" />
-        <!-- page specific plugin styles -->
-        <!--<link rel="stylesheet" href="components/bootstrap-duallistbox/dist/bootstrap-duallistbox.css" />-->
-        <!-- text fonts -->
-        <link rel="stylesheet" href="assets/css/ace-fonts.css" />
-        <link rel="stylesheet" href="assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-        <link rel="stylesheet" href="assets/css/ace-skins.css" />
-        <link rel="stylesheet" href="assets/css/ace-rtl.css" />
-        <!-- ace settings handler -->
-        <script src="assets/js/ace-extra.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-        <script> window.jQuery || document.write('<script src="components/jquery/dist/jquery.js"><\/script>');</script>     
-        <?php echo $this->element('script_file'); ?>
-    </head>
-
-    <body class="skin-2">        
+<?php
+$late_fee_amount = 0;
+$amount = $payment->fee + $payment->convenience_fee_amount;
+if (date('Y-m-d') > date('Y-m-d', strtotime($payment->uploaded_payment_file->payment_cycle_date))) {
+    $late_fee_amount = $payment->late_fee_amount;
+}
+$amount += $late_fee_amount;
+?>
 
 
-        <!--        <div id="navbar" class="navbar navbar-default          ace-save-state">
-                    <div class="navbar-container ace-save-state" id="navbar-container">                
-                        <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
-                            <span class="sr-only">Toggle sidebar</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>               
-                        <div class="navbar-header pull-left">                   
-                            <a href="javascript:;" class="navbar-brand">
-                                <small>
-                                    <i class="fa fa-leaf"></i>
-                                    SmartHub Customer
-                                </small>
-                            </a>
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 5px;
+        text-align: left;
+    }
+    table#t01 {
+        width: 100%;    
+        background-color: #f1f1c1;
+    }
+</style>
+
+<div class="main-content"> 
+
+    <?php echo $this->cell('Merchants::header', [$payment->webfront->merchant_id]); ?>  
+
+    <div class="main-content-inner">
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">                           
+
+            <div class="page-header">
+                <h1 style="text-align: center; font-size: 25px; font-weight: bold;">                                    
+                    Pay Online for <span style="color: green;"><?= $merchant->name ?></span>
+                </h1>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <?php if (!empty($payment->note)) { ?>
+                        <h2 style="text-align: center; font-size: 22px; font-weight: bold; color: #004184;">                                    
+                            <?= $payment->note ?>
+                        </h2>
+                    <?php } ?>
+                    <div class="go-back-box">
+                        <?php if ($this->request->session()->read('Auth.User.id')) { ?>
+                            <a style="font-weight: bold;color: #155092;" href="<?= HTTP_ROOT ?>">Go Back To Dashboard</a>    
+                        <?php } ?>&nbsp;&nbsp; |&nbsp;&nbsp;
+                        <?php if ($this->request->session()->read('Auth.User.id')) { ?>
+                            <a style="font-weight: bold;color: #155092;" href="<?= 'customer/view-transactions/' . $payment->webfront->user->uniq_id; ?>">Payment History</a>    
+                        <?php } ?>
+                    </div><br>
+                    <form action="customer/payments/pay-now-redirect/<?= $payment->uniq_id ?>" role="form" class="form-horizontal ng-pristine ng-valid">
+                        <h2 style="font-size: 18px;">Customer Details </h2>
+                        <div class="content-main-area">
+                            <table style="width:100%">
+                                <tr>
+                                    <th><?= $payment->webfront->customer_name_alias ?></th>
+                                    <th><?= $payment->webfront->customer_email_alias ?></th> 
+                                    <th><?= $payment->webfront->customer_phone_alias ?> </th>
+                                    <?php
+                                    $payeeCustomFields = json_decode($payment->payee_custom_fields, TRUE);
+                                    if (count($payeeCustomFields) > 0) {
+                                        foreach ($payeeCustomFields as $payeeCustomField) {
+                                            ?>
+                                            <th><?= $payeeCustomField['field'] ?></th>                                            
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </tr>
+                                <tr>
+                                    <td><?= $payment->name ?></td>
+                                    <td><?= $payment->email ?></td>
+                                    <td><?= $payment->phone ?></td>
+                                    <?php
+                                    $payeeCustomFields = json_decode($payment->payee_custom_fields, TRUE);
+                                    if (count($payeeCustomFields) > 0) {
+                                        foreach ($payeeCustomFields as $payeeCustomField) {
+                                            ?>
+                                            <td><?= $payeeCustomField['value'] ?></td>                                            
+                                            <?php
+                                        }
+                                    }
+                                    ?>                                      
+                                </tr>   
+                            </table>
+                            <br>
+                            <h2 style="font-size: 18px;">Payment Details</h2>
+                            <table id="t01">
+                                <tr>
+                                    <th>Due Date</th>
+                                    <?php
+                                    $paymentCustomFields = json_decode($payment->payment_custom_fields, TRUE);
+                                    if (count($paymentCustomFields) > 0) {
+                                        foreach ($paymentCustomFields as $paymentCustomField) {
+                                            ?>
+                                            <th><?= $paymentCustomField['field'] ?></th>                                              
+                                            <?php
+                                        }
+                                    }
+                                    ?>                                      
+                                    <th>Total Amount </th>                                            
+                                    <th>Convenience Fee </th>                                            
+                                    <th>Late Fee </th>                                           
+                                    <?php if ($payment->status == 1) { ?> 
+                                        <th>Status </th>  
+                                    <?php } ?>
+                                </tr>
+                                <tr>
+                                    <td><?= date('M d, Y', strtotime($payment->uploaded_payment_file->payment_cycle_date)); ?></td>
+                                    <?php
+                                    $paymentCustomFields = json_decode($payment->payment_custom_fields, TRUE);
+                                    if (count($paymentCustomFields) > 0) {
+                                        foreach ($paymentCustomFields as $paymentCustomField) {
+                                            ?>
+                                            <td>Rs. <?= $paymentCustomField['value'] ?></td>                                          
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                    <td>Rs. <?= $payment->fee ?></td>
+                                    <td>Rs. <?= $payment->convenience_fee_amount ?></td>                                          
+                                    <td>Rs. <?= $late_fee_amount ?></td>                                         
+                                    <?php if ($payment->status == 1) { ?> 
+                                        <td style="color: green; font-weight: bold;">Paid</td>   
+                                    <?php } ?>
+                                </tr>
+                                <?php
+                                $colspan = 4 + count($paymentCustomFields) + (($payment->status == 1) ? 1 : 0);
+                                $colspanShow = $colspan - 1;
+                                ?>
+                                <tr>
+                                    <td colspan="<?= $colspanShow; ?>" style="color: #155092;font-weight: bold;font-size: 15px;text-align: right;">Net Bill Amount</td>
+                                    <td style="font-weight: bold;">Rs. <?= ($amount) ?></td>
+                                </tr>
+                            </table>        
                         </div>
-                    </div>
-                </div>   -->
+                        <?php if ($payment->status == 0) { ?>           
 
-        <div class="main-container ace-save-state container" id="main-container">
-
-            <?= $this->Flash->render() ?>  
-
-            <!-- /section:basics/sidebar -->
-            <div class="main-content">
-
-                <div id="navbar" class="navbar navbar-default ace-save-state" style="background: #bbb;">
-                    <div class="main-container ace-save-state container" id="main-container" style="background: #f1f1f1;">
-                        <div style="width: 100%; float: left;  padding: 10px;">
-                            <div style="width: 30%; float: left;"> <img style="margin-top: 20px;" src="img/logo/smarthub-logo.png" /></div>
-                            <div style="width: 40%; float: left; text-align: center;"><img style="width: 180px;" src="img/logo/web-info-mart-logo.png" /></div>
-                            <div style="width: 30%; float: left;"><img style="float:right; margin-top: 20px;" src="img/logo/hdfc-logo.png" /></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="main-content-inner">
-                    <!--  
-                    <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-                        <ul class="breadcrumb">
-                            <li>
-                                <i class="ace-icon fa fa-home home-icon"></i>
-                                <a href="javascript:;">Home</a>
-                            </li>
-                            <li>
-                                <a href="javascript:;"> Bills & payments </a>
-                            </li>
-                            <li>
-                                <a href="customer/#/payment-and-bills"> Upcoming Payments </a>
-                            </li>
-                            <li class="active"> Pay Now </li>
-                        </ul>                       
-                    </div>
-                    -->
-
-                    <!-- /section:basics/content.breadcrumbs -->
-                    <div class="page-content">    
-
-                        <?php if (date('Y-m-d') <= $payment->uploaded_payment_file->last_payment_date) { ?>
-
-                            <div class="page-header">
-                                <h1>
-                                    Make Payment               
-                                </h1>
-                            </div><!-- /.page-header -->
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <!-- PAGE CONTENT BEGINS -->
-                                    <form ng-init="viewPaymentDetail()" role="form" class="form-horizontal ng-pristine ng-valid">
-                                        <!-- #section:elements.form -->
-
-                                        <div class="form-group">
-                                            <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> Merchant : </label> 
-                                            <div class="col-sm-6 pull-left">                                
-                                                <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left;"> <?= $payment->merchant->name ?> </label>
-                                            </div>
-                                        </div> 
-
-                                        <div class="form-group">
-                                            <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> Merchant Note: </label> 
-                                            <div class="col-sm-6 pull-left">                                
-                                                <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left;"> <?= $payment->uploaded_payment_file->note ?>  </label>
-                                            </div>
-                                        </div>  
-
-                                        <div class="form-group">
-                                            <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> Customer Name : </label> 
-                                            <div class="col-sm-6 pull-left">                                
-                                                <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left;"> <?= $payment->name ?> </label>
-                                            </div>
+                            <div class="form-group">
+                                <div class="as-from-box">                                           
+                                    <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> &nbsp; </label> 
+                                    <div class="col-sm-6 control-label no-padding-right ng-binding" style="text-align: left; color: green; font-weight: bold;"> 
+                                        <div class="terms-box">
+                                            <input type="checkbox" value="1" required="required" />
+                                            <a href="javascript:;" onclick="NewWindow(siteUrl + 'term-and-conditions', 'Term & Conditions', 750, 600, true)">
+                                                <label style="font-weight: bold;">Accept Term & Conditions</label>
+                                            </a>
                                         </div>
+                                        <button type="submit"  class="btn btn-warning" style="margin:0 5px;">
+                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                            Pay Now
+                                        </button>              
 
-                                        <div class="form-group">
-                                            <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> Customer Email : </label> 
-                                            <div class="col-sm-6 pull-left">                                
-                                                <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left;"> <?= $payment->email ?> </label>
-                                            </div>
-                                        </div>                                    
+                                        <a href="<?= "webfronts/basic/" . $payment->webfront->url ?>" class="btn">
+                                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                                            Back
+                                        </a>
+                                    </div>       
 
-                                        <?php
-                                        $customFields = json_decode($payment->uploaded_payment_file->custom_fields);
-                                        $customFieldValues = json_decode($payment->custom_fields);
-                                        ?>
-                                        <?php if (count($customFields) > 0) { ?>
-                                            <?php foreach ($customFields as $key => $value) { ?>
-                                                <div class="form-group ng-scope">
-                                                    <label for="form-field-1" class="col-sm-3 control-label no-padding-right ng-binding"> <?= $value ?> : </label> 
-                                                    <div class="col-sm-6 pull-left">                                
-                                                        <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left;">Rs. <?= $customFieldValues->$key ?> </label>
-                                                    </div>
-                                                </div>
-                                            <?php } ?>
-                                        <?php } ?>
-
-
-                                        <div class="form-group">
-                                            <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> Due Date : </label> 
-                                            <div class="col-sm-6 pull-left">                                
-                                                <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left;"> <?= date('M d, Y', strtotime($payment->due_date)); ?> </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> Total Due : </label> 
-                                            <div class="col-sm-6 pull-left">                                
-                                                <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left;"> Rs. <?= $payment->total_fee ?> </label>
-                                            </div>
-                                        </div>
-
-                                        <?php if ($payment->status == 1) { ?>              
-                                            <div class="form-group">
-                                                <label for="form-field-1" class="col-sm-3 control-label no-padding-right"> Status : </label> 
-                                                <div class="col-sm-6 pull-left">                                
-                                                    <label for="form-field-1" class="col-sm-8 control-label no-padding-right ng-binding" style="text-align: left; color: green; font-weight: bold;"> Paid </label>
-                                                </div>
-                                            </div>
-                                        <?php } ?>
-
-                                        <?php if ($payment->status == 0) { ?>                                    
-                                            <div class="clearfix form-actions">
-                                                <div class="col-md-offset-3 col-md-9">
-                                                    <a href="customer/payments/pay-now-redirect/<?= $payment->uniq_id ?>" class="btn btn-info">
-                                                        <i class="ace-icon fa fa-check bigger-110"></i>
-                                                        Pay Now
-                                                    </a>
-                                                    &nbsp; &nbsp; &nbsp;
-                                                    <a href="customer/#/payment-and-bills" class="btn">
-                                                        <i class="ace-icon fa fa-undo bigger-110"></i>
-                                                        Cancel
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        <?php } ?>
-
-
-                                    </form>
-                                    <div class="hr hr-24"></div>
-                                </div><!-- /.col -->
-                            </div><!-- /.row -->     
-
-                        <?php } else { ?>
-
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <h1 style="text-align: center; color: #BC4A38;">Sorry!!. This payment link has been expired.</h1>
                                 </div>
                             </div>
 
                         <?php } ?>
-
-                    </div><!-- /.page-content -->
-                </div>
-            </div><!-- /.main-content -->
-
-            <?= $this->element('Customer/footer'); ?>
-
-            <a href="javascript:;" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-                <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-            </a>
-        </div><!-- /.main-container -->
-
-        <!--<script src="components/jquery/dist/jquery.js"></script>-->
-        <script src="components/bootstrap/dist/js/bootstrap.js"></script>
-
-        <script src="assets/js/src/ace.js"></script>
-        <script src="assets/js/src/ace.basics.js"></script>
-        <script src="assets/js/src/ace.sidebar.js"></script>
-
-        <!-- inline scripts related to this page -->
-        <script type="text/javascript">
-                                        jQuery(function ($) {
-                                            $('[data-rel=tooltip]').tooltip({container: 'body'});
-                                            $('[data-rel=popover]').popover({container: 'body'});
-                                        });
-        </script>
-    </body>
-</html>
-
-
+                    </form>
+                </div><!-- /.row -->     
+            </div><!-- /.row -->  
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->

@@ -3,8 +3,8 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>Dashboard</title>
-        <base href="<?= HTTP_ROOT; ?>" target="">
+        <title><?= SITE_NAME ?> : Merchant Panel</title>
+        <base href="<?= HTTP_ROOT; ?>" target="_self">
         <meta name="description" content="overview &amp; stats" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
@@ -20,7 +20,7 @@
 
         <link rel="stylesheet" href="assets/css/ace-skins.css" />
         <link rel="stylesheet" href="assets/css/ace-rtl.css" />
-
+        <link rel="stylesheet" href="assets/css/ace-themes.css" />
         <link href="plugins/custom-alert-master/dist/css/custom-alert.min.css" rel="stylesheet" type="text/css"/>
         <!-- inline styles related to this page -->
         <!-- ace settings handler -->
@@ -33,18 +33,26 @@
 
     <body class="skin-3 no-skin">
         <!-- #section:basics/navbar.layout -->
-        <?php echo $this->element('Merchant/header'); ?>        
+        <?php echo $this->element('Merchant/header'); ?>    
+
+        <!--Navbar Start-->
+        <div id="navbar" class="navbar navbar-default ace-save-state responsive-navbar">
+            <div class="navbar-container ace-save-state" id="navbar-container">                
+                <button type="button" class="navbar-toggle menu-toggler pull-left display" id="menu-toggler" data-target="#sidebar">
+                    <span class="sr-only">Toggle sidebar</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>   
+            </div><!-- /.navbar-container -->
+        </div>
+        <!--Navbar End-->
+
         <!-- /section:basics/navbar.layout -->
-        <div class="main-container ace-save-state container" id="main-container">
-            <script type="text/javascript">
-                try {
-                    ace.settings.loadState('main-container')
-                } catch (e) {
-                }
-            </script>
+        <div class="main-container ace-save-state" id="main-container">           
             <?= $this->Flash->render() ?>
             <?= $this->element('Merchant/sidebar'); ?>
-            <?= $this->fetch('content') ?>
+            <?= $this->fetch('content') ?>       
             <?= $this->element('footer'); ?>
             <a href="javascript:;" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
                 <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -59,13 +67,9 @@
         <script src="assets/js/src/ace.basics.js"></script>
         <script src="assets/js/src/ace.sidebar.js"></script>
 
+
         <!-- inline scripts related to this page -->
-        <script type="text/javascript">
-                jQuery(function ($) {
-                    $('[data-rel=tooltip]').tooltip({container: 'body'});
-                    $('[data-rel=popover]').popover({container: 'body'});
-                });
-        </script>
+        <script src="js/common.js"></script>
         <script src="plugins/custom-alert-master/dist/js/custom-alert.min.js"></script>    
     </body>
 </html>

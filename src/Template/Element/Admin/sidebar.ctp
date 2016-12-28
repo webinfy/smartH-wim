@@ -1,67 +1,39 @@
 <?php $paramAction = $this->request->params['action']; ?>
+<div id="sidebar" class="sidebar responsive ace-save-state" style="min-height: 600px;">
 
-<div id="sidebar" class="sidebar responsive ace-save-state">
-    <script type="text/javascript">
-        try {
-            ace.settings.loadState('sidebar')
-        } catch (e) {
-        }
-    </script>
-    <div class="sidebar-shortcuts" id="sidebar-shortcuts">
-        <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-            <a href="<?= HTTP_ROOT . "admin/#/dashboard" ?>" class="btn btn-success">               
-                <i class="ace-icon fa fa-signal"></i>                
-            </a>
-            <a href="<?= HTTP_ROOT . "admin/#/profile-setting" ?>" class="btn btn-info">               
-                <i class="ace-icon fa fa-pencil"></i>               
-            </a>
-            <a href="<?= HTTP_ROOT . "admin/#/view-payments" ?>" class="btn btn-warning">               
-               <i class="ace-icon fa fa-money"></i> <!--<i class="ace-icon fa fa-users"></i>-->               
-            </a>
-            <a href="<?= HTTP_ROOT . "admin/#/view-customers" ?>" class="btn btn-danger">               
-                <i class="ace-icon fa fa-user"></i><!--<i class="ace-icon fa fa-cogs"></i>-->          
-            </a>
-            <!-- /section:basics/sidebar.layout.shortcuts -->
-        </div>
+    <div class="profile-pic">
+        <!--<span class="img-section"><img src="img/profile-img.png" alt="" /></span>-->
+        <h3 class="profile-name">Hi <?= $loginDetails['name'] ?> </h3>
+        <div class="profile-login-info">Welcome to Admin Panel <br/>Last Login : <?= date('M d, Y H:i A', strtotime($loginDetails['last_login_date'])) ?></div>
+    </div>
 
-        <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-            <span class="btn btn-success"></span>
-            <span class="btn btn-info"></span>
-            <span class="btn btn-warning"></span>
-            <span class="btn btn-danger"></span>
-        </div>
-    </div><!-- /.sidebar-shortcuts -->
+    <!--<div class="sidebar-" style="background: #FFF; min-height: 9px;"> </div>-->
 
     <ul class="nav nav-list">
-
-        <li <?php if (in_array($paramAction, ['dasboard'])) { ?>  class="active open"  <?php } ?> >
-            <a href="<?php echo HTTP_ROOT . 'admin/#/dashboard'; ?>">
-                <i class="menu-icon fa fa-tachometer"></i>
+        <li class="nav-list-2 active open">
+            <a href="admin/#/dashboard">
+                <i class="menu-icon fa fa-dashboard"></i>
                 <span class="menu-text"> Dashboard </span>
             </a>
-        </li>    
+        </li> 
 
-
-        <li <?php if (in_array($paramAction, ['changePassword', 'profileSetting'])) { ?>  class="active open"  <?php } ?> >
+        <li class="nav-list-2">
             <a href="javascript:;" class="dropdown-toggle">
-                <i class="menu-icon fa fa-pencil-square-o"></i>
+                <i class="menu-icon fa fa-list"></i>
                 <span class="menu-text">  Account Setup </span>
                 <b class="arrow fa fa-angle-down"></b>
             </a>
-
             <b class="arrow"></b>
-
-            <ul class="submenu">  
-                <li class="<?php if (in_array($paramAction, ['profileSetting'])) { ?>  active  <?php } ?>">
-                    <a href="<?php echo HTTP_ROOT . 'admin/#/profile-setting'; ?>">
+            <ul class="submenu">
+                <li class="">
+                    <a href="admin/#/profile-setting">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Profile Setting
                     </a>
                     <b class="arrow"></b>
                 </li>
-
-                <li class="<?php if (in_array($paramAction, ['changePassword'])) { ?>  active  <?php } ?>">
-                    <a href="<?php echo HTTP_ROOT . 'admin/#/change-password'; ?>">
+                <li class="">
+                    <a href="admin/#/change-password">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Change Password 
                     </a>
@@ -69,115 +41,101 @@
                 </li>
 
             </ul>
-        </li>
-
-        <li <?php if (in_array($paramAction, ['addBranchAdmin', 'branchAdminListing'])) { ?>  class="active open"  <?php } ?> >
-            <a href="javascript:;" class="dropdown-toggle">
-                <i class="menu-icon fa fa-list"></i>
-                <span class="menu-text"> Branch Admins </span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-                <li class="<?php if (in_array($paramAction, ['addBranchAdmin'])) { ?>  active   <?php } ?>">
-                    <a href="<?php echo HTTP_ROOT . 'admin/#/add-branch-admin'; ?>">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Add Branch Admin
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="<?php if (in_array($paramAction, ['branchAdminListing', 'viewMerchants'])) { ?>  active  <?php } ?>">
-                    <a href="<?php echo HTTP_ROOT . 'admin/#/branch-admin-listing'; ?>">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        View All Branch Admin
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-
-        <!--
-        <li <?php if (in_array($paramAction, ['viewMerchants'])) { ?>  class="active open"  <?php } ?> >
-            <a href="javascript:;" class="dropdown-toggle">
-                <i class="menu-icon fa fa-shopping-cart"></i>
-                <span class="menu-text"> Merchants </span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-                <li class="<?php if (in_array($paramAction, ['viewMerchants'])) { ?>  active  <?php } ?>">
-                    <a href="<?php echo HTTP_ROOT . 'admin/#/view-merchants'; ?>">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        View Merchants
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-        -->
-
-        <li <?php if (in_array($paramAction, ['viewMerchants'])) { ?>  class="active open"  <?php } ?> >
-            <a href="<?php echo HTTP_ROOT . 'admin/#/view-merchants'; ?>" class="dropdown-toggleXX">
-                <i class="menu-icon fa fa-shopping-cart"></i>
-                <span class="menu-text"> Merchants </span>
-                <b class="arrow fa"></b>
-            </a>             
-        </li>
-
-
-        <!--        
-        <li <?php if (in_array($paramAction, ['viewCustomers'])) { ?>  class="active open"  <?php } ?> >
-               <a href="javascript:;" class="dropdown-toggle">
-                   <i class="menu-icon fa fa-user"></i>
-                   <span class="menu-text"> Customers </span>
-                   <b class="arrow fa fa-angle-down"></b>
-               </a>
-               <b class="arrow"></b>
-               <ul class="submenu">
-                   <li class="<?php if (in_array($paramAction, ['viewCustomers'])) { ?>  active  <?php } ?>">
-                       <a href="<?php echo HTTP_ROOT . 'admin/#/view-customers'; ?>">
-                           <i class="menu-icon fa fa-caret-right"></i>
-                           View Customers
-                       </a>
-                       <b class="arrow"></b>
-                   </li>
-               </ul>
-           </li>
-        -->
-
-        <li <?php if (in_array($paramAction, ['viewCustomers'])) { ?>  class="active open"  <?php } ?> >
-            <a href="<?php echo HTTP_ROOT . 'admin/#/view-customers'; ?>" class="dropdown-toggleXX">
-                <i class="menu-icon fa fa-user"></i>
-                <span class="menu-text"> Customers </span>
-                <b class="arrow fa"></b>
-            </a>             
-        </li>
-
-
-
-        <li <?php if (in_array($paramAction, ['transactions'])) { ?>  class="active open"  <?php } ?> >
-            <a href="<?php echo HTTP_ROOT . 'admin/#/view-payments'; ?>" class="dropdown-toggleXX">
-                <i class="menu-icon fa fa-money"></i>
-                <span class="menu-text"> Payments </span>
-                <b class="arrow fa"></b>
-            </a>             
-        </li>
+        </li>      
 
         <li>
-            <a href="<?php echo HTTP_ROOT . 'logout'; ?>">
+            <a href="javascript:;" class="dropdown-toggle">
+                <i class="menu-icon fa fa-user"></i>
+                <span class="menu-text"> Manage Merchant </span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+                <li>
+                    <a href="<?php echo HTTP_ROOT . 'admin/#/add-new-merchant'; ?>">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Add New Merchant
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+                <li>
+                    <a href="<?php echo HTTP_ROOT . 'admin/#/view-all-merchant'; ?>">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        View All Merchant
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>    
+
+        <li>
+            <a href="javascript:;" class="dropdown-toggle">
+                <i class="menu-icon fa fa-user"></i>
+                <span class="menu-text"> Manage Sub-Merchant </span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+                <li>
+                    <a href="admin/#/add-new-submerchant">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Add New Sub-Merchant
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+                <li>
+                    <a href="admin/#/view-all-submerchant">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        View All Sub-Merchant
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>  
+
+        <li class="nav-list-2">
+            <a href="javascript:;" class="dropdown-toggle">
+                <i class="menu-icon fa fa-dollar"></i>
+                <span class="menu-text">  Split Settlement Mapping </span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+                <li class="">
+                    <a href="admin/#/split-settlement-mapping">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Add New Split Settlement
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="admin/#/split-settlement-mapping-list">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        View Split Settlements 
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>   
+        
+        <li>
+            <a href="logout">
                 <i class="menu-icon fa fa-power-off"></i>
                 <span class="menu-text"> Logout </span>
             </a>
         </li>
 
+        <!--<li style="background: #BBBBBB; border: none;">&nbsp;</li>-->
+
     </ul>
+
     <!-- /.nav-list -->
 
-    <!-- #section:basics/sidebar.layout.minimize -->
+    <!--
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
         <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
     </div>
+    -->
 
-    <!-- /section:basics/sidebar.layout.minimize -->
 </div>

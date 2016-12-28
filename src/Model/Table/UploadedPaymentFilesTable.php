@@ -13,47 +13,43 @@ class UploadedPaymentFilesTable extends Table {
         parent::initialize($config);
 
         $this->table('uploaded_payment_files');
-        $this->displayField('title');
+        $this->displayField('id');
+        $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
-       
 
-//        $this->belongsTo('UserDetails', [
-//            'bindingKey' => 'user_id',
-//            'foreignKey' => 'merchant_id',
-//            'joinType' => 'INNER'
-//        ]);
+        $this->addBehavior('CounterCache', [
+            'Webfronts' => ['uploaded_payment_file_count']
+        ]);
+
+        $this->belongsTo('Webfronts', [
+            'foreignKey' => 'webfront_id',
+            'joinType' => 'INNER'
+        ]);
 
         $this->hasMany('Payments', [
-            'foreignKey' => 'uploaded_payment_file_id',
             'dependent' => TRUE
         ]);
     }
 
     public function validationDefault(Validator $validator) {
 
-        $validator
-                ->requirePresence('title', 'create')
-                ->notEmpty('title');
 
         $validator
-                ->requirePresence('note', 'create')
-                ->notEmpty('note');
+                ->date('payment_cycle_date')
+                ->notEmpty('payment_cycle_date');
+
+        $validator
+                ->requirePresence('file', 'create')
+                ->notEmpty('file');
+
 
         return $validator;
     }
 
-//    public function buildRules(RulesChecker $rules) {
-//        $rules->add($rules->existsIn(['merchant_id'], 'Users'));
-//        return $rules;
-//    }
-
-    public function beforeDelete($event, $entity, $options) {
-        /**
-         * Desc : Delete all payments        
-         */
-//        echo $entity->id;exit;
-        return TRUE;
+    public function buildRules(RulesChecker $rules) {
+        $rules->add($rules->existsIn(['webfront_id'], 'Webfronts'));
+        return $rules;
     }
 
 }

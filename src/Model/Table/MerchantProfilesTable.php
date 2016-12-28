@@ -19,16 +19,22 @@ class MerchantProfilesTable extends Table {
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
+            'foreignKey' => 'merchant_id',
             'joinType' => 'INNER'
         ]);
     }
 
+    public function beforeDelete($event, $entity, $options) {
+        if (is_file(WWW_ROOT . MERCHANT_LOGO . $entity->logo) && file_exists(WWW_ROOT . MERCHANT_LOGO . $entity->logo)) {
+            unlink(WWW_ROOT . MERCHANT_LOGO . $entity->logo);
+        }
+    }
+
     public function validationDefault(Validator $validator) {
 
-        $validator
-                ->requirePresence('logo', 'create')
-                ->notEmpty('logo');
+//        $validator
+//                ->requirePresence('logo', 'create')
+//                ->notEmpty('logo');
 
         return $validator;
     }

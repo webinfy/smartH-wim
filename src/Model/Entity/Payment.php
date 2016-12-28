@@ -7,20 +7,26 @@ use Cake\ORM\Entity;
  * Payment Entity
  *
  * @property int $id
- * @property int $uploaded_payment_file_id
- * @property int $user_id
- * @property int $customerid
+ * @property string $uniq_id
+ * @property int $webfront_id
+ * @property int $customer_id
  * @property string $name
  * @property string $email
  * @property string $phone
- * @property string $custom_fields
- * @property float $total_fee
+ * @property string $payee_custom_fields
+ * @property float $convenience_fee_amount
+ * @property float $late_fee_amount
+ * @property float $fee
+ * @property string $payment_custom_fields
  * @property int $status
- * @property \Cake\I18n\Time $due_date
  * @property \Cake\I18n\Time $payment_date
+ * @property int $followup_counter
+ * @property \Cake\I18n\Time $created
+ * @property \Cake\I18n\Time $modified
  *
- * @property \App\Model\Entity\UploadedPaymentFile $uploaded_payment_file
- * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\Uniq $uniq
+ * @property \App\Model\Entity\Webfront $webfront
+ * @property \App\Model\Entity\Customer $customer
  */
 class Payment extends Entity
 {

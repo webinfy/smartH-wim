@@ -1,106 +1,57 @@
 <!-- /section:basics/sidebar -->
-<div class="main-content">
-    <div class="main-content-inner">
-        <!-- #section:basics/content.breadcrumbs -->
-        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-            <ul class="breadcrumb">
-                <li>
-                    <i class="ace-icon fa fa-home home-icon"></i>
-                    <a href="javascript:;">Home</a>
-                </li>
-                <li>
-                    <a href="javascript:;">Account Setup </a>
-                </li>
-                <li class="active"> Profile Setting </li>
-            </ul><!-- /.breadcrumb -->
-            <!-- #section:basics/content.searchbox -->
-            <div class="nav-search" id="nav-search">
-                <form class="form-search">
-                    <span class="input-icon">
-                        <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
-                        <i class="ace-icon fa fa-search nav-search-icon"></i>
-                    </span>
-                </form>
-            </div><!-- /.nav-search -->
-
-            <!-- /section:basics/content.searchbox -->
-        </div>
-
-        <!-- /section:basics/content.breadcrumbs -->
-        <div class="page-content">
-            <!-- #section:settings.box -->
-
-            <!-- /section:settings.box -->
-            <div class="page-header">
-                <h1>
-                    Profile Setting                         
-                </h1>
-            </div><!-- /.page-header -->
-
+<div class="main-content" style="background: #CCC;">
+    <div class="main-content-inner">        
+        <div class="page-content">   
             <div class="row">
+
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Profile Setting                     
+                    </h1>                    
+                </div>                
+
                 <div class="col-xs-12">
-                    <!-- PAGE CONTENT BEGINS -->
-                    <form class="form-horizontal" action="" ng-init="fillAdminDetails()">
-                        <!-- #section:elements.form -->
+                    <div class="content-main-area" style="padding: 20px;">
 
-                        <div class="alert alert-danger" id="error-msg" style="display: none;">
-                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
-                            <p><i class="ace-icon fa fa-times"></i> Some Error Occured. Please try again.</p>                            
-                        </div>
+                        <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
 
-                        <div class="alert alert-success" id="success-msg" style="display: none;">
-                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
-                            <p><i class="ace-icon fa fa-check"></i>&nbsp;Profile updated successfully!!.</p>                            
-                        </div>
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form name="userForm" class="form-horizontal" action="" ng-init="fillAdminDetails()">
+                            <!-- #section:elements.form -->
 
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Name </label>
-                            <div class="col-sm-9">
-                                <input type="text" id="form-field-1" placeholder="Name" ng-model="user.admin.name" class="col-xs-10 col-sm-5" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Name  <span style="color: red;">*</span> :</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="form-field-1" placeholder="Name" ng-model="user.name" class="col-xs-10 col-sm-5" required="required"/>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email </label>
-                            <div class="col-sm-9">
-                                <input type="email" id="form-field-1" placeholder="Email" ng-model="user.email" class="col-xs-10 col-sm-5" required="required" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Email  <span style="color: red;">*</span> :</label>
+                                <div class="col-sm-9">
+                                    <input type="email" id="form-field-1" placeholder="Email" ng-model="user.email" class="col-xs-10 col-sm-5" required="required" />
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Phone </label>
-                            <div class="col-sm-9">
-                                <input type="text" id="form-field-1" placeholder="Phone No." ng-model="user.admin.phone" class="col-xs-10 col-sm-5" />
-                            </div>
-                        </div>                                     
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Phone  <span style="color: red;">*</span> :</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="form-field-1" placeholder="Phone No." ng-model="user.phone" class="col-xs-10 col-sm-5" required="required"/>
+                                </div>
+                            </div>  
 
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Address </label>
-                            <div class="col-sm-9">                                           
-                                <textarea class="col-xs-20 col-sm-5" placeholder="Address" ng-model="user.admin.address" style="padding-left: 5px;"></textarea>
-                            </div>
-                        </div>
+                            <div class="form-group" style="margin: 15px 0;">
+                                <div class="col-md-offset-3 col-md-9"> 
+                                    <button class="btn btn-info" ng-disabled="!userForm.$valid" ng-click="updateAdminProfile()" type="button"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>  &nbsp; &nbsp; &nbsp;
+                                    <a class="btn" href="admin/#/dashboard"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                                </div>
+                            </div>                                    
 
+                        </form>
 
-                        <div class="clearfix form-actions">
-                            <div class="col-md-offset-3 col-md-9">
-                                <button class="btn btn-info" type="button" ng-click="updateAdminProfile()">
-                                    <i class="ace-icon fa fa-check bigger-110"></i>
-                                    Submit
-                                </button>
-
-                                &nbsp; &nbsp; &nbsp;
-                                <button class="btn" type="reset">
-                                    <i class="ace-icon fa fa-undo bigger-110"></i>
-                                    Reset
-                                </button>
-                            </div>
-                        </div>
-
-                    </form>
-
-                    <!-- PAGE CONTENT ENDS -->
-                </div><!-- /.col -->
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
             </div><!-- /.row -->
         </div><!-- /.page-content -->
     </div>

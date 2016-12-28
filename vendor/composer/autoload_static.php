@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
+class ComposerStaticInit6cfc51de091bea498577b19dacf296b2
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -18,6 +18,14 @@ class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
     );
 
     public static $prefixLengthsPsr4 = array (
+        'c' => 
+        array (
+            'cURL\\' => 5,
+        ),
+        'Z' => 
+        array (
+            'Zend\\Diactoros\\' => 15,
+        ),
         'X' => 
         array (
             'XdgBaseDir\\' => 11,
@@ -28,12 +36,15 @@ class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\Filesystem\\' => 29,
+            'Symfony\\Component\\EventDispatcher\\' => 34,
+            'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
         ),
         'P' => 
         array (
             'Psy\\' => 4,
+            'Psr\\Http\\Message\\' => 17,
             'PhpParser\\' => 10,
             'Phinx\\' => 6,
         ),
@@ -66,6 +77,14 @@ class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
     );
 
     public static $prefixDirsPsr4 = array (
+        'cURL\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stil/curl-easy/src',
+        ),
+        'Zend\\Diactoros\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-diactoros/src',
+        ),
         'XdgBaseDir\\' => 
         array (
             0 => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src',
@@ -86,6 +105,14 @@ class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
+        'Symfony\\Component\\EventDispatcher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
+        ),
+        'Symfony\\Component\\Debug\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/debug',
+        ),
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
@@ -97,6 +124,10 @@ class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
         'Psy\\' => 
         array (
             0 => __DIR__ . '/..' . '/psy/psysh/src/Psy',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'PhpParser\\' => 
         array (
@@ -159,6 +190,10 @@ class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
             array (
                 0 => __DIR__ . '/..' . '/psr/log',
             ),
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
         ),
         'J' => 
         array (
@@ -199,10 +234,10 @@ class ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitbb1dcc3d0a78e537f2f79d9383998527::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6cfc51de091bea498577b19dacf296b2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6cfc51de091bea498577b19dacf296b2::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit6cfc51de091bea498577b19dacf296b2::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit6cfc51de091bea498577b19dacf296b2::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -12,7 +12,7 @@ endif;
 
 $counter = $this->Paginator->counter('Showing {{start}} to {{end}} of {{count}} entries');
 
-echo json_encode(['status' => 'success', 'payments' => $payments, 'file' => $uploadedPaymentFile, 'paging' => $pagingLinks, 'counter' => $counter]);
+echo json_encode(['status' => 'success', 'payments' => $payments, 'webfront' => $webfront, 'paging' => $pagingLinks, 'counter' => $counter]);
 //} else {
 //    echo json_encode(['status' => 'error']);
 //}

@@ -16,71 +16,329 @@ class PaymentsController extends AppController {
         $this->loadComponent('Custom');
 
         $this->loadModel('Users');
-        $this->loadModel('UploadedPaymentFiles');
+        $this->loadModel('AdminSettings');
         $this->loadModel('MailTemplates');
+        $this->loadModel('Webfronts');
+        $this->loadModel('UploadedPaymentFiles');
+        $this->loadModel('WebfrontFields');
+        $this->loadModel('WebfrontFieldValues');
+        $this->loadModel('WebfrontPaymentAttributes');
     }
 
     public function beforeFilter(Event $event) {
         $this->viewBuilder()->layout('ajax');
-        $this->Auth->allow(['importPaymentsInBackground']);
+//$this->Auth->allow(['']);
     }
 
-    public function downloadReport($id = null) {
-        $query = $this->UploadedPaymentFiles->find()->where(['id' => $id]);
-        if ($query->count() > 0) {
-            $uploadedPaymentFile = $query->first();
-            $payments = $this->Payments->find('all')->where(['uploaded_payment_file_id' => $uploadedPaymentFile['id']])->toArray();
+    public function webfrontReport($id = NULL, $option = 0) {
 
-            require_once(ROOT . DS . 'vendor' . DS . 'phpexcel' . DS . 'index.php');
-            $file = downloadReport($payments, $uploadedPaymentFile);
-            $filePath = WWW_ROOT . "temp_excel/" . $file;
-            $this->response->file($filePath, ['download' => TRUE, 'name' => $file]);
-            return $this->response;
-        } else {
-            $this->redirect($this->referer());
+        $conditions[] = ['Payments.webfront_id' => $id];
+        if ($option == 1) {
+            $conditions[] = ['Payments.status' => 1];
+        } else if ($option == 2) {
+            $conditions[] = ['Payments.status' => 0];
         }
+
+        $webfront = $this->Webfronts->find('all')->where(['Webfronts.id' => $id])->contain(['Users.MerchantProfiles'])->first();
+        $payments = $this->Payments->find('all')->where($conditions)->limit(1000);
+
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $style = [
+            'alignment' => [
+                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+            ]
+        ];
+
+        $objPHPExcel->getActiveSheet()->getStyle('A1:L1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A1:B1")->applyFromArray($style);
+        $objPHPExcel->getActiveSheet()->getStyle("D1:D1")->applyFromArray($style);
+        $objPHPExcel->getActiveSheet()->getStyle("F1:L1")->applyFromArray($style);
+
+        foreach (range('A', 'K') as $columnID) {
+            $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+        }
+///SetHeading//  
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', "Sr.No.");
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', "Flat/Shop No");
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', "First Holder");
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', "Invoice Number");
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', "Email Id");
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', "Mobile No");
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', "Total Amt");
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', "Payment Date");
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', "Payment Id");
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', "Paid Amount");
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', "Transaction Id");
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', "Mode");
+//Set Content
+        $rowCount = 2;
+        foreach ($payments as $payment) {
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, ($rowCount - 1));
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $webfront->user->merchant_profile->regd_no);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $payment->name);
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $payment->id);
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $payment->email);
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $payment->phone);
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $payment->fee);
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, $payment->payment_date);
+            //Below filed will be used for Paid Payments
+            $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $payment->id);
+            $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $payment->paid_amount);
+            $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, $payment->txn_id);
+            $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowCount, $payment->mode);
+            //Apply Style
+            $objPHPExcel->getActiveSheet()->getStyle("A$rowCount:B$rowCount")->applyFromArray($style);
+            $objPHPExcel->getActiveSheet()->getStyle("D$rowCount:D$rowCount")->applyFromArray($style);
+            $objPHPExcel->getActiveSheet()->getStyle("F$rowCount:L$rowCount")->applyFromArray($style);
+
+            $rowCount++;
+        }
+
+        $filename = "Transaction-Report-" . time() . ".xlsx";
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save("files/reports/$filename");
+
+        if (ob_get_contents()) {
+            ob_end_clean();
+        }
+
+        $filePath = 'files/reports/' . $filename;
+        $size = filesize($filePath);
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Content-Transfer-Encoding: binary');
+        header('Connection: Keep-Alive');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . $size);
+        readfile($filePath);
+
+        $file = new \Cake\Filesystem\File($filePath);
+        $file->delete();
+        exit();
     }
 
-    public function importPaymentsInBackground($id, $file) {
-        $this->viewBuilder()->layout('');
-        $paymentShell = new \App\Shell\PaymentShell;
-        $paymentShell->importPayments($id, $file);
+    public function downloadReport($fileId = NULL, $option = 0) {
+
+        $conditions[] = ['Payments.uploaded_payment_file_id' => $fileId];
+        if ($option == 1) {
+            $conditions[] = ['Payments.status' => 1];
+        } else if ($option == 2) {
+            $conditions[] = ['Payments.status' => 0];
+        }
+        $uploadedPaymentFile = $this->UploadedPaymentFiles->find('all')->where(['UploadedPaymentFiles.id' => $fileId])->contain(['Webfronts.Users.MerchantProfiles'])->first();
+        $payments = $this->Payments->find('all')->where($conditions)->limit(5000);
+
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $style = [
+            'alignment' => [
+                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+            ]
+        ];
+
+        $objPHPExcel->getActiveSheet()->getStyle('A1:L1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A1:B1")->applyFromArray($style);
+        $objPHPExcel->getActiveSheet()->getStyle("D1:D1")->applyFromArray($style);
+        $objPHPExcel->getActiveSheet()->getStyle("F1:L1")->applyFromArray($style);
+
+        foreach (range('A', 'K') as $columnID) {
+            $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+        }
+        /* SetHeading */
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', "Sr.No.");
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', "Flat/Shop No");
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', "First Holder");
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', "Invoice Number");
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', "Email Id");
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', "Mobile No");
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', "Total Amt");
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', "Payment Date");
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', "Payment Id");
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', "Paid Amount");
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', "Transaction Id");
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', "Mode");
+        /* Set Content */
+        $rowCount = 2;
+        foreach ($payments as $payment) {
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, ($rowCount - 1));
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $uploadedPaymentFile->webfront->user->merchant_profile->regd_no);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $payment->name);
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $payment->id);
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $payment->email);
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $payment->phone);
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $payment->fee);
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, $payment->payment_date);
+            /* Below filed will be used for Paid Payments */
+            $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $payment->id);
+            $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $payment->paid_amount);
+            $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, $payment->txn_id);
+            $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowCount, $payment->mode);
+            /* Apply Style */
+            $objPHPExcel->getActiveSheet()->getStyle("A$rowCount:B$rowCount")->applyFromArray($style);
+            $objPHPExcel->getActiveSheet()->getStyle("D$rowCount:D$rowCount")->applyFromArray($style);
+            $objPHPExcel->getActiveSheet()->getStyle("F$rowCount:L$rowCount")->applyFromArray($style);
+
+            $rowCount++;
+        }
+
+        $filename = "Transaction-Report-" . time() . ".xlsx";
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save("files/reports/$filename");
+
+        if (ob_get_contents()) {
+            ob_end_clean();
+        }
+
+        $filePath = 'files/reports/' . $filename;
+        $size = filesize($filePath);
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Content-Transfer-Encoding: binary');
+        header('Connection: Keep-Alive');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . $size);
+        readfile($filePath);
+
+        $file = new \Cake\Filesystem\File($filePath);
+        $file->delete();
+        exit();
+    }
+
+    public function ajaxUploadReuse($webfrontId = NULL) {
+        $data = $this->request->data;
+        $paymentCycleDate = $data['payment_cycle_date'];
+        if ($paymentCycleDate == '') {
+            echo json_encode(['status' => 'error', 'msg' => 'Please enter payment cycle date!!']);
+            exit;
+        }
+        if ($paymentCycleDate <= date('Y-m-d')) {
+            echo json_encode(['status' => 'error', 'msg' => 'Payment cycle date must be greater than current date!!']);
+            exit;
+        }
+        $getUploadedPaymentFile = $this->UploadedPaymentFiles->get($data['id']);
+        $uploadedPaymentFile = $this->UploadedPaymentFiles->newEntity();
+        $uploadedPaymentFile->webfront_id = $getUploadedPaymentFile->webfront_id;
+        $uploadedPaymentFile->payment_cycle_date = $data['payment_cycle_date'];
+        $uploadedPaymentFile->file = $getUploadedPaymentFile->file;
+        if ($this->UploadedPaymentFiles->save($uploadedPaymentFile)) {
+            $getPayments = $this->Payments->find('all')->where(['uploaded_payment_file_id' => $data['id']]);
+            foreach ($getPayments as $getPayment) {
+                $payment = $this->Payments->newEntity();
+                $payment->uniq_id = $this->Custom->generateUniqId();
+                $payment->webfront_id = $uploadedPaymentFile->webfront_id;
+                $payment->uploaded_payment_file_id = $uploadedPaymentFile->id;
+                $payment->customer_id = $getPayment->customer_id;
+                $payment->name = $getPayment->name;
+                $payment->email = $getPayment->email;
+                $payment->phone = $getPayment->phone;
+                $payment->payee_custom_fields = $getPayment->payee_custom_fields;
+                $payment->convenience_fee_amount = $getPayment->convenience_fee_amount;
+                $payment->late_fee_amount = $getPayment->late_fee_amount;
+                $payment->fee = $getPayment->fee;
+                $payment->payment_custom_fields = $getPayment->payment_custom_fields;
+                $this->Payments->save($payment);
+            }
+
+            $url = HTTP_ROOT . "merchant/webfronts/sendEmailInBackground/{$uploadedPaymentFile->id}";
+            $request = new \cURL\Request($url);
+            $request->getOptions()
+                    ->set(CURLOPT_TIMEOUT, 5)
+                    ->set(CURLOPT_RETURNTRANSFER, true);
+            while ($request->socketPerform()) {
+                $request->socketSelect();
+            }
+
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'msg' => 'Some error occured. Please try gain!!']);
+        }
         exit;
     }
 
-    public function updateExcel() {
-        $this->viewBuilder()->layout('');
-        if ($this->request->is('post')) {
-            $data = $this->request->data;
+    public function ajaxViewUploads($webfrontId = NULL) {
+        $conditions = ['UploadedPaymentFiles.webfront_id' => $webfrontId];
+        $webfront = $this->Webfronts->get($webfrontId);
+        $uploadedPaymentFiles = $this->UploadedPaymentFiles->find('all')->where($conditions)->order(['UploadedPaymentFiles.id' => 'DESC']);
+        echo json_encode(['status' => 'success', 'data' => ['uploaded_payment_files' => $uploadedPaymentFiles, 'webfront' => $webfront]]);
+        exit;
+    }
 
-            $ext = pathinfo($data["file"]["name"], PATHINFO_EXTENSION);
-            if (empty($data["file"]["name"])) {
-                $this->Flash->error(__('Please select file for import.'));
-            } else if (!in_array($ext, ['xls', 'xlsx', 'csv'])) {
-                $this->Flash->error(__('Please select excel file only.'));
-            } else {
-//                $fileName = time() . "_" . basename($data["file"]["name"]);
-                $fileName = md5(uniqid(rand()) . time()) . "-" . basename($data["file"]["name"]);
-                $targetFile = TEMP_EXCEL . $fileName;
-                move_uploaded_file($data["file"]["tmp_name"], $targetFile);
+    public function ajaxDeleteUploadedFile($id = NULL) {
+        $entity = $this->UploadedPaymentFiles->get($id);
+        if ($this->UploadedPaymentFiles->delete($entity)) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'msg' => 'Some error occured.Please try again!!.']);
+        }
+        exit;
+    }
 
-                if (file_exists($targetFile)) {
-                    $this->UploadedPaymentFiles->query()->update()->set(["upload_completed" => 0])->where(['id' => $data['id']])->execute();
-                    $file = urlencode($fileName);
-                    $url = HTTP_ROOT . "merchant/payments/importPaymentsInBackground/" . $data['id'] . "/" . $file;
-                    require_once(ROOT . DS . 'vendor' . DS . 'curleasy' . DS . 'index.php');
-                    asynCurl($url);
-                }
+    public function ajaxAdvanceWebfrontPayments($webfrontId = NULL) {
+        $data = $this->request->data;
+        $conditions = ['webfront_id' => $webfrontId];
+        if (isset($data['status']) && $data['status'] == 'paid') {
+            $conditions[] = ['Payments.status' => 1];
+        } else if (isset($data['status']) && $data['status'] == 'unpaid') {
+            $conditions[] = ['Payments.status' => 0];
+        }
+        $payments = $this->Payments->find()->where($conditions);
+        $webfront = $this->Webfronts->find('all')->where(['Webfronts.id' => $webfrontId])->first();
+        echo json_encode(['status' => 'success', 'payments' => $payments, 'webfront' => $webfront]);
+        exit;
+    }
 
-                $this->Flash->success(__("New payments are updated successfully."));
+    public function ajaxViewPayments($uploadedPaymentFileId = NULL) {
+        $data = $this->request->data;
+        $conditions = ['uploaded_payment_file_id' => $uploadedPaymentFileId];
+        $page = !empty($data['page']) ? $data['page'] : 1;
+        if (!empty($data['searchby'])) {
+            $searchby = strtolower(urldecode($data['searchby']));
+            $keyword = urldecode($data['keyword']);
+            if ($searchby == 'name') {
+                $conditions[] = ['Payments.name LIKE' => "%" . $keyword . "%"];
+            } else if ($searchby == 'email') {
+                $conditions[] = ['Payments.email LIKE' => "%" . $keyword . "%"];
+            } else if ($searchby == 'phone') {
+                $conditions[] = ['Payments.phone LIKE' => "%" . $keyword . "%"];
             }
         }
-        return $this->redirect(HTTP_ROOT . "merchant/#/view-payment-files");
+        if ($data['status'] == 'paid') {
+            $conditions[] = ['Payments.status' => 1];
+        } else if ($data['status'] == 'unpaid') {
+            $conditions[] = ['Payments.status' => 0];
+        }
+
+        $order = ['Payments.id' => 'ASC'];
+        $config = [
+            'limit' => 20,
+            'order' => $order,
+            'contain' => [],
+            'conditions' => $conditions,
+            'page' => !empty($page) ? $page : 1,
+            'contain' => ['UploadedPaymentFiles']
+        ];
+        $payments = $this->Paginator->paginate($this->Payments->find(), $config);
+
+        $webfrontId = $this->UploadedPaymentFiles->find()->where(['id' => $uploadedPaymentFileId])->first()->webfront_id;
+        $webfront = $this->Webfronts->find('all')->where(['Webfronts.id' => $webfrontId])->first();
+        $webfront->customer_fields = $this->WebfrontFields->find('all')->where(['webfront_id' => $webfront->id]);
+        $webfront->payment_fields = $this->WebfrontPaymentAttributes->find('all')->where(['webfront_id' => $webfront->id]);
+
+        $this->set(compact('payments', 'webfront'));
     }
 
     public function ajaxDeletePayment($uniq_id) {
         $this->viewBuilder()->layout('ajax');
-        $query = $this->Payments->find()->where(['Payments.uniq_id' => $uniq_id, 'merchant_id' => $this->Auth->user('id')]);
+        $query = $this->Payments->find()->where(['Payments.uniq_id' => $uniq_id, 'Payments.status' => 0]);
         if ($query->count() <= 0) {
             echo json_encode(['status' => 'error']);
             exit;
@@ -94,324 +352,134 @@ class PaymentsController extends AppController {
         exit;
     }
 
-    public function ajaxImportPayments() {
+    public function ajaxDeleteSelectedPayments() {
         $this->viewBuilder()->layout('ajax');
         $data = $this->request->data;
-
-        $ext = pathinfo($data["file"]["name"], PATHINFO_EXTENSION);
-        if (empty($data["file"]["name"])) {
-            $this->Flash->error(__('Please select file for import.'));
-        } else if (!in_array($ext, ['xls', 'xlsx', 'csv'])) {
-            $this->Flash->error(__('Please select excel file only.'));
-        } else {
-            $fileName = md5(uniqid(rand())) . "-" . basename($data["file"]["name"]);
-            $targetFile = TEMP_EXCEL . $fileName;
-            move_uploaded_file($data["file"]["tmp_name"], $targetFile);
-
-            $uploadedPaymentFile = $this->UploadedPaymentFiles->newEntity();
-            $uploadedPaymentFile->merchant_id = $this->Auth->user('id');
-            $uploadedPaymentFile->file = $fileName;
-            $uploadedPaymentFile->title = $data['file']['name'];
-            $uploadedPaymentFile->note = $data['note'];
-            $uploadedPaymentFile->last_payment_date = date_format(date_create($data['last_payment_date']), "Y-m-d");
-            $uploadedPaymentFile->created = date("Y-m-d H:i:s");
-
-            if ($this->UploadedPaymentFiles->save($uploadedPaymentFile)) {
-                $file = urlencode($uploadedPaymentFile->file);
-                $url = HTTP_ROOT . "merchant/payments/importPaymentsInBackground/" . $uploadedPaymentFile->id . "/" . $file;
-                require_once(ROOT . DS . 'vendor' . DS . 'curleasy' . DS . 'index.php');
-                asynCurl($url);
-                echo json_encode(['status' => 'success']);
-            } else {
-                echo json_encode(['status' => 'error']);
-            }
-        }
-        exit;
-    }
-
-    public function importPayments() {
-        $this->viewBuilder()->layout('ajax');
-
-        if ($this->request->is('post')) {
-            $data = $this->request->data;
-
-            $ext = pathinfo($data["file"]["name"], PATHINFO_EXTENSION);
-            if (empty($data["file"]["name"])) {
-                $this->Flash->error(__('Please select file for import.'));
-            } else if (!in_array($ext, ['xls', 'xlsx', 'csv'])) {
-                $this->Flash->error(__('Please select excel file only.'));
-            } else {
-
-//                $fileName = time() . "_" . basename($data["file"]["name"]);
-                $fileName = md5(uniqid(rand())) . "-" . basename($data["file"]["name"]);
-                $targetFile = TEMP_EXCEL . $fileName;
-                move_uploaded_file($data["file"]["tmp_name"], $targetFile);
-
-                $uploadedPaymentFile = $this->UploadedPaymentFiles->newEntity();
-                $uploadedPaymentFile->merchant_id = $this->Auth->user('id');
-                $uploadedPaymentFile->file = $fileName;
-                $uploadedPaymentFile->title = $data['file']['name'];
-                $uploadedPaymentFile->note = $data['note'];
-                $uploadedPaymentFile->last_payment_date = date_format(date_create($data['last_payment_date']), "Y-m-d");
-                $uploadedPaymentFile->created = date("Y-m-d H:i:s");
-
-                if ($this->UploadedPaymentFiles->save($uploadedPaymentFile)) {
-
-
-                    $file = urlencode($uploadedPaymentFile->file);
-                    $url = HTTP_ROOT . "merchant/payments/importPaymentsInBackground/" . $uploadedPaymentFile->id . "/" . $file;
-                    require_once(ROOT . DS . 'vendor' . DS . 'curleasy' . DS . 'index.php');
-                    asynCurl($url);
-//                    
-//                    
-//                    $ch = curl_init();
-//                    curl_setopt($ch, CURLOPT_URL, $url);
-//                    curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-//                    curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
-//                    curl_exec($ch);
-//                    set_time_limit(0); // unlimited max execution time    
-//                    $paymentShell = new \App\Shell\PaymentShell;
-//                    $paymentShell->importPayments($uploadedPaymentFile->id);
-
-                    /*
-
-                      require_once(ROOT . DS . 'vendor' . DS . 'phpexcel' . DS . 'index.php');
-                      $paymentArray = getExcelContents($targetFile);
-
-                      $heading = $paymentArray['heading'];
-                      $heading = array_map('trim', $heading);
-
-                      $phoneIndex = array_search('Phone', $heading);
-                      $totalFeeIndex = array_search('Total', $heading);
-                      $dueDateIndex = array_search('Due Date', $heading);
-
-                      $noOfCustomFields = $totalFeeIndex - ($phoneIndex + 1);
-
-                      if ($noOfCustomFields > 0) {
-                      for ($i = $phoneIndex + 1; $i < $totalFeeIndex; $i++) {
-                      $customFields[$this->Custom->formatCustomField($heading[$i])] = $heading[$i];
-                      }
-                      $uploadedPaymentFile->custom_fields = json_encode($customFields);
-                      $this->UploadedPaymentFiles->save($uploadedPaymentFile);
-                      }
-
-                      $paymentDataArray = $paymentArray['data'];
-
-                      foreach ($paymentDataArray as $paymentData) {
-                      if (!empty($paymentData[0]) && !empty($paymentData[1]) && !empty($paymentData[2])) {
-
-                      $name = filter_var($paymentData[0], FILTER_SANITIZE_STRING);
-                      $email = filter_var($paymentData[1], FILTER_SANITIZE_EMAIL);
-                      $phone = filter_var($paymentData[2], FILTER_SANITIZE_NUMBER_INT);
-
-                      $totalFee = !empty($paymentData[$totalFeeIndex]) ? $paymentData[$totalFeeIndex] : 0;
-                      $dueDate = date('Y-m-d', ($paymentData[$dueDateIndex] - 25569) * 86400);
-
-                      $query = $this->Users->find()->where(['Users.email' => $email, 'type' => 4]);
-
-                      if ($query->count() > 0) {
-                      //User Alreday Exist
-                      $user = $query->first();
-                      } else {
-                      //Create a new User
-                      $user = $this->Users->newEntity();
-                      $this->Users->patchEntity($user, ['email' => $email, 'type' => 4, 'uniq_id' => $this->Custom->generateUniqNumber(), 'cust_id' => uniqid()]);
-                      if ($this->Users->save($user)) {
-                      $userDetail = $this->Users->UserDetails->newEntity(['id' => '', 'user_id' => $user->id, 'created_by' => $this->Auth->user('id'), 'name' => $name, 'phone' => $phone, 'address' => '', 'is_active' => 1]);
-                      $this->Users->UserDetails->save($userDetail);
-                      $user->cust_id = 100000000 + $user->id;
-                      $this->Users->save($user);
-                      }
-                      }
-
-                      $payment = $this->Payments->newEntity();
-                      $payment->uniq_id = $this->Custom->generateUniqNumber();
-                      $payment->merchant_id = $this->Auth->user('id');
-                      $payment->uploaded_payment_file_id = $uploadedPaymentFile->id;
-                      $payment->user_id = $user->id;
-                      $payment->name = $name;
-                      $payment->email = $email;
-                      $payment->phone = $phone;
-                      if (!empty($customFields)) {
-                      $i = 1;
-                      foreach ($customFields as $key => $value) {
-                      $customFieldValues[$key] = $paymentData[$phoneIndex + $i];
-                      $i++;
-                      }
-                      $payment->custom_fields = json_encode($customFieldValues);
-                      }
-                      $payment->total_fee = $totalFee;
-                      $payment->due_date = $dueDate;
-                      $payment = $this->Payments->save($payment);
-                      }
-                      }
-
-                     */
-
-
-//                    unlink($targetFile);
-//                    $this->_sendEmail($uploadedPaymentFile->id);
-
-                    $this->Flash->success(__("Excel imported successfully."));
-
-//                    return $this->redirect(HTTP_ROOT . "merchant/#/view-payments/" . $uploadedPaymentFile->id);
-                    return $this->redirect(HTTP_ROOT . "merchant/#/view-payment-files");
-                } else {
-                    $this->Flash->error(__('Some error occured. Please try again.'));
-                }
-            }
-            return $this->redirect(HTTP_ROOT . "merchant/#/import-payments");
-        }
-        return $this->redirect($this->referer());
-    }
-
-    public function ajaxGetUploadedFiles() {
-        $query = $this->UploadedPaymentFiles->find('all')->where(['merchant_id' => $this->Auth->user('id')])->order(['UploadedPaymentFiles.id' => 'DESC']);
-        if ($query->count() > 0) {
-            echo json_encode(['status' => 'success', 'data' => $query]);
+        if ($this->Payments->deleteAll(['Payments.uniq_id IN' => $data['ids'], 'Payments.status' => 0])) {
+            echo json_encode(['status' => 'success']);
         } else {
             echo json_encode(['status' => 'error']);
         }
         exit;
     }
 
-    public function ajaxDeletePaymentFile($id) {
+    public function ajaxRemindPayment($id) {
         $this->viewBuilder()->layout('ajax');
-        $entity = $this->UploadedPaymentFiles->get($id);
-        if ($entity->merchant_id != $this->Auth->user('id')) {
-            echo json_encode(['status' => 'error', 'msg' => 'The payment file could not be deleted. Please, try again.']);
+        $status = $this->_sendReminderEmail($id);
+        if ($status) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error']);
+        }
+        exit;
+    }
+
+    public function ajaxRemindSelectedPayment() {
+        $this->viewBuilder()->layout('ajax');
+        $data = $this->request->data;
+        if (!empty($data['ids'])) {
+            foreach ($data['ids'] as $id) {
+                $status = $this->_sendReminderEmail($id);
+            }
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error']);
+        }
+        exit;
+    }
+
+    public function _sendReminderEmail($paymentId) {
+        $query = $this->Payments->find('all')->where(['Payments.id' => $paymentId])->contain(['Users', 'Webfronts', 'Webfronts.Users']);
+        if ($query->count() > 0) {
+            $payment = $query->first();
+            $adminSetting = $this->AdminSettings->find()->where(['id' => 1])->first();
+            $mailTemplate = $this->MailTemplates->find()->where(['name' => 'PAYMENT_NOTIFICATION', 'is_active' => 1])->first();
+
+            $link = HTTP_ROOT . "customer/payments/make-payment/" . $payment->uniq_id;
+            $directLink = HTTP_ROOT . "webfronts/basic/{$payment->webfront->url}";
+            $viewTransLink = HTTP_ROOT . "customer/view-transactions/" . $payment->webfront->user->uniq_id;
+
+            $billAmount = $payment->fee; // + $payment->convenience_fee_amount + $payment->late_fee_amount;
+
+            $message = $this->Custom->formatEmail($mailTemplate['content'], [
+                'NAME' => $payment->name,
+                'MERCHANT' => $payment->webfront->user->name,
+                'BILL_AMOUNT' => $billAmount,
+                'INVOICE_NO' => $payment->id,
+                'PAYMENT_LINK' => $link,
+                'DIRECT_LINK' => "<a href='{$directLink}'>{$directLink}</a>",
+                'VIEW_TRANSACTION_LINK' => "<a href='{$viewTransLink}'>{$viewTransLink}</a>",
+            ]);
+
+            $this->Custom->sendEmail($payment->email, $adminSetting->from_email, $mailTemplate->subject, $message, $adminSetting->bcc_email);
+            $this->Payments->query()->update()->set(['followup_counter' => 'followup_counter' + 1])->where(['id' => $payment->id])->execute();
+
+
+            /* ======================For SMS Sending Starts here=================================== */
+            $phone = $payment->phone;
+            $sms = "Use this Below Link to process Payment of amount INR [BILL_AMOUNT]. [DIRECT_LINK]";
+            $message = $this->Custom->formatEmail($sms, [
+                'BILL_AMOUNT' => $payment->fee,
+                'DIRECT_LINK' => HTTP_ROOT . "webfronts/basic/{$payment->webfront->url}"
+            ]);
+            $this->Custom->sendSMS($phone, $message);
+            /* ======================For SMS Sending Ends here==================================== */
+
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function ajaxEditPayment() {
+        $this->viewBuilder()->layout('ajax');
+        $data = $this->request->data;
+
+        $payment = $this->Payments->newEntity();
+        $payment->id = $data['id'];
+        $payment->fee = $data['fee'];
+
+        if (!empty($data['payee_field_keys'])) {
+            $customerFieldValues = [];
+            for ($i = 0; $i < count($data['payee_field_keys']); $i++) {
+                $customerFieldValues["$i"]['field'] = $data['payee_field_keys'][$i];
+                $customerFieldValues["$i"]['value'] = $data['payee_field_values'][$i];
+            }
+            $payment->payee_custom_fields = json_encode($customerFieldValues);
+        }
+
+        if (!empty($data['payment_field_keys'])) {
+            $customerFieldValues = [];
+            for ($i = 0; $i < count($data['payment_field_keys']); $i++) {
+                $paymentFieldValues["$i"]['field'] = $data['payment_field_keys'][$i];
+                $paymentFieldValues["$i"]['value'] = $data['payment_field_values'][$i];
+            }
+            $payment->payment_custom_fields = json_encode($paymentFieldValues);
+        }
+
+        if ($this->Payments->save($payment)) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error']);
+        }
+        exit;
+    }
+
+    public function downloadError($webfronId) {
+        $query = $this->Webfronts->find('all')->where(['id' => $webfronId]);
+        if ($query->count() <= 0) {
+            echo "No File Found.";
             exit;
         }
-        if ($this->UploadedPaymentFiles->delete($entity)) {
-            echo json_encode(['status' => 'success', 'msg' => 'The payment file has been deleted']);
-        } else {
-            echo json_encode(['status' => 'error', 'msg' => 'The payment file could not be deleted. Please, try again.']);
+        $webfront = $query->first();
+        $fileName = "ErrorLog-{$webfront->id}.log";
+        $filePath = UPLOAD_ERROR_LOG . $fileName;
+        if (!(is_file($filePath) && file_exists($filePath))) {
+            echo "No File Found.";
+            exit;
         }
-        exit;
-    }
-
-    public function ajaxfetchCustomFields($uploadedFileId) {
-        $query = $this->UploadedPaymentFiles->find('all')->where(['merchant_id' => $this->Auth->user('id'), 'id' => $uploadedFileId]);
-        if ($query->count() > 0) {
-            $getCustomFields = $query->first()->custom_fields;
-            $customFields = json_decode($getCustomFields);
-            echo json_encode(['status' => 'success', 'data' => $customFields]);
-        } else {
-            echo json_encode(['status' => 'error']);
-        }
-        exit;
-    }
-
-    public function ajaxViewPayments($uploadedFileId) {
-
-        $data = $this->request->data;
-
-        $conditions = ['uploaded_payment_file_id' => $uploadedFileId];
-
-        $page = !empty($data['page']) ? $data['page'] : 1;
-
-        if (!empty($data['searchby'])) {
-            $searchby = strtolower(urldecode($data['searchby']));
-            $keyword = urldecode($data['keyword']);
-            if ($searchby == 'name') {
-                $conditions[] = ['Payments.name LIKE' => "%" . $keyword . "%"];
-            } else if ($searchby == 'email') {
-                $conditions[] = ['Payments.email LIKE' => "%" . $keyword . "%"];
-            } else if ($searchby == 'phone') {
-                $conditions[] = ['Payments.phone LIKE' => "%" . $keyword . "%"];
-            } else if ($searchby == 'bill_amount') {
-                $conditions[] = ['Payments.total_fee' => $keyword];
-            } else if ($searchby == 'due_date') {
-                $conditions[] = ['Payments.due_date LIKE' => "%" . $keyword . "%"];
-            }
-        }
-
-        $order = ['Payments.id' => 'ASC'];
-
-        $config = [
-            'limit' => 20,
-            'order' => $order,
-            'contain' => [],
-            'conditions' => $conditions,
-            'page' => !empty($page) ? $page : 1
-        ];
-        $payments = $this->Paginator->paginate($this->Payments->find(), $config);
-        $uploadedPaymentFile = $this->UploadedPaymentFiles->find('all')->where(['id' => $uploadedFileId])->first();
-        $this->set(compact('payments', 'uploadedPaymentFile'));
-//        $query = $this->Payments->find('all')->where(['uploaded_payment_file_id' => $uploadedFileId])->limit(50);
-//        if ($query->count() > 0) {
-//            $uploadedPaymentFile = $this->UploadedPaymentFiles->find('all')->where(['id' => $uploadedFileId])->first();
-//            echo json_encode(['status' => 'success', 'payments' => $query, 'file' => $uploadedPaymentFile]);
-//        } else {
-//            echo json_encode(['status' => 'error']);
-//        }
-//        exit;
-    }
-
-    public function downloadSampleExcel() {
-        $filePath = WWW_ROOT . "SampleExcel.xlsx";
-        $this->response->file($filePath, ['download' => TRUE, 'name' => "SampleExcel.xlsx"]);
-        return $this->response;
-    }
-
-    public function downloadError($fileId) {
-        $uploadedPaymentFile = $this->UploadedPaymentFiles->find('all')->where(['id' => $fileId])->first();
-        $fileName = "LogFile-" . $uploadedPaymentFile->id . ".log";
-        $filePath = EXCEL_ERROR_LOG . $fileName;
         $this->response->file($filePath, ['download' => TRUE, 'name' => $fileName]);
         return $this->response;
-    }
-
-    public function _sendEmail($uploadedPaymentFileId) {
-        $payments = $this->Payments->find('all')->where(['uploaded_payment_file_id' => $uploadedPaymentFileId])->contain(['Users']);
-        if ($payments->count() > 0) {
-            $getUploadedPaymentFile = $this->UploadedPaymentFiles->find()->where(['UploadedPaymentFiles.id' => $uploadedPaymentFileId])->first();
-            $getMerchant = $this->Users->find()->where(['Users.id' => $this->Auth->user('id')])->contain(['UserDetails'])->first();
-            $mailTemplate = $this->MailTemplates->find()->where(['name' => 'PAYMENT_NOTIFICATION', 'is_active' => 1])->first();
-            foreach ($payments as $payment) {
-                $link = HTTP_ROOT . 'customer/payments/make-payment/' . urlencode(base64_encode($payment->uniq_id));
-                $directLink = HTTP_ROOT . 'customer/pay-now/' . urlencode(base64_encode($payment->uniq_id));
-                $viewTransLink = HTTP_ROOT . 'customer/view-transactions/' . urlencode(base64_encode($getMerchant->uniq_id));
-                $message = $this->Custom->formatEmail($mailTemplate['content'], [
-                    'NAME' => $payment->name,
-                    'MERCHNAT' => $getMerchant->name,
-                    'NOTE' => $getUploadedPaymentFile->note,
-                    'BILL_AMOUNT' => " Rs." . $payment->total_fee,
-                    'DUE_DATE' => date("d M, Y", strtotime($payment->due_date)),
-                    'LINK' => "<a href='{$link}'>{$link}</a>",
-                    'MONTH' => date("F", strtotime($payment->due_date)),
-                    'CUST_ID' => $payment->user->cust_id,
-                    'DIRECT_LINK' => "<a href='{$directLink}'>{$directLink}</a>",
-                    'VIEW_TRANSACTION_LINK' => "<a href='{$viewTransLink}'>{$viewTransLink}</a>",
-                ]);
-                $this->Custom->sendEmail($payment->email, FROM_EMAIL, $mailTemplate->subject, $message);
-                $this->Payments->query()->update()->set(['followup_counter' => 'followup_counter' + 1])->where(['id' => $payment->id])->execute();
-            }
-        }
-        return TRUE;
-    }
-
-    public function confirmUpload($uploadedFileId) {
-        $this->_sendEmail($uploadedFileId);
-        $this->Flash->success(__("You have exported the file successfully!!."));
-        $this->UploadedPaymentFiles->query()->update()->set(['is_confirmed' => 1])->where(['id' => $uploadedFileId])->execute();
-        return $this->redirect(HTTP_ROOT . "merchant/#/view-payment-files");
-    }
-
-    public function cancelUpload($uploadedFileId) {
-        $entity = $this->UploadedPaymentFiles->get($uploadedFileId);
-        if ($entity->merchant_id != $this->Auth->user('id')) {
-            $this->Flash->error(__("Error occured. Please try again."));
-            return $this->redirect($this->referer());
-        }
-        if ($this->UploadedPaymentFiles->delete($entity)) {
-            $this->Flash->success(__("Excel file export has been canceled successfully."));
-            return $this->redirect(HTTP_ROOT . "merchant/#/import-payments");
-        } else {
-            $this->Flash->error(__("Error occured. Please try again."));
-            return $this->redirect($this->referer());
-        }
-        return $this->redirect($this->referer());
     }
 
 }

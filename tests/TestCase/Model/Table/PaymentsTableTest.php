@@ -25,13 +25,14 @@ class PaymentsTableTest extends TestCase
      */
     public $fixtures = [
         'app.payments',
-        'app.uploaded_payment_files',
+        'app.uniqs',
+        'app.webfronts',
         'app.users',
-        'app.admins',
-        'app.branchadmins',
-        'app.customers',
-        'app.customer_groups',
-        'app.merchants'
+        'app.merchant_profiles',
+        'app.webfront_fields',
+        'app.validations',
+        'app.webfront_field_values',
+        'app.customers'
     ];
 
     /**

@@ -1,2 +1,13 @@
-<div id="errorMsg" class="message error" onclick="this.classList.add('hidden');"><?= h($message) ?></div>
-<script>setTimeout(function () { document.getElementById('errorMsg').style.display = 'none'; }, 4000);</script>
+<?php
+if (!isset($params['escape']) || $params['escape'] !== false) {
+    $message = h($message);
+}
+?>
+<div class="message error" id="flashError" onclick="this.classList.add('hidden');"><?= $message ?></div>
+
+<script>
+    setTimeout(function () {
+        document.getElementById('flashError').style.display = 'none';
+    }, 4000);
+</script>
+

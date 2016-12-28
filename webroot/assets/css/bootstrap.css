@@ -5886,6 +5886,9 @@ button.close {
   box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
   background-clip: padding-box;
   outline: 0;
+  border-radius: 6px !important; 
+  overflow: hidden; 
+  box-shadow: 0px 2px 10px #CCC;
 }
 .modal-backdrop {
   position: fixed;

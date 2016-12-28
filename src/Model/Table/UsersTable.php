@@ -20,32 +20,37 @@ class UsersTable extends Table {
         $this->addBehavior('Timestamp');
 
         $this->hasOne('MerchantProfiles', [
-            'foreignKey' => 'user_id',
+            'foreignKey' => 'merchant_id',
             'conditions' => ['Users.type' => 3],
-            'joinType' => 'LEFT'
+            'joinType' => 'LEFT',
+            'dependent' => TRUE
         ]);
-
-//        $this->hasOne('UserDetails', [
-//            'foreignKey' => 'user_id',
-//            'joinType' => 'LEFT'
-//        ]);
     }
 
     public function validationDefault(Validator $validator) {
 
-        $validator
-                ->email('email')
-                ->requirePresence('email', 'create')
-                ->notEmpty('email');
+//        $validator
+//                ->requirePresence('name', 'create')
+//                ->notEmpty('name');
+//
+//        $validator
+//                ->email('email')
+//                ->requirePresence('email', 'create')
+//                ->notEmpty('email');
+
+//        $validator
+//                ->requirePresence('phone', 'create')
+//                ->notEmpty('phone');
 
 
         return $validator;
     }
 
-    public function buildRules(RulesChecker $rules) {
-        $rules->add($rules->isUnique(['email']));
-        return $rules;
-    }
+//    public function buildRules(RulesChecker $rules) {
+//        $rules->add($rules->isUnique(['email']));
+//        $rules->add($rules->isUnique(['phone']));
+//        return $rules;
+//    }
 
     public function validationPassword(Validator $validator) {
 

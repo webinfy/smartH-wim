@@ -1,164 +1,138 @@
 <!-- /section:basics/sidebar -->
-<div class="main-content">
-    <div class="main-content-inner">
-        <!-- #section:basics/content.breadcrumbs -->
-        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-            <ul class="breadcrumb">
-                <li>
-                    <i class="ace-icon fa fa-home home-icon"></i>
-                    <a href="javascript:;">Home</a>
-                </li>
-                <li>
-                    <a href="javascript:;">Payments</a>
-                </li>
-                <li class="active">Files Uploaded</li>
-            </ul><!-- /.breadcrumb -->
-        </div>
-        <!-- /section:basics/content.breadcrumbs -->
-        <div class="page-content">           
-            <div class="page-header">
-                <h1>
-                    Payment Files Uploaded    
-                    <!--<a class="btn btn-info pull-right" style="padding: 0 !important; margin-right: 40px;" href="merchant/#/add-customer" > Add New Customer </a>-->
-                </h1>
-            </div><!-- /.page-header -->
-            <div class="row">
+<div class="main-content" style="background: #CCC">
+    <div class="main-content-inner">   
+        <div class="page-content">
+
+            <!--Uploaded File Section Start-->                      
+            <div class="row" id="uploaded-file-section">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px; display: inline-block;">
+                        View Files <span style="color: green;">[{{webfront.title}}]</span>                     
+                    </h1>    
+                </div>
                 <div class="col-xs-12">
                     <!-- PAGE CONTENT BEGINS -->
-                    <!--
-                    <div class="box-header">
-                        <form action="" ng-submit="MyCustomerSearch()">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-4">
-                                    <select class=" form-control input-sm" name="search_by">
-                                        <option value="">Search By</option>
-                                        <option value="customer_group">Customer Group</option>
-                                        <option value="customer_name">Customer Name</option>                                      
-                                    </select>
-                                </div>
-                                <div class="col-xs-12 col-sm-5">
-                                    <input  type="text" required="" value="" placeholder="Search" class="form-control input-sm" name="search_keyword">
-                                </div>
-                                <div class="col-xs-12 col-sm-3">
-                                    <button  class="btn btn-sm btn-default" type="submit" ><i class="fa fa-search"></i> Search</button>
-                                    <a class="btn btn-default btn-sm" href="#"><i class="fa fa-list"></i> View All</a>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="content-main-area" style="padding: 20px;">     
+
+                        <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                        <div class="tabbable col-xs-12 front-creation-tab-design">
+                            <div class="row">  
+
+                                <table id="simple-table" class="table  table-bordered table-hover" style="width: 100%; overflow: scroll;">
+                                    <thead>
+                                        <tr>  
+                                            <th style="text-align: center;"> Payment Cycle Date </th>
+                                            <!--<th style="text-align: left; width: 20%;"> File </th>-->
+                                            <th style="text-align: center;"> Customer Count </th> 
+                                            <th style="text-align: center;"> Upload Date </th>
+                                            <th style="text-align: center;"> Action </th>                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-init="viewWebfrontFiles()">
+                                        <tr ng-repeat="uploaded_payment_file in uploaded_payment_files" id="uploaded-payment-file-{{uploaded_payment_file.id}}">                                        
+                                            <td style="text-align: center;"> {{uploaded_payment_file.payment_cycle_date| date}} </td>
+                                            <!--<td style="text-align: left;"> {{uploaded_payment_file.file}} </td>-->                                        
+                                            <td style="text-align: center;"> {{uploaded_payment_file.upload_count}} </td>
+                                            <td style="text-align: center;"> {{uploaded_payment_file.created| date}} </td>
+                                            <td style="text-align: center; width: auto;">
+                                                <a href="merchant/payments/downloadReport/{{uploaded_payment_file.id}}" data-toggle="tooltip" data-placement="top" title="Invoices List" onmouseover="$(this).tooltip('show')"><span class="label label-info arrowed-in-right arrowed">Invoices List</span></a> 
+                                                <a href="merchant/payments/downloadReport/{{uploaded_payment_file.id}}/1" data-toggle="tooltip" data-placement="top" title="Paid Invoices List" onmouseover="$(this).tooltip('show')"><span class="label label-warning arrowed-in-right arrowed">Paid Invoices List</span></a> 
+                                                <a href="merchant/payments/downloadReport/{{uploaded_payment_file.id}}/2" data-toggle="tooltip" data-placement="top" title="Unpaid Invoices List" onmouseover="$(this).tooltip('show')"><span class="label label-success arrowed-in">Unpaid Invoices List</span></a> 
+                                            </td> 
+                                        </tr>   
+                                        <tr ng-hide="uploaded_payment_files.length"><td colspan="8" style="text-align:center; color: red;">No File Uploaded Yet </td></tr>
+                                    </tbody>
+                                </table>            
+
+                            </div><!-- /.row --> 
+                        </div>
+                        <!-- #section:elements.form -->                          
+                        <!--<br class="clear"/>-->    
                     </div>
-                    -->
-                    <!--<div class="hr hr-24"></div>-->
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <table id="simple-table" class="table  table-bordered table-hover" ng-init="myCustomer()">
-                                <thead>
-                                    <tr>  
-                                        <th style="text-align: left;"> File Name </th>
-                                        <th style="text-align: left;"> Note </th>
-                                        <th style="text-align: center;"> Total Record </th>
-                                        <th style="text-align: center;"> Upload Date </th>                                   
-                                        <th style="text-align: center;"> Status </th>                                   
-                                        <th style="text-align: center;"> Actions </th>
-                                    </tr>
-                                </thead>
-
-                                <tbody ng-init="getUploadedFiles()">                               
-                                    <tr ng-repeat="uploaded_payment_file in uploaded_payment_files" id="file-no-{{uploaded_payment_file.id}}">                                   
-                                        <td style="text-align: left;"> {{uploaded_payment_file.title}} </td>
-                                        <td style="text-align: left;"> {{uploaded_payment_file.note}} </td>
-                                        <td style="text-align: center;"> {{uploaded_payment_file.payment_count ? uploaded_payment_file.payment_count : 0}} </td>
-                                        <td style="text-align: center;"> {{uploaded_payment_file.created| date}} </td>
-                                        <td style="text-align: center;">
-                                            <span style="padding-top: 4px;" class="label label-sm label-danger ng-scope" ng-show="{{uploaded_payment_file.upload_completed == 0}}" >Processing</span>
-                                            <span style="padding-top: 4px;" class="label label-sm label-success ng-scope" ng-show="{{uploaded_payment_file.upload_completed == 1}}">Completed</span>
-                                        </td>
-                                        <td style="text-align: center;">                                                
-                                            <div class="hidden-sm hidden-xs btn-group">                                                    
-                                                <a href="merchant/#/view-payments/{{uploaded_payment_file.id}}" class="btn btn-xs btn-success" title="View All Payments">
-                                                    View <!--<i class="ace-icon fa fa-eye bigger-120"></i>-->
-                                                </a>  
-
-                                                <a href="javascript:;" ng-click="deletePaymentUpload(uploaded_payment_file.id)"  class="btn btn-xs btn-danger" title="Delete">
-                                                    Delete <!--<i class="ace-icon fa fa-trash-o bigger-120" ng-value=""></i>-->
-                                                </a>  
-
-                                                <a href="merchant/payments/download-report/{{uploaded_payment_file.id}}"  class="btn btn-xs btn-primary" title="Download Report">
-                                                    Download <!--<i class="ace-icon fa fa-download bigger-120" ng-value=""></i>-->
-                                                </a>                                                
-
-                                                <!--                                                <a href="merchant/#/update-excel/{{uploaded_payment_file.id}}"  class="btn btn-xs btn-warning" title="Download Report">
-                                                                                                    Update <i class="ace-icon fa fa-download bigger-120" ng-value=""></i>
-                                                                                                </a>  
-                                                -->
-
-                                                <a href="javascript:;" data-modal-id='updateExcel{{uploaded_payment_file.id}}' onclick="$('#' + $(this).attr('data-modal-id')).show();" class="btn btn-xs btn-warning" title="Download Report">
-                                                    Update <!--<i class="ace-icon fa fa-download bigger-120" ng-value=""></i>-->
-                                                </a>  
-
-                                                <a href="merchant/payments/download-error/{{uploaded_payment_file.id}}"  class="btn btn-xs btn-primary" title="Download Report">
-                                                    Error Log <!--<i class="ace-icon fa fa-download bigger-120" ng-value=""></i>-->
-                                                </a>                                                 
-
-                                            </div>                                                 
-                                        </td>
-                                    </tr>
-
-                                    <tr ng-hide="uploaded_payment_files.length"><td style="text-align:center; color:red;" colspan="8">No files are uploaded yet.</td></tr>
-
-                                </tbody>
-                            </table>
-                            <!--<div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="javascript:;">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="javascript:;">Next</a></li></ul></div></div></div>-->
-                        </div><!-- /.span -->
-                    </div><!-- /.row -->
                     <!-- PAGE CONTENT ENDS -->
                 </div><!-- /.col -->
             </div><!-- /.row -->
+            <!--Uploaded File Section End-->     
+
         </div><!-- /.page-content -->
     </div>
 </div><!-- /.main-content -->
 
 
 
-<div class="modal fadeXX"  role="dialog" style="display: none;" ng-repeat="uploaded_payment_file in uploaded_payment_files" id="updateExcel{{uploaded_payment_file.id}}" >
+<!-- Append Records Started-->
+<div class="modal fadeXX"  role="dialog" style="background: rgba(239, 240, 241, 0.5); display: none;" ng-repeat="uploaded_payment_file in uploaded_payment_files" id="appendRecord{{uploaded_payment_file.id}}" >
     <div class="modal-dialog">    
         <!-- Modal content-->
-        <div class="modal-content">
-            <form action="merchant/payments/update-excel" method="post" enctype="multipart/form-data">
+        <div class="modal-content"> 
+            <form enctype="multipart/form-data" method="POST" id="append_records_form{{uploaded_payment_file.id}}" data-uploaded_payment_file_id="{{uploaded_payment_file.id}}" ng-submit="appendRecords($event)">
                 <input type="hidden" name="id" value="{{uploaded_payment_file.id}}" />
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
-                    <h4 class="modal-title">Update Excel</h4>
+                    <h3 class="modal-title">Append Records</h3>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="min-height: 25vh; overflow-y: auto; overflow-x: hidden;">
+                    <div id="append_records_success_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" class="alert alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;Payment details updated successfully!!.</p></div></div>
+                    <div id="append_records_error_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;<span class="msg">Some Error occurred. Please try again!!.</span></p></div></div>
                     <div class="row">  
-                        <table align='center' style="width: 100%;">
-                            <tr>
-                                <td style="padding: 10px;"><label>File Name </label>:</td>
-                                <td style="padding: 10px;"><label>{{uploaded_payment_file.title}}</label></td>
+                        <table align='center' style="width: 100%;" class="edit-uploaded_payment_file">    
+                            <tr style="background: #FFF;">
+                                <td style="padding: 10px; float: right;"><label> Payment Cycle Date</label></td>
+                                <td style="padding: 10px;"> : <label>Nov 28, 2016</label></td>
                             </tr>
-                            <tr>
-                                <td style="padding: 10px;"><label>Note </label>:</td>
-                                <td style="padding: 10px;"><label>{{uploaded_payment_file.note}}</label></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px;"><label>Browse File </label> : </td>
-                                <td style="padding: 10px;"><input type="file" id="file" class="file"  name="file" required="" /> </td>
+                            <tr style="background: #FFF;">
+                                <td style="padding: 10px; float: right;"><label> Upload Excel/CSV </label></td>
+                                <td style="padding: 10px;"> : <label><input type="file" name="file" required="required" /></label></td>
                             </tr>
                         </table>
                     </div>   
-                </div>
-                <div class="modal-footer">
-                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Update</button>-->
-                    <button type="submit" class="btn btn-info"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>                    
-                    <!--<button type="button" class="btn btn-default" data-dismiss="modal" onclick="$('#updateExcel').hide();">Cancel</button>-->
+                </div>  
+                <div class="modal-footer">               
+                    <button type="submit" class="btn btn-success"><i class="ace-icon fa fa-check bigger-110"></i> Submit </button>    
                     <button type="button" class="btn" onclick="$(this).parents('.modal').hide();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </button>
                 </div>
             </form>
         </div>
-
     </div>
 </div>
+<!-- Append Records Ended-->
 
 
+<!-- Reuse Upload Started-->
+<div class="modal fadeXX"  role="dialog" style="background: rgba(239, 240, 241, 0.5); display: none;" ng-repeat="uploaded_payment_file in uploaded_payment_files" id="reuseUpload{{uploaded_payment_file.id}}" >
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content"> 
+            <form method="POST" id="upload_reuse_{{uploaded_payment_file.id}}" data-uploaded_payment_file-id="{{uploaded_payment_file.id}}" ng-submit="uploadReuse($event)">
+                <input type="hidden" name="id" value="{{uploaded_payment_file.id}}" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                    <h3 class="modal-title">Reuse Upload</h3>
+                </div>
+                <div class="modal-body" style="min-height: 25vh; overflow-y: auto; overflow-x: hidden;">
 
+                    <div id="reuse_upload_success_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" id="success-msg" class="alert alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;Copied Successfully!!.</p></div></div>
+                    <div id="reuse_upload_error_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"></div>
+
+                    <div class="row" style="">  
+                        <table align='center' style="width: 100%;" class="edit-uploaded_payment_file">   
+                            <tr style="background: #FFF;">
+                                <td style="padding: 10px; float: right;"><label> Payment Cycle Date </label></td>
+                                <td style="padding: 10px;"> : <label><input type="text" name="payment_cycle_date" value="" placeholder="Please enter payment cycle date" class="form-control datepicker" required="required" style="width: 250px;" /></label></td>
+                            </tr>
+                            <tr style="background: #FFF;">                                
+                                <td colspan="2" style="padding: 10px; text-align: center; color: red; font-weight: bold;"> * Please enter the payment cycle date to reuse this upload. </td>
+                            </tr>
+                        </table>
+                    </div>   
+                </div>  
+                <div class="modal-footer">               
+                    <button type="submit" class="btn btn-success"><i class="ace-icon fa fa-check bigger-110"></i> Reuse </button>    
+                    <button type="button" class="btn" onclick="$(this).parents('.modal').hide();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Reuse Upload Ended-->

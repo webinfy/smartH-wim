@@ -28,13 +28,11 @@ class EnvironmentPanel extends DebugPanel
     /**
      * Get necessary data about environment to pass back to controller
      *
-     * @param \Cake\Controller\Controller $controller The controller.
      * @return array
      */
-    protected function _prepare(Controller $controller)
+    protected function _prepare()
     {
         $return = [];
-
         // PHP Data
         $phpVer = phpversion();
         $return['php'] = array_merge(
@@ -84,6 +82,6 @@ class EnvironmentPanel extends DebugPanel
      */
     public function shutdown(Event $event)
     {
-        $this->_data = $this->_prepare($event->subject());
+        $this->_data = $this->_prepare();
     }
 }

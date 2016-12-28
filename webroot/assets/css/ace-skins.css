@@ -2364,7 +2364,7 @@
   background-color: #BBB;
 }
 .skin-3 .main-container:before {
-  background: #FFF;
+ background: #ecf0f5 none repeat ;
   /*
   background: -moz-linear-gradient(top, #EEF5FA 0%, #FFF 8%) 0 4px;
   background: -webkit-gradient(linear, 0 0, 0 100%, from(#EEF5FA), color-stop(4%, #FFF)) 0 4px;
@@ -2389,13 +2389,13 @@
   background: #404040;
 }
 .skin-3 .sidebar {
-  background-color: #DBDBDB;
+  background-color: #BBBBBB;
   border-style: solid;
   border-width: 0 1px 0 0;
-  border-color: #A4C6DD;
+  border-color: #BBBBBB;
 }
 .skin-3 .nav-list > li {
-  border-color: #F2F2F2;
+ 
 }
 .skin-3 .nav-list > li > a {
   background-color: #E3E3E3;
@@ -2409,22 +2409,22 @@
   color: #5A5A5A;
 }
 .skin-3 .nav-list > li:hover {
-  border-color: #95bad2 !important;
+
 }
 .skin-3 .nav-list > li:hover + li {
-  border-top-color: #95bad2 !important;
+ 
 }
 .skin-3 .nav-list > li.open {
-  border-color: #95bad2 !important;
+ 
 }
 .skin-3 .nav-list > li.open + li {
-  border-top-color: #95bad2 !important;
+
 }
 .skin-3 .nav-list > li.active {
-  border-color: #A4C6DD !important;
+ 
 }
 .skin-3 .nav-list > li.active + li {
-  border-color: #A4C6DD !important;
+ 
 }
 .skin-3 .nav-list > li.active + li:last-child {
   border-bottom-color: #F2F2F2 !important;
@@ -2434,11 +2434,11 @@
 }
 .skin-3 .nav-list > li:hover > a {
   background-color: #FFF;
-  color: #337dbb;
+  color: #155093;
 }
 .skin-3 .nav-list > li.open > a,
 .skin-3 .nav-list > li.open:hover > a {
-  color: #337dbb;
+  color: #155093;
   background-color: #F8F8F8;
 }
 .skin-3 .nav-list > li.open > a > .arrow {
@@ -2446,17 +2446,17 @@
 }
 .skin-3 .nav-list > li.active > a,
 .skin-3 .nav-list > li.active.highlight > a {
-  background-color: #f3faff !important;
-  color: #4D96CB !important;
+  background-color: #155190 !important;
+  color: #fff !important;
 }
 .skin-3 .nav-list > li:hover:before,
 .skin-3 .nav-list > li.open:before {
   display: block;
-  background-color: #4f8ab4 !important;
+  background-color: #333333 !important;
 }
 .skin-3 .nav-list > li.active:before {
   display: block;
-  background-color: #4D96CB !important;
+  background-color: #333333 !important;
 }
 .skin-3 .page-content {
   background-color: transparent;
@@ -2509,10 +2509,11 @@
   border-right-color: #7fafcf;
 }
 .skin-3 .nav-list > li .submenu > li.active:not(.open) > a {
-  background-color: #F5F7FA;
+  background-color: #155190;
+  color:#fff;
 }
 .skin-3 .nav-list > li .submenu > li.active:not(.open) > a:hover {
-  background-color: #F1F5F9;
+  background-color: #3678c3;
 }
 @media only screen and (max-width: 991px) {
   .skin-3 .sidebar.responsive .nav-list > li.active.open > a:after {

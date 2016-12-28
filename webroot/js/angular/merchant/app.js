@@ -1,13 +1,134 @@
 var app = angular
         .module('merchantApp', ['ui.router', 'oc.lazyLoad', 'ngFileUpload'])
         .config(function ($stateProvider, $urlRouterProvider) {
-            //cfpLoadingBarProvider.includeSpinner = true;
             $urlRouterProvider.otherwise('/dashboard');
             $stateProvider
                     .state('dashboard', {
                         url: '/dashboard',
                         title: 'Dashboard',
+                        controller: 'DashboardCtrl',
                         templateUrl: 'views/merchant/dashboard.html'
+                    })
+                    .state('basic-web-front-creation', {
+                        url: '/basic-web-front-creation',
+                        title: 'Basic Web Front Creation',
+                        controller: 'WebFrontCtrl',
+                        templateUrl: 'views/merchant/basic-web-front-creation.html',
+                        resolve: {
+                            lazyLoad: ['$ocLazyLoad', function ($ocLazyLoad) {
+                                    return $ocLazyLoad.load([
+                                        {
+                                            name: 'datepicker',
+                                            files: ['components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js', 'components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css']
+                                        }
+                                    ]);
+                                }]
+                        }
+                    })
+                    .state('edit-basic-web-front', {
+                        url: '/edit-basic-web-front/:id?tab&name&title',
+                        title: 'Edit Basic Web Front',
+                        controller: 'WebFrontCtrl',
+                        templateUrl: 'views/merchant/edit-basic-web-front.html',
+                        resolve: {
+                            lazyLoad: ['$ocLazyLoad', function ($ocLazyLoad) {
+                                    return $ocLazyLoad.load([
+                                        {
+                                            name: 'datepicker',
+                                            files: ['components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js', 'components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css']
+                                        }
+                                    ]);
+                                }]
+                        }
+                    })
+                    .state('webfront-listing', {
+                        url: '/webfront-listing',
+                        title: 'Webfront Listing',
+                        controller: 'WebFrontCtrl',
+                        templateUrl: 'views/merchant/webfront-listing.html'
+                    })
+                    //Advance Webfront Router Section starts here
+                    .state('advance-web-front-creation', {
+                        url: '/advance-web-front-creation',
+                        title: 'Advance Web Front Creation',
+                        controller: 'WebFrontCtrl',
+                        templateUrl: 'views/merchant/advance-web-front-creation.html',
+                        resolve: {
+                            lazyLoad: ['$ocLazyLoad', function ($ocLazyLoad) {
+                                    return $ocLazyLoad.load([
+                                        {
+                                            name: 'datepicker',
+                                            files: ['components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js', 'components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css']
+                                        },
+                                        {
+                                            name: 'cropit',
+                                            files: ['js/jquery.cropit.js']
+                                        }
+                                    ]);
+                                }]
+                        }
+                    })
+                    .state('advance-webfront-listing', {
+                        url: '/advance-webfront-listing',
+                        title: 'Advance Webfront Listing',
+                        controller: 'WebFrontCtrl',
+                        templateUrl: 'views/merchant/advance-webfront-listing.html'
+                    })
+                    .state('edit-advance-web-front', {
+                        url: '/edit-advance-web-front/:id/:advance?tab&name&title',
+                        title: 'Edit Advance Web Front',
+                        controller: 'WebFrontCtrl',
+                        templateUrl: 'views/merchant/edit-advance-web-front.html',
+                        resolve: {
+                            lazyLoad: ['$ocLazyLoad', function ($ocLazyLoad) {
+                                    return $ocLazyLoad.load([
+                                        {
+                                            name: 'datepicker',
+                                            files: ['components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js', 'components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css']
+                                        }
+                                    ]);
+                                }]
+                        }
+                    })
+                    .state('advance-view-payments', {
+                        url: '/advance-view-payments/:id?title',
+                        title: 'View Payments',
+                        controller: 'PaymentsCtrl',
+                        templateUrl: 'views/merchant/advance-view-payments.html'
+                    })
+                    //Advance Webfront Router Section ends here
+                    .state('view-uploads', {
+                        url: '/view-uploads/:id?tab',
+                        title: 'View Payments',
+                        controller: 'PaymentsCtrl',
+                        templateUrl: 'views/merchant/view-uploads.html',
+                        resolve: {
+                            lazyLoad: ['$ocLazyLoad', function ($ocLazyLoad) {
+                                    return $ocLazyLoad.load([
+                                        {
+                                            name: 'fileinput',
+                                            files: ['assets/js/src/elements.fileinput.js']
+                                        },
+                                        {
+                                            name: 'datepicker',
+                                            files: ['components/bootstrap-datepicker/dist/js/bootstrap-datepicker.js']
+                                        },
+                                        {
+                                            name: 'merchantApp',
+                                            insertBefore: '#main-ace-style',
+                                            files: [
+                                                'components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css'
+                                            ]
+                                        }
+                                    ]);
+                                }]
+                        }
+                    })
+                    .state('view-payments', {
+                        url: '/view-payments/:id?title',
+                        title: 'View Payments',
+                        controller: 'PaymentsCtrl',
+                        templateUrl: 'views/merchant/view-payments.html'
                     })
                     .state('profile-setting', {
                         url: '/profile-setting',
@@ -22,7 +143,7 @@ var app = angular
                         templateUrl: 'views/merchant/change-password.html'
                     })
                     .state('import-payments', {
-                        url: '/import-payments',
+                        url: '/import-payments/:id?title',
                         title: 'Import Payments',
                         controller: 'ImportPaymentsCtrl',
                         templateUrl: 'views/merchant/import-payments.html',
@@ -64,22 +185,47 @@ var app = angular
                                 }]
                         }
                     })
-                    .state('view-payment-files', {
-                        url: '/view-payment-files',
-                        title: 'View Payment Files',
-                        controller: 'PaymentsCtrl',
+                    .state('add-new-user', {
+                        url: '/add-new-user',
+                        title: 'Add New User',
+                        controller: 'UserCtrl',
+                        templateUrl: 'views/merchant/add-new-user.html'
+                    })
+                    .state('edit-new-user', {
+                        url: '/edit-new-user/:id',
+                        title: 'Edit New User',
+                        controller: 'UserCtrl',
+                        templateUrl: 'views/merchant/edit-new-user.html'
+                    })
+                    .state('view-all-user', {
+                        url: '/view-all-user',
+                        title: 'View All User',
+                        controller: 'UserCtrl',
+                        templateUrl: 'views/merchant/view-all-user.html'
+                    })
+                    .state('reports', {
+                        url: '/reports',
+                        title: 'Reports',
+                        controller: 'ReportsCtrl',
+                        templateUrl: 'views/merchant/reports.html'
+                    })
+                    .state('view-uploaded-files', {
+                        url: '/view-uploaded-files/:id?',
+                        title: 'ViewUuploadedFiles',
+                        controller: 'ReportsCtrl',
                         templateUrl: 'views/merchant/view-uploaded-files.html'
                     })
-                    .state('view-payments', {
-                        url: '/view-payments/:id?page&keyword',
-                        title: 'View Payments',
-                        controller: 'PaymentsCtrl',
-                        templateUrl: 'views/merchant/view-payments.html'
+                    .state('advance-webfront-payments', {
+                        url: '/advance-webfront-payments/:id',
+                        title: 'Advance Webfront payments',
+                        controller: 'AdvancePaymentsCtrl',
+                        templateUrl: 'views/merchant/advance-webfront-payments.html'
                     })
 
         })
         .run(['$rootScope', '$location', '$state', function ($rootScope, $location, $state) {
 
+                $rootScope.siteUrl = siteUrl;
                 $rootScope.$state = $state;
                 $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
 
@@ -108,57 +254,64 @@ var app = angular
                 $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
                     $(".page-loading").addClass("hidden");
                 });
+
+                $rootScope.success = function (msg) {
+                    $html = "";
+                    $html += '<div style="display: block;" id="success-msg" class="alert alert-info">';
+                    $html += '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>';
+                    $html += '<p><i class="ace-icon fa fa-check"></i>&nbsp;' + msg + '</p>';
+                    $html += '</div>';
+                    $('#flash-msg').html($html).show().focus();//.delay(8000).fadeOut();
+                    $("html, body").animate({scrollTop: 0}, "slow");
+                };
+
+                $rootScope.error = function (msg) {
+                    $html = "";
+                    $html += '<div style="display: block;" id="success-msg" class="alert alert-danger">';
+                    $html += '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>';
+                    $html += ' <p><i class="ace-icon fa fa-times"></i>&nbsp;' + msg + '</p>';
+                    $html += '</div>';
+                    $('#flash-msg').html($html).show().focus();//.delay(8000).fadeOut();
+                    $("html, body").animate({scrollTop: 0}, "slow");
+                };
+
+                $rootScope.validatePwd = function (value) {
+                    if (value) {
+                        console.log(value);
+                        var pattern = /\d{3}/;
+                        if (pattern.test(value)) {
+                            $('#pwdValNum').show();
+                        } else {
+                            $('#pwdValNum').hide();
+                        }
+                    }
+                };
+
             }]);
 //////////////////////////////////Controller Code/////////////////////////////
 
 
-//app.controller('ProfileCtrl', function ($scope, $http) {
+//app.controller('ImportPaymentsCtrl', function ($scope) {
 
-app.controller('ProfileCtrl', function ($scope, $http, $timeout, $compile, Upload) {
-    $scope.uploadPic = function (file) {
+app.controller('ImportPaymentsCtrl', function ($scope, $http, $timeout, $compile, $stateParams, $rootScope, Upload) {
+
+    $scope.title = $stateParams['title'];
+
+    $scope.importExcel = function (file) {
+        $(".page-loading").removeClass("hidden");
         $scope.formUpload = true;
         if (file != null) {
-            $scope.errorMsg = null;
             file.upload = Upload.upload({
-                url: siteUrl + "users/ajaxUpdateProfile" + $scope.getReqParams(),
-                headers: {
-                    'optional-header': 'header-value'
-                },
-                data: {user: $scope.user, file: file}
+                url: siteUrl + "merchant/webfronts/ajaxImportPayments" + $scope.getReqParams(),
+                data: {id: $stateParams['id'], payment_cycle_date: $scope.payment_cycle_date, file: file}
             });
-
             file.upload.then(function (response) {
-                $('#logo').val('');
+                $(".page-loading").addClass("hidden");
                 if (response.data.status == 'success') {
-                    $('#success-msg').show().delay(2000).slideUp();
-                    $('.logo-center > img').attr('src', response.data.logo);
-                } else {
-                    $('#error-msg').show().delay(4000).slideUp();
-                }
-                $timeout(function () {
-                    file.result = response.data;
-                });
-            }, function (response) {
-                if (response.status > 0) {
-                    $scope.errorMsg = response.status + ': ' + response.data;
-                }
-            }, function (evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-//                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
-
-//                file.upload.xhr(function (xhr) {
-//                    // xhr.upload.addEventListener('abort', function(){console.log('abort complete')}, false);
-//                });
-
-        } else {
-            $http.post(siteUrl + "users/ajaxUpdateProfile", {
-                'user': $scope.user
-            }).success(function (response, status, headers, config) {
-                if (response.status == 'success') {
-                    $('#success-msg').show().delay(2000).slideUp();
-                } else {
-                    $('#error-msg').show().delay(4000).slideUp();
+                    $rootScope.success('File Imported Successfully!!.');
+                    $('#fileinput').closest('form').get(0).reset();
+                } else if (response.data.status == 'error') {
+                    $rootScope.error(response.data.msg);
                 }
             });
         }
@@ -168,257 +321,122 @@ app.controller('ProfileCtrl', function ($scope, $http, $timeout, $compile, Uploa
         return $scope.generateErrorOnServer ? '?errorCode=' + $scope.serverErrorCode + '&errorMessage=' + $scope.serverErrorMsg : '';
     };
 
-    $scope.getProfileData = function () {
-        $http.post(siteUrl + "users/ajaxGetProfileData").then(function (response) {
-            $scope.user = response.data;
-        }, 'json');
+    //datepicker value and options
+    if ($('.datepicker').length) {
+        $('.datepicker').datepicker({format: 'yyyy-mm-dd', autoclose: true});
     }
 
-    $scope.updateProfile = function () {
-        $http.post(siteUrl + "users/ajaxUpdateProfile", {
-            'user': $scope.user
-        }).success(function (data, status, headers, config) {
-            if (data.status == 'success') {
-                $('#success-msg').show().delay(2000).slideUp();
-            } else {
-                $('#error-msg').show().delay(4000).slideUp();
-            }
-        });
-        return false;
-    }
-
-    $scope.changePassword = function () {
-        $http.post(siteUrl + "users/ajaxChangePasssword", {
-            'old_password': $scope.old_password,
-            'password1': $scope.password1,
-            'password2': $scope.password2
-        }).success(function (data, status, headers, config) {
-            if (data.status == 'success') {
-                $('#success-msg').show().delay(2000).slideUp();
-                $scope.old_password = '';
-                $scope.password1 = '';
-                $scope.password2 = '';
-            } else {
-                $('#err-msg-content').html(data.msg);
-                $('#error-msg').show().delay(4000).slideUp();
-            }
-        });
-        return false;
-    }
 });
 
-app.controller('PaymentsCtrl', function ($scope, $http, $stateParams) {
 
-    $scope.getUploadedFiles = function () {
-        $http({
-            method: "GET",
-            url: siteUrl + "merchant/payments/ajaxGetUploadedFiles"
-        }).then(function mySucces(response) {
+
+app.controller('ReportsCtrl', function ($scope, $http, $stateParams, $window, $timeout) {
+
+    $scope.fetchWebfronts = function () {
+        $http.get(siteUrl + "merchant/webfronts/ajaxMyWebfronts").then(function (response) {
             if (response.data.status == 'success') {
-                $scope.uploaded_payment_files = response.data.data;
-            } else {
-//                $('#simple-table tbody').html("<tr><td colspan='8' style='text-align:center; color:red;'>No files are uploaded yet.</td></tr>");
+                $scope.webfronts = response.data.webfronts;
             }
-        }, function myError(response) {
-            //Error Code//
         });
-    }
+    };
 
-    $scope.deletePaymentUpload = function (id) {
-        confirm("Are you sure you want to delete ? ", function (data) {
+    $scope.viewWebfrontFiles = function () {
+        var id = $stateParams.id;
+        $http.get(siteUrl + "merchant/payments/ajaxViewUploads/" + id).then(function (response) {
+            if (response.data.status == 'success') {
+                $scope.uploaded_payment_files = response.data.data.uploaded_payment_files;
+                $scope.webfront = response.data.data.webfront;
+            }
+        });
+    };
+
+});
+
+app.controller('AdvancePaymentsCtrl', function ($scope, $http, $timeout, $compile, $stateParams, $rootScope, $window, Upload) {
+
+    var webfrontId = $stateParams['id'];
+
+    $scope.advanceWebfrontReport = function () {
+        var status = $scope.status;
+        var msg = "Are you sure you want all the invoices report ?";
+        var option = 0;
+        if (status == 'paid') {
+            option = 1;
+            msg = "Are you sure you want all the paid invoices report ?";
+        } else if (status == 'unpaid') {
+            option = 2;
+            msg = "Are you sure you want all the unpaid invoices report ?";
+        }
+        confirm(msg, function (data) {
             if (data) {
-                $http.get(siteUrl + "merchant/payments/ajaxDeletePaymentFile/" + id).then(function (response) {
-                    if (response.data.status == 'success') {
-                        $('#file-no-' + id).remove();
-                    }
-                });
+                $window.location = siteUrl + 'merchant/payments/webfront-report/' + $scope.webfront.id + '/' + option;
             }
         }, {return: true});
     }
 
-    $scope.fetchCustomFields = function () {
-        var paymentFileId = $stateParams['id'];
-        $http.get(siteUrl + "merchant/payments/ajaxfetchCustomFields/" + paymentFileId).then(function (response) {
-            if (response.data.status == 'success') {
-                $scope.custom_fields = response.data.data;
-            }
-        });
-    }
-
-    $scope.viewPaymentsPagination = function (event) {
-        var $this = angular.element(event.target);
-        if ($this.parents('li').hasClass('active') || $this.parents('li').hasClass('disabled')) {
-            return false;
-        }
-        var url = $this.attr('href');
-        var key = 'page';
-        var page = unescape(url.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
-        page = (typeof page === 'undefined') ? 1 : page;
-        $scope.viewPayments(page);
-        return false;
-    }
-
-    $scope.viewPayments = function (page) {
-//        console.log($stateParams);
-        var paymentFileId = $stateParams['id'];
+    $scope.advanceWebfrontPayments = function () {
         $(".page-loading").removeClass("hidden");
-
-        var page = (typeof page === 'undefined') ? 1 : page;
-        var searchby = $('#searchby').val();
-        var keyword = $('#keyword').val();
-        var dataString = {'page': page, 'searchby': searchby, 'keyword': keyword};
-
+        var dataString = {'status': $scope.status};
         $http({
             method: "POST",
-            url: siteUrl + "merchant/payments/ajaxViewPayments/" + paymentFileId,
-            data: dataString,
-        }).then(function mySucces(response) {
+            url: siteUrl + "merchant/payments/ajaxAdvanceWebfrontPayments/" + webfrontId,
+            data: dataString
+        }).then(function (response) {
             if (response.data.status == 'success') {
                 var payments = response.data.payments;
                 var newPayments = [];
                 for (var i = 0; i < payments.length; i++) {
-                    payments[i].custom_fields = JSON.parse(payments[i]['custom_fields']);
+                    if (payments[i]['payee_custom_fields'])
+                        payments[i].payee_custom_fields = JSON.parse(payments[i]['payee_custom_fields']);
+                    if (payments[i]['payment_custom_fields'])
+                        payments[i].payment_custom_fields = JSON.parse(payments[i]['payment_custom_fields']);
                     newPayments.push(payments[i]);
                 }
                 $scope.payments = newPayments;
+                $scope.webfront = response.data.webfront;
                 $scope.file = response.data.file;
                 $scope.counter = response.data.counter;
                 $('#pagination-paginate .pagination').html(response.data.paging);
-            } else {
-//                $('#simple-table tbody').html("<tr><td colspan='8' style='text-align:center; color:red;'>No Data Found.</td></tr>");
             }
             $(".page-loading").addClass("hidden");
-        }, function myError(response) {
-            //Error Code//
         });
-
-        return false;
-    }
-
-    $scope.deletePayment = function (payment) {
-        var uniq_id = payment.uniq_id;        
-        var msg = "Are you sure you want to delete bill for <b>" + payment.name + "</b> ?";
-        confirm(msg, function (data) {
-            if (data) {
-                $http.post(siteUrl + "merchant/payments/ajaxDeletePayment/" + uniq_id).success(function (data, status, headers, config) {
-                    if (data.status == 'success') {
-                        $('#payment-' + uniq_id).remove();
-                    }
-                });
-            }
-        }, {return: true});
-    }
-
-    $scope.confirmUpload = function (id) {
-        var paymentFileId = $stateParams['id'];
-        confirm("Are you sure you want to confirm ? ", function (data) {
-            if (data) {
-                window.location = siteUrl + "merchant/payments/confirmUpload/" + paymentFileId
-            }
-        }, {return: true});
-    }
-
-    $scope.cancelUpload = function (id) {
-        var paymentFileId = $stateParams['id'];
-        confirm("Are you sure you want to cancel ? ", function (data) {
-            if (data) {
-                window.location = siteUrl + "merchant/payments/cancelUpload/" + paymentFileId
-            }
-        }, {return: true});
     }
 
 });
 
-//app.controller('ImportPaymentsCtrl', function ($scope) {
-
-app.controller('ImportPaymentsCtrl', function ($scope, $http, $timeout, $compile, Upload) {
-
-    $('#file').ace_file_input({
-        no_file: 'No File ...',
-        btn_choose: 'Choose',
-        btn_change: 'Change',
-        droppable: false,
-        onchange: null,
-        thumbnail: false, //| true | large
-        whitelist: 'xls|xlsx',
-//        blacklist: 'exe|php'
-        //onchange:''
-        //
-    });
-    $('#fileinput').on('change', function (e) {
-        e.preventDefault();
-        var value = $(this).val();
-        var ext = value.substring(value.lastIndexOf('.') + 1);
-        var ext = ext.toLowerCase();
-        var extList = ["xls", "xlsx", "csv"];
-        if ($.inArray(ext, extList) < 0) {
-            $(this).val('');
-            $('label a.remove').click();
-            alert("Invalid input file format! Please upload only excel file");
-            return false;
-        } else {
-            return true;
-        }
-    });
-    //datepicker value and options
-    $('.datepicker').datepicker();
-
-    $scope.importExcel = function (file) {
-
-        $(".page-loading").removeClass("hidden");
-
-        $scope.formUpload = true;
-        if (file != null) {
-            $scope.errorMsg = null;
-            file.upload = Upload.upload({
-                url: siteUrl + "merchant/payments/ajaxImportPayments" + $scope.getReqParams(),
-                headers: {
-                    'optional-header': 'header-value'
-                },
-                data: {note: $scope.note, last_payment_date: $scope.last_payment_date, file: file}
-            });
-
-            file.upload.then(function (response) {
-                $(".page-loading").addClass("hidden");
-                if (response.data.status == 'success') {
-                    $('#success-msg').show().delay(2000).slideUp();
-                    $scope.note = '';
-                    $scope.last_payment_date = '';
-                    $('#fileinput').val('').blur();
-                } else {
-                    $('#error-msg').show().delay(2000).slideUp();
-                }
-                $timeout(function () {
-                    file.result = response.data;
-                });
-            }, function (response) {
-                if (response.status > 0) {
-                    $scope.errorMsg = response.status + ': ' + response.data;
-                }
-            }, function (evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-//                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
-
-//                file.upload.xhr(function (xhr) {
-//                    // xhr.upload.addEventListener('abort', function(){console.log('abort complete')}, false);
-//                });
-
-        }
-    };
-
-    $scope.getReqParams = function () {
-        return $scope.generateErrorOnServer ? '?errorCode=' + $scope.serverErrorCode + '&errorMessage=' + $scope.serverErrorMsg : '';
-    };
-
+app.controller('DashboardCtrl', function ($scope, $http, $timeout, $compile, $stateParams, $rootScope, $window, Upload) {
+    $scope.getMerchantData = function () {
+        $http.get(siteUrl + "merchant/users/ajaxGetProfileData").then(function (response) {
+            $scope.merchant = response.data.merchant
+        });
+    }
 });
+
+app.directive('noSpecialChar', function () {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == null)
+                    return ''
+                cleanInputValue = inputValue.replace(/[^\w\s]/gi, '');
+                if (cleanInputValue != inputValue) {
+                    modelCtrl.$setViewValue(cleanInputValue);
+                    modelCtrl.$render();
+                }
+                return cleanInputValue;
+            });
+        }
+    }
+});
+
 //////////////////////////////////
 function getParameterByName(name, url) {
     if (!url)
         url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-            results = regex.exec(url);
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"), results = regex.exec(url);
     if (!results)
         return null;
     if (!results[2])
@@ -433,6 +451,7 @@ $(function () {
 
         $('.nav-list').find('li').removeClass('active');
         $(this).parent('li').addClass('active');
+        $('#sidebar').removeClass('display');
     });
 });
 

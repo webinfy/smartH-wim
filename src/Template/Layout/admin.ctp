@@ -1,53 +1,73 @@
-<?php echo $this->element('Admin/header'); ?>
-<?php echo $this->element('script_file'); ?>
-<style>
-    .main-content {
-        counter-reset: sec;
-    }
-    .custom_field_counter::before {
-        counter-increment: sec;
-        content:  counter(sec);
-    }
-    /*******Succes & Error Message Start*******/
-    div.message::before {
-        background-color: #fff;
-        border-radius: 15px;
-        color: #1AAF65;
-        content: "i";
-        display: inline-block;
-        font-size: 16px;
-        left: -11px;
-        padding: 6px 8px 5px;
-        position: relative;
-        text-align: center;
-        vertical-align: middle;
-        width: 12px;
-    }
-    div.message {
-        background-color: #1AAF65;
-        color: #FFF;
-        cursor: pointer;
-        display: block;
-        font-size: 14px;
-        font-weight: normal;
-        overflow: hidden;
-        padding: 8px 20px;
-        position: fixed;
-        right: 15px;
-        top: 40px;
-        transition: height 300ms ease-out 0s;
-        z-index: 999;
-    }
-    div.message.error {
-        background-color: #C3232D;
-        color: #FFF;
-    }
-    div.message.error:before {   
-        color: #C3232D;
-        content: "x";
-    }
-</style>
-<?= $this->Flash->render() ?>
-<?php echo $this->element('Admin/sidebar'); ?>
-<?= $this->fetch('content') ?>
-<?php echo $this->element('Admin/footer'); ?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta charset="utf-8" />
+        <title><?= SITE_NAME ?> : Admin Panel</title>
+        <base href="<?= HTTP_ROOT; ?>" target="_self">
+        <meta name="description" content="overview &amp; stats" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+        <!-- bootstrap & fontawesome -->
+        <link rel="stylesheet" href="assets/css/bootstrap.css" />
+        <link rel="stylesheet" href="components/font-awesome/css/font-awesome.css" />
+        <!-- page specific plugin styles -->  
+        <!-- text fonts -->
+        <link rel="stylesheet" href="assets/css/ace-fonts.css" />
+        <!-- ace styles -->
+        <link rel="stylesheet" href="assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+        <link rel="stylesheet" href="assets/css/ace-skins.css" />
+        <link rel="stylesheet" href="assets/css/ace-rtl.css" />
+        <link rel="stylesheet" href="assets/css/ace-themes.css" />
+        <link href="plugins/custom-alert-master/dist/css/custom-alert.min.css" rel="stylesheet" type="text/css"/>
+        <link href="plugins/select2/select2.min.css" rel="stylesheet" type="text/css"/>
+        <!-- inline styles related to this page -->
+        <!-- ace settings handler -->
+        <script src="assets/js/ace-extra.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <script> window.jQuery || document.write('<script src="components/jquery/dist/jquery.js"><\/script>');</script>   
+        <?php echo $this->element('script_file'); ?>    
+    </head>
+
+    <body class="skin-3 no-skin">
+        <!-- #section:basics/navbar.layout -->
+        <?php echo $this->element('Admin/header'); ?>        
+        <!-- /section:basics/navbar.layout -->
+
+        <!--Navbar Start-->
+        <div id="navbar" class="navbar navbar-default ace-save-state responsive-navbar">
+            <div class="navbar-container ace-save-state" id="navbar-container">                
+                <button type="button" class="navbar-toggle menu-toggler pull-left display" id="menu-toggler" data-target="#sidebar">
+                    <span class="sr-only">Toggle sidebar</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>   
+            </div><!-- /.navbar-container -->
+        </div>
+        <!--Navbar End-->
+
+        <div class="main-container ace-save-state" id="main-container">           
+            <?= $this->Flash->render() ?>
+            <?= $this->element('Admin/sidebar'); ?>
+            <?= $this->fetch('content') ?>       
+            <?= $this->element('footer'); ?>
+            <a href="javascript:;" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+                <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+            </a>
+        </div><!-- /.main-container -->
+
+        <!-- basic scripts -->
+        <script src="components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="components/chosen/chosen.jquery.js"></script>
+
+        <script src="assets/js/src/ace.js"></script>
+        <script src="assets/js/src/ace.basics.js"></script>
+        <script src="assets/js/src/ace.sidebar.js"></script>
+
+        <!-- inline scripts related to this page -->
+        <script src="js/common.js"></script>
+        <script src="plugins/custom-alert-master/dist/js/custom-alert.min.js"></script>  
+        <script src="plugins/select2/select2.min.js"></script>         
+    </body>
+</html>

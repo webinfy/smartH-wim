@@ -32,7 +32,6 @@ class AppController extends Controller {
             }
         }
 
-
 //        $this->Auth->config('authenticate', [
 //            'Form' => [
 //                'fields' => ['username' => 'email']
@@ -45,10 +44,17 @@ class AppController extends Controller {
 //                ]
 //            ]
 //        ]);
+//        if ($this->Auth->user('id')) {
+//            $userDetails = $this->Users->find()->where(['Users.id' => $this->Auth->user('id')])->contain(['MerchantProfiles'])->first();
+//            $this->set(compact('userDetails'));
+//        }
 
         if ($this->Auth->user('id')) {
-            $userDetails = $this->Users->find()->where(['Users.id' => $this->Auth->user('id')])->contain(['MerchantProfiles'])->first();
-            $this->set(compact('userDetails'));
+            $this->loadModel('Users');
+            $userId = $this->Auth->user('id'); //$_SESSION['Auth']['User']['id']; //$this->request->session()->user('id');
+            $this->Users->hasOne('MerchantProfiles', ['foreignKey' => 'merchant_id', 'joinType' => 'LEFT']);
+            $loginDetails = $this->Users->find('all')->where(['Users.id' => $userId])->contain(['MerchantProfiles'])->first();
+            $this->set(compact('loginDetails'));
         }
     }
 

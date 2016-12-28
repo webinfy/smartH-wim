@@ -1,174 +1,81 @@
 <!-- /section:basics/sidebar -->
-<div class="main-content">
-    <div class="main-content-inner">
-        <!-- #section:basics/content.breadcrumbs -->
-        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-            <ul class="breadcrumb">
-                <li>
-                    <i class="ace-icon fa fa-home home-icon"></i>
-                    <a href="javascript:;">Home</a>
-                </li>
-                <li>
-                    <a href="javascript:;"> Payments </a>
-                </li>
-                <li class="active"> Import Payments </li>
-            </ul><!-- /.breadcrumb -->     
-        </div>
+<div class="main-content" style="background: #CCC">
+    <div class="main-content-inner">  
         <!-- /section:basics/content.breadcrumbs -->
         <div class="page-content">
             <!-- #section:settings.box -->
-            <!--<div ng-include="'views/common/change_skin.html'"></div>-->
-            <!-- /.ace-settings-container -->
-            <!-- /section:settings.box -->
-            <div class="page-header">
-                <h1>
-                    Import Payments From Excel     
-                    <a href="merchant/payments/downloadSampleExcel" style="color: red; margin-left: 5px; font-size: .7em;" >(Download Sample Excel)</a>
-                </h1>
-
-            </div><!-- /.page-header -->
             <div class="row">
-                <div class="col-xs-12">
-                    <!-- PAGE CONTENT BEGINS -->
-                    <!--<form name="importForm" action="merchant/payments/importPayments" method="post" class="form-horizontal" enctype="multipart/form-data">-->
+                <!-- /section:settings.box -->
+
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Upload Excel <span style="color: green;">[{{title}}]</span>                                 
+                    </h1>                    
+                </div>
 
 
-                    <form name="myForm" class="form-horizontal">
-                        
-                         <div style="display: none;" id="error-msg" class="alert alert-danger">
-                            <button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>
-                            <p><i class="ace-icon fa fa-times"></i> <span id="err-msg-content">Some error occurred. Please try again</span></p>                            
-                        </div>
+                <div class="col-xs-12">          
 
-                        <div style="display: none;" id="success-msg" class="alert alert-success">
-                            <button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>
-                            <p><i class="ace-icon fa fa-check"></i>&nbsp;File Imported successfully!!.</p>                            
-                        </div>
-                        
-                        <div class="row">    
+                    <div class="content-main-area" style="padding: 20px;">
 
-                            <div class="col-xs-6 col-sm-12">
-                                <label for="id-date-picker-1"> Note <span style="color: red;">*</span></label>                  
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <input type="text" id="note" name="note" ng-model="note" required="" class="form-control" maxlength="140" placeholder="Ex: Bill for house rent for the month of August" />
-                                        <!--<i ng-show="myForm.note.$error.required">*Please enter the note.</i><br>-->
+                        <form name="myForm" class="form-horizontal" novalidate role="form" ng-submit="myForm.$valid && importExcel(excelFile)">
+                            <div id="flash-msg"></div>
+                            <div class="row">  
+
+                                <div class="col-xs-6 col-sm-6">
+                                    <label for="id-date-picker-1" style="font-weight: bold;">Payment Cycle Date <!--<span style="font-size: 13px;">(Late fee will be applied for payment made after this)</span><span style="color: red;">*</span>--></label>                  
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <input type="text" id="payment_cycle_date" ng-model="payment_cycle_date" name="payment_cycle_date" required="required" class="form-control datepicker" placeholder="Payment Cycle Date" autocomplete="off" />
+                                            <div ng-show="myForm.$submitted || myForm.payment_cycle_date.$touched" style="color:red;"> 
+                                                <p ng-show="myForm.payment_cycle_date.$error.required">Please enter last payment date.</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>  
+                                </div>                                 
 
-                            <div class="col-xs-6 col-sm-6">
-                                <label for="id-date-picker-1">Payment Cycle <span style="font-size: 13px;">(Last payment date)</span><span style="color: red;">*</span></label>                  
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <input type="text" id="last_payment_date" ng-model="last_payment_date" name="last_payment_date" required="" class="form-control datepicker" placeholder=" Last date before which payment should be made." autocomplete="off" />
-                                        <!--<i ng-show="myForm.last_payment_date.$error.required">*Please last payment date.</i><br>-->
+                                <div class="col-xs-6 col-sm-6">
+                                    <label for="fileinput" style="font-weight: bold;">Browse File  &nbsp;<span style="color: red;">*(Excel or CSV Only)</span></label>                  
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <input type="file" id="fileinput" name="excelFile" ngf-select  ng-model="excelFile" class="form-controlXX" required="required" />                                       
+                                            <div ng-show="myForm.$submitted || myForm.excelFile.$touched" style="color:red;"> 
+                                                <p ng-show="myForm.excelFile.$error.required">Please browse file to upload.</p>                                              
+                                            </div>
+                                        </div>
                                     </div>
+                                </div> 
+
+                            </div>    
+
+                            <div class="space-4"></div>
+                            <div class="hr hr-24"></div>  
+
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9" style="text-align: right;">
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="ace-icon fa fa-check bigger-110"></i>
+                                        Import
+                                    </button>
+                                    <!--
+                                    <button ng-disabled="!myForm.$valid" ng-click="importExcel(excelFile)" class="btn btn-info">
+                                        <i class="ace-icon fa fa-check bigger-110"></i>
+                                        Import
+                                    </button>
+                                    -->
+                                    &nbsp; &nbsp; &nbsp;
+                                    <a  href="merchant/#/webfront-listing" class="btn">
+                                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                                        Back
+                                    </a>
                                 </div>
-                            </div> 
-
-                            <div class="col-xs-6 col-sm-6">
-                                <label for="id-date-picker-1">Browse File  &nbsp;<span style="color: red;">*(Excel or CSV Only)</span></label>                  
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <input type="file" id="fileinput" ngf-select  ng-model="excelFile" name="file" required="" />
-                                        <!--<i ng-show="myForm.file.$error.required">*Browse File</i>-->
-                                    </div>
-                                </div>
-                            </div> 
-
-
-                            <!--Profile Picture: <input type="file" ngf-select ng-model="picFile" name="file" ngf-accept="'image/*'"  required>-->
-                            <!--                            <i ng-show="myForm.file.$error.required">*required</i>
-                                                        <br/>-->
-
-                            <!--<button ng-disabled="!myForm.$valid" ng-click="uploadPic(excelFile)">Submit</button>-->
-
-
-
-
-                        </div>    
-
-                        <div class="space-4"></div>
-                        <div class="clearfix form-actions">
-                            <div class="col-md-offset-3 col-md-9" style="text-align: right;">
-                                <button ng-disabled="!myForm.$valid" ng-click="importExcel(excelFile)" class="btn btn-info">
-                                    <i class="ace-icon fa fa-check bigger-110"></i>
-                                    Import
-                                </button>
-                                &nbsp; &nbsp; &nbsp;
-                                <button class="btn" type="reset">
-                                    <i class="ace-icon fa fa-undo bigger-110"></i>
-                                    Reset
-                                </button>
                             </div>
-                        </div>
-                        <div class="hr hr-24"></div>  
-
-                    </form>
-
-
-                    <!--                    <form name="myFormXX" role="form" ng-submit="myForm.$valid"  class="form-horizontal">    
-                                            <div class="alert alert-danger" id="error-msg" style="display: none;">
-                                                <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
-                                                <p><i class="ace-icon fa fa-ban"></i> Some Error Occured. Please try again.</p>                            
-                                            </div>
-                                            <div class="alert alert-success" id="success-msg" style="display: none;">
-                                                <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
-                                                <p><i class="ace-icon fa fa-check"></i>&nbsp;Customer Added successfully!!.</p>                            
-                                            </div>
-                                             #section:elements.form 
-                                            <div class="row">  
-                                                <div class="col-xs-6 col-sm-12">
-                                                    <label for="id-date-picker-1"> Note <span style="color: red;">*</span></label>                  
-                                                    <div class="form-group">
-                                                        <div class="col-xs-12">
-                                                            <input type="text" id="note" name="note" ng-model="note" required="" class="form-control" maxlength="140" placeholder="Ex: Bill for house rent for the month of August" />
-                                                            <i ng-show="importForm.note.$error.required">*Please enter the note.</i><br>
-                                                        </div>
-                                                    </div>
-                                                </div>                           
-                    
-                                                <div class="col-xs-6 col-sm-6">
-                                                    <label for="id-date-picker-1">Payment Cycle <span style="font-size: 13px;">(Last payment date)</span><span style="color: red;">*</span></label>                  
-                                                    <div class="form-group">
-                                                        <div class="col-xs-12">
-                                                            <input type="text" id="last_payment_date" ng-model="last_payment_date" name="last_payment_date" required="" class="form-control datepicker" placeholder=" Last date before which payment should be made." autocomplete="off" />
-                                                        </div>
-                                                    </div>
-                                                </div> 
-                    
-                                                <div class="col-xs-6 col-sm-6">
-                                                    <label for="id-date-picker-1">Browse File  &nbsp;<span style="color: red;">*(Excel or CSV Only)</span></label>                  
-                                                    <div class="form-group">
-                                                        <div class="col-xs-12">
-                                                            <input type="file" id="fileXX" ng-model="excelFile" name="file" required="" />
-                                                        </div>
-                                                    </div>
-                                                </div> 
-                    
-                                            </div>                       
-                    
-                                            <div class="space-4"></div>
-                                            <div class="clearfix form-actions">
-                                                <div class="col-md-offset-3 col-md-9" style="text-align: right;">
-                                                    <button ng-disabled="!XXmyForm.$valid" ng-click="importExcel(excelFile)" class="btn btn-info" type="button" >
-                                                        <i class="ace-icon fa fa-check bigger-110"></i>
-                                                        Import
-                                                    </button>
-                                                    &nbsp; &nbsp; &nbsp;
-                                                    <button class="btn" type="reset">
-                                                        <i class="ace-icon fa fa-undo bigger-110"></i>
-                                                        Reset
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="hr hr-24"></div>                            
-                                        </form>
-                    -->
-
-                </div><!-- /.col -->
-            </div><!-- /.row -->
+                        </form>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+                
+                
+            </div>
         </div><!-- /.page-content -->
     </div>
 </div><!-- /.main-content -->
