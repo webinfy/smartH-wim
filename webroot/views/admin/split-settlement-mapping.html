@@ -1,0 +1,67 @@
+<div class="main-content" style="background: #BBBBBB;">
+    <div class="main-content-inner">
+        <div class="page-content">    
+            <!-- /.page-header -->
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Split Settlement Mapping                         
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">
+                    <div class="content-main-area" style="padding: 20px; min-height: 250px;">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form name="merchantForm" id="splitSettlement" class="form-horizontal" novalidate role="form" ng-submit="merchantForm.$valid && addSplitSettlement($event)">
+
+                            <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                            <div class="form-group" ng-init="getAllMerchants()">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Select Merchant  <span style="color: red;">*</span> :</label>
+                                <div class="col-sm-4">                                    
+                                    <select name="merchant_id" id="merchant_id" chosenXX class="form-control select2 chosen-select" ng-options="merchant.id as merchant.name  for merchant in merchants track by merchant.id" ng-model="merchant_id" ng-change="fetchWebfronts(merchant_id)" required="required">
+                                        <option value="">Select Merchant</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <section ng-show="merchant_id">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Select Webfront  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-4">                                    
+                                        <select name="webfront_id" id="webfront_id" chosenXX class="form-control select2 chosen-select" ng-options="webfront.id as webfront.title  for webfront in webfronts track by webfront.id" ng-model="webfront_id" ng-change="fetchPaymentFields(webfront_id)" required="required">
+                                            <option value="">Select Webfront</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <fieldset ng-show="payment_fileds.length" style="border: 1px solid #CCC; margin: 15px 0; padding-top: 10px; background: #CCC;">                              
+                                    <div class="form-group" ng-repeat="payment_filed in payment_fileds">
+                                        <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> {{payment_filed.name}} : </label>
+                                        <div class="col-sm-4">                                        
+                                            <select class="form-control select2" name="payment_filed[{{payment_filed.id}}]">
+                                                <option value="">Parent Merchant</option>                                                                                  
+                                                <option ng-repeat="submerchant in submerchants" value="{{submerchant.id}}">{{submerchant.name}}</option>                                                                                  
+                                            </select>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </section>
+
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-md-9"> 
+                                    <button ng-disabled="!payment_fileds" class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Submit </button>  &nbsp; &nbsp; &nbsp;
+                                    <a class="btn" href="admin/#/split-settlement-mapping-list"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+

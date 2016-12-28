@@ -1,0 +1,32 @@
+.content-main-area{background: #fff !important;border-top:3px solid #155092;-webkit-box-shadow: 0px 3px 5px 0px rgba(217,221,226,1); -moz-box-shadow: 0px 3px 5px 0px rgba(217,221,226,1); box-shadow: 0px 3px 5px 0px rgba(217,221,226,1);margin-bottom: 30px;border-radius: 3px;padding: 30px 0;float:left;width:100%;}
+.content-main-area .btn-info,
+.content-main-area .btn-info:focus,
+.content-main-area .btn-info.focus {
+    background-color: #155092 !important;
+    border-color: #155092;
+}
+.no-skin .nav-list > li .submenu > li > a {
+    background-color: #fff;
+    border-top-color: #e4e4e4;
+    color: #616161;
+}
+.no-skin .nav-list > li .submenu > li > a:hover {
+    background-color: #f1f5f9;
+    color: #da251a;
+}
+.cropit-preview {
+    background-color: #f8f8f8;
+    background-size: cover;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-top: 7px;
+    width: 265px;
+    height: 190px;
+}
+.cropit-image-zoom-input {width: 265px !important;}
+.cropit-preview-image-container {
+    cursor: move;
+}
+.image-size-label {
+    margin-top: 10px;
+}

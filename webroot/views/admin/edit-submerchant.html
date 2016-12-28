@@ -1,0 +1,58 @@
+<div class="main-content" style="background: #BBBBBB;">
+    <div class="main-content-inner">
+        <div class="page-content">    
+            <!-- /.page-header -->
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Edit Sub-Merchant                         
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">
+                    <div class="content-main-area" style="padding: 20px;">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form name="merchantForm" class="form-horizontal" novalidate role="form" ng-init="getSubMerchantDetails()" ng-submit="merchantForm.$valid && editSubMerchant()">
+
+                            <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+                            
+                            <div class="form-group" ng-init="getAllMerchants()">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Select Parent Merchant  <span style="color: red;">*</span> :</label>
+                                <div class="col-sm-4">                                    
+                                    <select chosen id="merchant_id" class="form-control chosen-select" ng-options="merchant.id as merchant.name  for merchant in merchants" ng-model="merchant_id" ng-change="fetchWebfronts(merchant_id)" required="required"></select>
+                                </div>
+                                <div ng-show="merchantForm.$submitted || merchantForm.merchant_id.$touched" style="color:red;">                                                   
+                                    <p ng-show="merchantForm.merchant_id.$error.required"><font color="red">&nbsp;&nbsp;Please select a Parent Merchant.</font></p>                                       
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Enter Sub-Merchant Name  <span style="color: red;">*</span> : </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="name"  placeholder="Sub-Merchant Name" ng-model="submerchant.name" ng-minlength="5" ng-pattern="/^[a-zA-Z0-9]*$/" class="col-xs-10 col-sm-5" required="required" autocomplete="off"/>
+                                    <div ng-show="merchantForm.$submitted || merchantForm.name.$touched" style="color:red;">                                                   
+                                        <p ng-show="merchantForm.name.$error.required"><font color="red">&nbsp;&nbsp;Name is required!</font></p>
+                                        <p ng-show="merchantForm.name.$error.minlength"><font color="red">&nbsp;&nbsp;Name is too short!</font></p>
+                                        <p ng-show="merchantForm.name.$error.pattern">&nbsp;&nbsp;Name should not contain whitespace or any special character!</p>
+                                    </div>
+                                    <span id="name-avail" style="margin-left: 5px;color: green;font-weight: bold; display: none;"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-md-9"> 
+                                    <button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>  &nbsp; &nbsp; &nbsp;
+                                    <a class="btn" href="admin/#/view-all-submerchant"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+

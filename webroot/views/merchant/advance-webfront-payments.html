@@ -1,0 +1,127 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC">
+    <div class="main-content-inner">   
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <!-- /section:settings.box -->
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        View Payments <span style="color: green;">[{{webfront.title}}]</span>                         
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="content-main-area" style="padding: 20px;">   
+
+                        <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                        <!--<div class="hr hr-24"></div>-->
+
+                        <div class="tabbable col-xs-12 front-creation-tab-design">
+                            <div class="row">  
+
+                                <div class="col-xs-12" style="margin: 20px 0; padding: 0;">  
+
+                                    <div class="pull-left">  
+                                        <select ng-init="status = 'all'" ng-change="advanceWebfrontPayments();" ng-model="status" id="view_option" name="status" style="min-width: 100px;" class="form-controll">
+                                            <option value="all">Invoices List</option>
+                                            <option value="paid">Paid Invoices List</option>
+                                            <option value="unpaid">Unpaid Invoices List</option>
+                                        </select>                                       
+                                    </div>
+
+                                    <div class="pull-right">  
+                                        <!--
+                                        <button ng-if="!chk_all" onclick="$('#chk_all').click();" class="btn btn-xs btn-default" title="Select All" >
+                                            <i  class="ace-icon fa fa-angle-down bigger-120"></i>
+                                            <span>Select All </span>              
+                                        </button>
+                                        <button  ng-if="chk_all" onclick="$('#chk_all').click();" class="btn btn-xs btn-default" title="Deselect All" >                                           
+                                            <i class="ace-icon fa fa-angle-up bigger-120"></i>                                                                         
+                                            <span>Deselect All</span>  
+                                        </button>
+                                        <button ng-click="deleteSelectedPayments()" class="btn btn-xs btn-danger" title="Delete All" >
+                                            <i class="ace-icon fa fa-trash bigger-120"></i>
+                                            Delete All                                    
+                                        </button>
+                                        <button ng-click="remindSelectedPayment()" class="btn btn-xs btn-success" title="Remind All">
+                                            <i class="ace-icon fa fa-envelope bigger-120"></i>
+                                            Remind All                                   
+                                        </button>    
+                                        -->
+                                        <!--<a href="merchant/payments/webfront-report/{{webfront.id}}">-->
+                                        <button ng-click="advanceWebfrontReport()" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Download Report" onmouseover="$(this).tooltip('show')">
+                                            <i class="ace-icon fa fa-download bigger-120"></i>
+                                            Download Report                              
+                                        </button>  
+                                        <!--</a>-->
+                                    </div>
+                                </div>
+
+                                <table id="simple-table" class="table  table-bordered table-hover" style="width: 100%; overflow: scroll;">
+                                    <thead>
+                                        <tr>                                         
+                                            <th style="ttext-align: center; width: 20px;"> <input type="checkbox" ng-model="chk_all" id="chk_all" onclick="$('.chk_payment').not('[disabled]').prop('checked', $(this).is(':checked'));" /> </th>
+                                            <th style="text-align: left;"> Name </th>
+                                            <th style="text-align: left;"> Email </th>
+                                            <th style="text-align: left;"> Phone </th>  
+                                            <th style="text-align: center;"> Bill Amount </th>                                                
+                                            <th style="text-align: center;"> Transaction Status </th>
+                                            <th style="text-align: center;"> Payment Status </th>
+                                            <th> Action </th>                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-init="advanceWebfrontPayments()">
+                                        <tr ng-repeat="payment in payments" id="payment-{{payment.uniq_id}}">                                        
+                                            <td style="text-align: center; width: 20px;"> <input ng-disabled="payment.status == 1" type="checkbox" class="chk_payment" value="{{payment.uniq_id}}" /> </td>
+                                            <td style="text-align: left;"> {{payment.name}} </td>
+                                            <td style="text-align: left;"> {{payment.email}} </td>                                        
+                                            <td style="text-align: left;"> {{payment.phone}} </td>
+                                            <td style="text-align: right; padding-right: 20px;"> Rs. {{payment.paid_amount}} </td>  
+                                            <td style="text-align: center;">{{(payment.unmappedstatus == ''|| payment.unmappedstatus==null) ? '--' : payment.unmappedstatus}}</td>  
+                                            <td style="text-align: center;">
+                                                <span ng-if="payment.status == 1" class="label label-sm label-primary" style="padding-top: 4px;">Paid</span>
+                                                <span ng-if="payment.status != 1" class="label label-sm label-warning" style="padding-top: 4px;">Unpaid</span>
+                                            </td>  
+                                            <td style="width: auto;">
+                                                <a ng-if="payment.status == 1" target="_blank" href="customer/payments/print-receipt/{{payment.id}}" data-toggle="tooltip" data-placement="top" title="View Receipt" onmouseover="$(this).tooltip('show')"><span class="label label-success arrowed-in-right arrowed">View Receipt</span></a> 
+                                                <!--
+                                                 <span ng-show="payment.status != 1">
+                                                     <a href="javascript:;" data-modal-id='editPayment{{payment.id}}' onclick="$('#' + $(this).attr('data-modal-id')).show();"><span class="label label-info arrowed-in-right arrowed">Edit</span></a>                                        
+                                                     <a href="javascript:;" ng-click="remindPayment(payment)" ><span class="label label-success arrowed-in-right arrowed">Remind</span></a> 
+                                                     <a href="javascript:;" ng-click="deletePayment(payment)" ><span class="label label-danger arrowed-in">Delete</span></a>                                        
+                                                 </span>
+                                                -->
+                                            </td> 
+                                        </tr>   
+                                        <tr ng-hide="payments.length"><td colspan="8" style="text-align:center; color: red;">No items found</td></tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="row" id='pagination'>
+                                    <div class="col-xs-3">
+                                        <div class="dataTables_info" role="status" aria-live="polite">{{counter}}</div>                                        
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="pagination-paginate">                                        
+                                            <ul class="pagination" ng-click="viewPaymentsPagination($event);" onclick="return false;">   
+                                                <!--Pagination Link Goes here -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div><!-- /.row --> 
+                        </div>
+                        <!-- #section:elements.form -->                          
+                        <!--<br class="clear"/>-->    
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+

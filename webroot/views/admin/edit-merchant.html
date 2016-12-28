@@ -1,0 +1,335 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC;">
+    <div class="main-content-inner">
+        <!-- #section:basics/content.breadcrumbs -->    
+
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">
+            <!-- #section:settings.box -->         
+
+            <!-- /section:settings.box -->
+
+            <!-- /.page-header -->
+
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Edit Merchant                         
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="content-main-area" style="padding: 20px;">
+                        <form name="merchantForm" class="form-horizontal" novalidate role="form" ng-submit="merchantForm.$valid && editMerchant(picFile, merchant.id)" ng-init="getEditMerchant()">
+
+                            <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                            <div class="col-xs-6 merchant-left">
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Society Name  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="name" id="name" required=""  placeholder="Name" ng-model="merchant.name" ng-minlength="5" ng-keyup="checkNameAvail(merchant.name)" ng-pattern="/^[a-zA-Z0-9]*$/" class="form-control" autocomplete="off"/>
+                                        <div ng-show="merchantForm.$submitted || merchantForm.name.$touched" style="color:red;">                                                   
+                                            <p ng-show="merchantForm.name.$error.required"><font color="red"> Name is required!</font></p>
+                                            <p ng-show="merchantForm.name.$error.minlength"><font color="red"> Name is too short!</font></p>
+                                            <p ng-show="merchantForm.name.$error.pattern"> Name should not contain whitespace or any special character!</p>
+                                        </div>
+                                        <span id="name-avail" style="margin-left: 5px;color: green;font-weight: bold; display: none;"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Society Reg No.  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="regd_no" id="regd_no" required=""  placeholder="Society Reg No" ng-model="merchant_profile.regd_no" class="form-control" autocomplete="off"/>
+                                        <div ng-show="merchantForm.$submitted || merchantForm.regd_no.$touched" style="color:red;">                                                   
+                                            <p ng-show="merchantForm.regd_no.$error.required"><font color="red"> Reg No is required!</font></p>
+                                        </div>                                        
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-9">
+                                        <input type="email" name="email" id="email" required="" placeholder="Email" ng-model="merchant.email" ng-keyup="checkEmailAvail(merchant.email)" class="form-control" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.email.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.email.$error.required"><font color="red"> Email is required!</font></p>
+                                            <p ng-show="merchantForm.email.$error.email"><font color="red"> Please enter valid Email!</font></p>
+                                        </div>
+                                        <span id="email-avail" style="margin-left: 5px;color: green;font-weight: bold; display: none;"></span>
+                                    </div>
+                                </div>                                
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Phone No.  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="phone" id="phone" required="" placeholder="Phone No." ng-model="merchant_profile.phone" ng-minlength="10" maxlength="15" ng-pattern="/^[0-9]+([,.-][0-9]+)?$/" class="form-control phone" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.phone.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.phone.$error.required"><font color="red"> Phone number is required!</font></p>
+                                            <p ng-show="merchantForm.phone.$error.minlength"><font color="red"> Number is too short!</font></p>
+                                            <p ng-show="merchantForm.phone.$error.pattern"> Invalid phone number!</p>
+                                        </div>
+                                    </div>
+                                </div>   
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Address  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-9">                                           
+                                        <textarea name="address" class="form-control" required="" ng-model="merchant_profile.address" style="padding-left: 5px;" placeholder="Address"></textarea>
+                                        <div ng-show="merchantForm.$submitted || merchantForm.address.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.address.$error.required"><font color="red"> Address is required!</font></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> City  <span style="color: red;">*</span> :</label>                             
+                                    <div class="col-sm-9">
+                                        <input type="text" name="city" id="city" required="" placeholder="City" ng-model="merchant_profile.city"  class="form-control" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.city.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.city.$error.required"><font color="red"> City is required!</font></p>
+                                        </div>                                 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> State  <span style="color: red;">*</span> :</label>                             
+                                    <div class="col-sm-9">
+                                        <input type="text" name="state" id="state" required="" placeholder="State" ng-model="merchant_profile.state"  class="form-control" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.state.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.state.$error.required"><font color="red"> State is required!</font></p>
+                                        </div>                                 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Country  <span style="color: red;">*</span> :</label>                             
+                                    <div class="col-sm-9">
+                                        <input type="text" name="country" id="country" required="" placeholder="Country" ng-model="merchant_profile.country"  class="form-control" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.country.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.state.$error.required"><font color="red"> Country is required!</font></p>
+                                        </div>                                 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Description  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-9">                                           
+                                        <textarea name="description" class="form-control" required="" ng-model="merchant_profile.description" style="padding-left: 5px;" placeholder="Description"></textarea>
+                                        <div ng-show="merchantForm.$submitted || merchantForm.description.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.description.$error.required"><font color="red"> Description is required!</font></p>
+                                        </div>
+                                    </div>
+                                </div>                                   
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">PAYUMID  <span style="color: red;">*</span> :</label>
+                                    <div class="col-sm-9">   
+                                        <input type="text" name="payuid" id="payuid" required=""  placeholder="PAYUMID" ng-model="merchant_profile.payuid" class="form-control" autocomplete="off"/>
+                                        <div ng-show="merchantForm.$submitted || merchantForm.payuid.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.payuid.$error.required"><font color="red"> PAYUMID is required!</font></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">PayU Key  <span style="color: red;">*</span> :</label>                             
+                                    <div class="col-sm-9">
+                                        <input type="text" name="payu_key" id="payu_key" required="" placeholder="PayU Key" ng-model="merchant_profile.payu_key" class="form-control" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.payu_key.$touched" style="color:red;">                                                    
+                                            <p ng-show="merchantForm.payu_key.$error.required"><font color="red"> PayU Key is required!</font></p>                                              
+                                        </div>
+                                    </div>
+                                </div>     
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">PayU Salt  <span style="color: red;">*</span> :</label>                             
+                                    <div class="col-sm-9">
+                                        <input type="text" name="payu_salt" id="payu_salt" required="" placeholder="PayU Salt" ng-model="merchant_profile.payu_salt" class="form-control" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.payu_salt.$touched" style="color:red;">                                                    
+                                            <p ng-show="merchantForm.payu_salt.$error.required"><font color="red"> PayU Salt is required!</font></p>                                              
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Convenience Fee  <span style="color: red;">*</span> :</label>                             
+                                    <div class="col-sm-9">
+                                        <input type="text" name="convenience_fee_amount" id="convenience_fee_amount" required="" placeholder="Convenience Fee Amount"  ng-pattern="/^[0-9]+([,.][0-9]+)?$/" ng-model="merchant_profile.convenience_fee_amount" class="form-control decimal" />
+                                        <div ng-show="merchantForm.$submitted || merchantForm.convenience_fee_amount.$touched" style="color:red;">                                                    
+                                            <p ng-show="merchantForm.convenience_fee_amount.$error.required"><font color="red"> Convenience Fee Amount is required!</font></p>                                               
+                                            <p ng-show="merchantForm.convenience_fee_amount.$error.pattern"> Please enter decimal value only!</p>
+                                        </div>
+                                    </div>
+                                </div> 
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Website : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="website" id="website"  placeholder="Website" ng-model="merchant_profile.website" class="form-control" autocomplete="off"/>
+                                        <!--
+                                        <div ng-show="merchantForm.$submitted || merchantForm.website.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.website.$error.url"><font color="red"> Please enter valid url!</font></p>                              
+                                        </div>
+                                        -->
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Facebook Url : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="facebook_url" id="facebook_url"  placeholder="Facebook Url" ng-model="merchant_profile.facebook_url" class="form-control" autocomplete="off"/>
+                                        <!--
+                                        <div ng-show="merchantForm.$submitted || merchantForm.facebook_url.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.facebook_url.$error.url"><font color="red"> Please enter valid url!</font></p>   
+                                        </div>
+                                        -->
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Twitter Url : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="twitter_url" id="twitter_url"  placeholder="Twitter Url" ng-model="merchant_profile.twitter_url" class="form-control" autocomplete="off"/>
+                                        <!--
+                                         <div ng-show="merchantForm.$submitted || merchantForm.twitter_url.$touched" style="color:red;"> 
+                                             <p ng-show="merchantForm.twitter_url.$error.url"><font color="red"> Please enter valid url!</font></p> 
+                                         </div>
+                                        -->
+                                    </div>
+                                </div>                                
+
+                            </div>
+
+
+
+                            <div class="col-xs-6 merchant-right">
+
+                                <div ng-if="merchant_profile.logo" class="form-group ng-scope">                            
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> &nbsp; </label>                        
+                                    <div class="col-sm-9">   
+                                        <img style="max-width: 140px;" ng-src="files/merchant_logo/{{merchant.merchant_profile.logo}}" ><br>           
+                                    </div>
+                                </div> 
+
+
+                                <!--
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Logo : </label>                               
+                                    <div class="col-sm-9">                            
+                                        <input type="file" id="logo" ngf-select ng-model="picFile" name="file" ngf-accept="'image/*'" class="form-controlXX" style="padding: 5px 0;" >                                
+                                        <div ng-show="merchantForm.$submitted || merchantForm.file.$touched" style="color:red;"> 
+                                            <p ng-show="merchantForm.file.$error.required"><font color="red"> Logo is required!</font></p>
+                                        </div>
+                                    </div>
+                                </div>  
+                                -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Logo :</label>
+                                    <div class="col-sm-9"> 
+                                        <div class="image-editor">
+                                            <input type="file" class="cropit-image-input">
+                                            <div class="cropit-preview"></div>
+                                            <div class="image-size-label">
+                                                Resize image
+                                            </div>
+                                            <input style="width: 300px;" type="range" class="cropit-image-zoom-input">
+                                            <input type="hidden" ng-model="webfront.file" name="image-data" class="hidden-image-data" />
+                                            <!--<button class="rotate-ccw">Rotate counterclockwise</button>-->
+                                            <!--<button class="rotate-cw">Rotate clockwise</button>-->
+                                            <!--<button class="export">Export</button>-->
+                                            <p><font color="red">Note : Please select image having size greater than 300x200px.</font></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-12" for="form-field-1" style="font-weight: normal;"> First Person Contact Details : </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Name : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="contact1_name" placeholder="Name" ng-model="merchant_profile.contact1_name" class="form-control"  />
+
+                                        <!--                                        <div ng-show="merchantForm.$submitted || merchantForm.contact1_name.$touched" style="color:red;">                                                    
+                                                                                    <p ng-show="merchantForm.contact1_name.$error.required"><font color="red"> Name is required!</font></p>                                              
+                                                                                </div>-->
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="contact1_email"  placeholder="Email" ng-model="merchant_profile.contact1_email" class="form-control" />
+                                        <!--                                        <div ng-show="merchantForm.$submitted || merchantForm.contact1_email.$touched" style="color:red;">                                                    
+                                                                                    <p ng-show="merchantForm.contact1_email.$error.required"><font color="red"> Email is required!</font></p>                                              
+                                                                                </div>-->
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Phone : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="contact1_phone" placeholder="Phone" ng-model="merchant_profile.contact1_phone" class="form-control"  />
+                                        <!--                                        <div ng-show="merchantForm.$submitted || merchantForm.contact1_phone.$touched" style="color:red;">                                                    
+                                                                                    <p ng-show="merchantForm.contact1_phone.$error.required"><font color="red"> Phone is required!</font></p>                                              
+                                                                                </div>-->
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-12" for="form-field-1" style="font-weight: normal;"> Second Person Contact Details : </label>
+                                </div>                                
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Name : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="contact2_name" placeholder="Name" ng-model="merchant_profile.contact2_name" class="form-control" />
+                                        <!--                                        <div ng-show="merchantForm.$submitted || merchantForm.contact2_name.$touched" style="color:red;">                                                    
+                                                                                    <p ng-show="merchantForm.contact2_name.$error.required"><font color="red"> Name is required!</font></p>                                              
+                                                                                </div>-->
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="contact2_email"  placeholder="Email" ng-model="merchant_profile.contact2_email" class="form-control"  />
+                                        <!--                                        <div ng-show="merchantForm.$submitted || merchantForm.contact2_email.$touched" style="color:red;">                                                    
+                                                                                    <p ng-show="merchantForm.contact2_email.$error.required"><font color="red"> Email is required!</font></p>                                              
+                                                                                </div>-->
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Phone : </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="contact2_phone" placeholder="Phone" ng-model="merchant_profile.contact2_phone" class="form-control"  />
+                                        <!--                                        <div ng-show="merchantForm.$submitted || merchantForm.contact2_phone.$touched" style="color:red;">                                                    
+                                                                                    <p ng-show="merchantForm.contact2_phone.$error.required"><font color="red"> Phone is required!</font></p>                                              -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="clear: both;"></div> <br/>
+
+
+
+                            <div class="form-group">
+                                <div class="col-md-offset-5 col-md-7"> 
+                                    <button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>  &nbsp; &nbsp; &nbsp;
+                                    <a class="btn" href="admin/#/view-all-merchant" data-onclick="$('a[href=\'admin/#/view-all-merchant\']').click();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div>
+    </div><!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+

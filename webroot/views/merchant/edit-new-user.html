@@ -1,0 +1,103 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC;">
+    <div class="main-content-inner">
+        <!-- #section:basics/content.breadcrumbs -->
+
+
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">
+            <!-- #section:settings.box -->
+
+            <!-- /section:settings.box -->
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Edit user                         
+                    </h1>                    
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="content-main-area" style="padding: 20px;">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form name="userForm" class="form-horizontal" role="form" ng-submit="userForm.$valid && editUser(user.id)" ng-init="getEditUser()">
+                            <div class="alert alert-danger" id="error-msg" style="display: none;">
+                                <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                                <p><i class="ace-icon fa fa-times"></i> <span id="err-msg-content"></span></p>                            
+                            </div>
+
+                            <div class="alert alert-success" id="success-msg" style="display: none;">
+                                <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                                <p><i class="ace-icon fa fa-check"></i><span id="suc-msg-content"></span></p>                            
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">&nbsp;</label>
+                                <div class="col-sm-9">
+                                    <p style="color: red; font-weight: bold;">All (*) fields are mandatory</p> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Name <span class="required">*</span> : </label>                           
+                                <div class="col-sm-9">
+                                    <input type="text" name="name" id="name" required=""  placeholder="Name" ng-model="user.name" ng-minlength="5" ng-keyup="checkNameAvail(user.name)" ng-pattern="/^[a-zA-Z0-9]*$/" class="col-xs-10 col-sm-5" autocomplete="off"/>
+                                    <div ng-show="userForm.$submitted || userForm.name.$touched" style="color:red;">                                                   
+                                        <p ng-show="userForm.name.$error.required"><font color="red">&nbsp;&nbsp;Name is required!</font></p>
+                                        <p ng-show="userForm.name.$error.minlength"><font color="red">&nbsp;&nbsp;Name is too short!</font></p>
+                                        <p ng-show="userForm.name.$error.pattern">&nbsp;&nbsp;Name should not contain whitespace or any special character!</p>
+                                    </div>
+                                    <span id="name-avail" style="margin-left: 5px;color: green;font-weight: bold; display: none;"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email <span class="required">*</span> : </label>
+                                <div class="col-sm-9">
+                                    <input type="email" name="email" id="email" required="" placeholder="Email" ng-model="user.email" ng-keyup="checkEmailAvail(user.email)" class="col-xs-10 col-sm-5" />
+                                    <div ng-show="userForm.$submitted || userForm.email.$touched" style="color:red;"> 
+                                        <p ng-show="userForm.email.$error.required"><font color="red">&nbsp;&nbsp;Email is required!</font></p>
+                                        <p ng-show="userForm.email.$error.email"><font color="red">&nbsp;&nbsp;Please enter valid Email!</font></p>
+                                    </div>
+                                    <span id="email-avail" style="margin-left: 5px;color: green;font-weight: bold; display: none;"></span>
+                                </div>
+                            </div>             
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Phone No. <span class="required">*</span> : </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="phone" id="phone" required="" placeholder="Phone No." ng-model="user.phone" ng-minlength="10" maxlength="15" ng-pattern="/^[0-9]+([,.-][0-9]+)?$/" class="col-xs-10 col-sm-5 phone" />
+                                    <div ng-show="userForm.$submitted || userForm.phone.$touched" style="color:red;"> 
+                                        <p ng-show="userForm.phone.$error.required"><font color="red">&nbsp;&nbsp;Phone number is required!</font></p>
+                                        <p ng-show="userForm.phone.$error.minlength"><font color="red">&nbsp;&nbsp;Number is too short!</font></p>
+                                        <p ng-show="userForm.phone.$error.pattern">&nbsp;&nbsp;Invalid phone number!</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">   
+                                <div class="col-sm-9 col-md-offset-3">
+                                    <label class="radio-inline">                                
+                                        <input type="radio" name="access" value="1" ng-model="user.access" ng-checked="true">View only
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="access" value="2" ng-model="user.access">Full access
+                                    </label>  
+                                </div>                               
+                            </div>
+
+                            <div class="form-group"> 
+                                <div class="col-md-offset-3 col-md-9"> 
+                                    <button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>  &nbsp; &nbsp; &nbsp;
+                                    <a class="btn" href="merchant/#/view-all-user" data-onclick="$('a[href=\'merchant/#/view-all-user\']').click();"> <i class="ace-icon fa fa-undo bigger-110"></i> Back </a>
+                                </div>
+                            </div>
+
+                        </form>
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+

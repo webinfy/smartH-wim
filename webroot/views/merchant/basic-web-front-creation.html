@@ -1,0 +1,202 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC;">
+    <div class="main-content-inner">   
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <!-- /section:settings.box -->
+            <div class="row">
+
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Create a Basic Web Front                         
+                    </h1>                    
+                </div>
+
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="content-main-area" style="padding: 20px;">       
+
+                        <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                        <div class="tabbable col-xs-12 front-creation-tab-design">
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#website-content">
+                                        <i class="green ace-icon fa fa-home bigger-120"></i>
+                                        <span class="tab-data-hid">Website Content</span>
+                                        <span class="badge badge-success">1</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <!--<a data-toggle="tab" href="#payment-information">-->
+                                    <a data-toggle="tab" href="javascript:;">
+                                        <i class="ace-icon fa fa-user bigger-120"></i>
+                                        <span class="tab-data-hid">Customer Fields</span>
+                                        <span class="badge badge-grey">2</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <!--<a data-toggle="tab" href="#promotion-setting">-->
+                                    <a data-toggle="tab" href="javascript:;">
+                                        <i class="ace-icon fa fa-money bigger-120"></i>
+                                        <span class="tab-data-hid">Payment Fields</span>
+                                        <span class="badge badge-grey">3</span>
+                                    </a>
+                                </li>
+                                <li>                                    
+                                    <a data-toggle="tab" href="javascript:;">
+                                        <i class="ace-icon fa fa-download bigger-120"></i>
+                                        <span class="tab-data-hid">Download Sample Excel</span>
+                                        <span class="badge badge-grey">4</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div id="website-content" class="tab-pane fade in active">
+
+                                    <form ng-init="autoFillMerchantData()" name="webFrontForm" class="form-horizontal" novalidate role="form" ng-submit="webFrontForm.$valid && createWebfront(picFile)">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">&nbsp;</label>
+                                            <div class="col-sm-9">
+                                                <p style="color: red; font-weight: bold;">All (*) fields are mandatory</p> 
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Webfront Name/Url <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="url" id="url" required=""  placeholder="Name" ng-model="webfront.url" ng-minlength="5" ng-keyup="checkUrlAvail(webfront.url)" ng-pattern="/^[a-zA-Z0-9-]*$/" class="col-xs-10 col-sm-5" autocomplete="off"/>
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.url.$touched" style="color:red;">                                                   
+                                                    <p ng-show="webFrontForm.url.$error.required"><font color="red">&nbsp;&nbsp;Name is required!</font></p>
+                                                    <p ng-show="webFrontForm.url.$error.minlength"><font color="red">&nbsp;&nbsp;Name is too short!</font></p>
+                                                    <p ng-show="webFrontForm.url.$error.pattern">&nbsp;&nbsp;Name should not contain whitespace or any special character!</p>
+                                                </div>
+                                                <span id="name-avail" style="margin-left: 5px;color: green;font-weight: bold; display: none;">Name available!!</span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="email" name="email" id="email" required="" placeholder="Email" ng-model="webfront.email" class="col-xs-10 col-sm-5" />
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.email.$touched" style="color:red;"> 
+                                                    <p ng-show="webFrontForm.email.$error.required"><font color="red">&nbsp;&nbsp;Email is required!</font></p>
+                                                    <p ng-show="webFrontForm.email.$error.email"><font color="red">&nbsp;&nbsp;Please enter valid Email!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Phone No. <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="phone" id="phone" required="" placeholder="Phone No." ng-model="webfront.phone" ng-minlength="10" maxlength="15" ng-pattern="/^[0-9]+([,.-][0-9]+)?$/" class="col-xs-10 col-sm-5 phone" />
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.phone.$touched" style="color:red;"> 
+                                                    <p ng-show="webFrontForm.phone.$error.required"><font color="red">&nbsp;&nbsp;Phone number is required!</font></p>
+                                                    <p ng-show="webFrontForm.phone.$error.minlength"><font color="red">&nbsp;&nbsp;Number is too short!</font></p>
+                                                    <p ng-show="webFrontForm.phone.$error.pattern">&nbsp;&nbsp;Invalid phone number!</p>
+                                                </div>
+                                            </div>
+                                        </div>   
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Address <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">                                           
+                                                <textarea name="address" class="col-xs-10 col-sm-5" required="" ng-model="webfront.address" style="padding-left: 5px;" placeholder="Address"></textarea>
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.address.$touched" style="color:red;"> 
+                                                    <p ng-show="webFrontForm.address.$error.required"><font color="red">&nbsp;&nbsp;Address is required!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Title <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="title" id="name" required=""  placeholder="Title" ng-model="webfront.title" ng-minlength="3" class="col-xs-10 col-sm-5" autocomplete="off"/>
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.title.$touched" style="color:red;"> 
+                                                    <p ng-show="webFrontForm.title.$error.required"><font color="red">&nbsp;&nbsp;Title is required!</font></p>
+                                                    <p ng-show="webFrontForm.title.$error.minlength"><font color="red">&nbsp;&nbsp;Title is too short!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Description <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">                                           
+                                                <textarea name="description" class="col-xs-10 col-sm-5" required="" ng-model="webfront.description" style="padding-left: 5px;" placeholder="Description"></textarea>
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.description.$touched" style="color:red;"> 
+                                                    <p ng-show="webFrontForm.description.$error.required"><font color="red">&nbsp;&nbsp;Description is required!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--                                    
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Logo : </label>
+                                                <div class="col-sm-9">                            
+                                                    <input type="file" id="logo" ngf-select ng-model="picFile" name="file" ngf-accept="'image/*'"  class="col-xs-10 col-sm-5" style="padding: 5px 0;" >                                
+                                                    <p style="color: red; float: left;">NOTE.  If you don’t upload a logo Webfront will show your default profile logo</p>
+                                                </div>
+                                            </div>
+                                        -->
+                                        <div class="form-group" ng-init="cropitStart()">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Logo <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-8"> 
+                                                <div class="image-editor">
+                                                    <input type="file" class="cropit-image-input">
+                                                    <div class="cropit-preview"></div>
+                                                    <div class="image-size-label">
+                                                        Resize image
+                                                    </div>
+                                                    <input type="range" class="cropit-image-zoom-input">
+                                                    <input type="hidden" ng-model="webfront.file" name="image-data" class="hidden-image-data" />
+                                                    <!--<button class="rotate-ccw">Rotate counterclockwise</button>-->
+                                                    <!--<button class="rotate-cw">Rotate clockwise</button>-->
+                                                    <!--<button class="export">Export</button>-->
+                                                    <p><font color="red">Note : Please select image having size greater than 300x200px.</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Payment Cycle Date <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="payment_cycle_date" id="payment-cycle-date" required="" ng-model="webfront.payment_cycle_date"  placeholder="Payment Cycle Date" ng-minlength="3" class="col-xs-10 col-sm-5  datepicker" autocomplete="off"/>
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.payment_cycle_date.$touched" style="color:red;"> 
+                                                    <p ng-show="webFrontForm.payment_cycle_date.$error.required"><font color="red">&nbsp;&nbsp;Payment Cycle Date is required!</font></p>                              
+                                                </div>
+                                            </div>
+                                        </div>
+                                        -->
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Late Fee Amount : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="late_fee_amount" id="phone" placeholder="Late Fee Amount"  ng-pattern="/^[0-9]+([,.][0-9]+)?$/" ng-model="webfront.late_fee_amount" class="col-xs-10 col-sm-5 decimal" />
+                                                <div ng-show="webFrontForm.$submitted || webFrontForm.late_fee_amount.$touched" style="color:red;">                                                    
+                                                    <!--<p ng-show="webFrontForm.late_fee_amount.$error.required"><font color="red">&nbsp;&nbsp;Late Fee Amount is required!</font></p>-->                                               
+                                                    <p ng-show="webFrontForm.late_fee_amount.$error.pattern">&nbsp;&nbsp;Please enter decimal value only!</p>
+                                                </div>
+                                            </div>
+                                        </div> 
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-3 col-md-9"> 
+                                                <button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Create </button>  &nbsp; &nbsp; &nbsp;
+                                                <a class="btn" href="merchant/#/webfront-listing" data-onclick="$('a[href=\'merchant/#/webfront-listing\']').click();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>                              
+                            </div>
+                        </div>
+                        <!-- #section:elements.form -->                          
+                        <!--<br class="clear"/>-->    
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->

@@ -1,0 +1,59 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #BBBBBB;">
+    <div class="main-content-inner">   
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <!-- /section:settings.box -->
+            <div class="row">               
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px; display: inline-block;">
+                        Advance Webfront Listing                             
+                    </h1>  
+                    <a style="margin-top: 8px; margin-right: 15px; display: inline-block; float: right; color: white;" href="merchant/#/advance-web-front-creation" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Create New Advance Webfront</a>
+                </div>
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="content-main-area" style="padding: 20px;">     
+
+                        <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                        <div class="tabbable col-xs-12 front-creation-tab-design">
+                            <div class="row">                                
+                                <table id="simple-table" class="table  table-bordered table-hover">
+
+                                    <thead>
+                                        <tr>  
+                                            <th style="text-align: left;"> Web Front Title </th>
+                                            <th style="text-align: left;"> Web Front URL </th>                                                                       
+                                            <th style="text-align: left;"> Actions </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody ng-init="myAdvanceWebfronts()">                               
+                                        <tr ng-repeat="webfront in webfronts" id="webfront-{{webfront.id}}">                                   
+                                            <td style="text-align: left;"> {{webfront.title}} </td>
+                                            <td style="text-align: left;"><a href="{{siteUrl + 'webfronts/advance/' + webfront.url}}">{{siteUrl + 'webfronts/advance/' + webfront.url}}</a></td>                                            
+                                            <td style="text-align: left; vertical-align: middle;"> 
+                                                <a style="margin: 4px 0; display:inline-block" href="merchant/#/edit-advance-web-front/{{webfront.id}}/advance" data-toggle="tooltip" data-placement="top" title="Edit" onmouseover="$(this).tooltip('show')"><span class="label label-success arrowed-in-right arrowed">Edit</span></a>                                                
+                                                <a style="margin: 4px 0; display:inline-block" href="javascript:;" ng-click="publishAdvanceWebfront(webfront.id)" ng-show="{{webfront.is_published == 0}}" data-toggle="tooltip" data-placement="top" title="Publish" onmouseover="$(this).tooltip('show')"><span class="label label-primary arrowed-in-right arrowed">Publish</span></a>
+                                                <a style="margin: 4px 0; display:inline-block" href="javascript:;" ng-click="unPublishAdvanceWebfront(webfront.id)" ng-show="{{webfront.is_published == 1}}" data-toggle="tooltip" data-placement="top" title="Unpublish" onmouseover="$(this).tooltip('show')"><span class="label label-primary arrowed-in-right arrowed">Unpublish</span></a>                                                                                              
+                                                <a ng-if="webfront.payee_count >= 1" style="margin: 4px 0; display:inline-block" href="merchant/#/advance-view-payments/{{webfront.id}}?title={{webfront.title}}" data-toggle="tooltip" data-placement="top" title="View Payments" onmouseover="$(this).tooltip('show')"><span class="label label-warning arrowed-in-right arrowed">View Payments</span></a>
+                                                <a style="margin: 4px 0; display:inline-block" href="merchant/#/advance-webfront-payments/{{webfront.id}}" data-toggle="tooltip" data-placement="top" title="View Payments" onmouseover="$(this).tooltip('show')"><span class="label label-warning arrowed-in-right arrowed">View Payments</span></a>
+                                                <a style="margin: 4px 0; display:inline-block" href="javascript:;" ng-click="deleteWebfront(webfront.id)" data-toggle="tooltip" data-placement="top" title="Delete" onmouseover="$(this).tooltip('show')"><span class="label label-danger arrowed-in">Delete</span></a>
+                                            </td> 
+                                        </tr>
+                                        <tr ng-hide="webfronts.length"><td style="text-align:center; color:red;" colspan="8">No files are uploaded yet.</td></tr>
+                                    </tbody>
+                                </table>
+                                <!--<div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="javascript:;">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="javascript:;">Next</a></li></ul></div></div></div>-->
+                            </div><!-- /.row --> 
+                        </div>
+                        <!-- #section:elements.form -->                          
+                        <!--<br class="clear"/>-->    
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->

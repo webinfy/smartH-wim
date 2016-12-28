@@ -1,0 +1,138 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC;">
+    <div class="main-content-inner">     
+        <div class="page-content">           
+            <div class="row">
+
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        User Listing                       
+                    </h1>                    
+                </div>    
+
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="content-main-area" style="padding: 20px;">  
+
+                        <div class="tabbable col-xs-12 front-creation-tab-design">
+                            <!--<div class="hr hr-24"></div>-->                    
+                            <div class="row">
+                                <div class="col-xs-12">
+
+                                    <!--Flash Messages-->
+                                    <div class="alert alert-danger" id="view-error-msg" style="display: none;">
+                                        <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                                        <p><i class="ace-icon fa fa-times"></i>&nbsp;&nbsp;<span id="view-err-msg-content"></span></p>                            
+                                    </div>
+
+                                    <div class="alert alert-success" id="view-success-msg" style="display: none;">
+                                        <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                                        <p><i class="ace-icon fa fa-check"></i>&nbsp;&nbsp;<span id="view-suc-msg-content"></span></p>                            
+                                    </div>                                    
+                                    <!--Flash Messages End-->
+
+                                    <table id="simple-table" class="table  table-bordered table-hover">
+                                        <thead>
+                                            <tr>  
+                                                <th style="text-align: left;"> Name </th>
+                                                <th style="text-align: left;"> Email </th>
+                                                <th style="text-align: center;"> Phone No. </th>
+                                                <!--
+                                                <th style="text-align: center;"> Access </th>
+                                                <th style="text-align: center;"> Created </th> 
+                                                -->
+                                                <th style="text-align: center;"> Status </th>                                   
+                                                <th style="text-align: center;"> Actions </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody ng-init="getUser()">                               
+                                            <tr ng-repeat="listingUser in listingUsers" id="user-id-{{listingUser.id}}">                                   
+                                                <td style="text-align: left;"> {{listingUser.name}} </td>
+                                                <td style="text-align: left;"> {{listingUser.email}} </td>
+                                                <td style="text-align: center;"> {{listingUser.phone}} </td>
+                                                <!--
+                                                <td style="text-align: center;"> {{(listingUser.access==1) ? "View Only" : (listingUser.access==2)? "Full Access":"No Access"}} </td>
+                                                <td style="text-align: center;"> {{listingUser.created| date}} </td> 
+                                                -->
+                                                <td style="text-align: center;"> 
+                                                    <span ng-if="listingUser.is_active == 1">
+                                                        <a href="javascript:;" ng-click="inActivateUser(listingUser.id)"><span style="padding-top: 4px;" class="label label-sm label-success ng-scope" data-toggle="tooltip" data-placement="top" title="Active" onmouseover="$(this).tooltip('show')">Active</span></a>
+                                                    </span>
+                                                    <span ng-if="listingUser.is_active == 0">
+                                                        <a href="javascript:;" ng-click="activateUser(listingUser.id)"><span style="padding-top: 4px;" class="label label-sm label-danger ng-scope" data-toggle="tooltip" data-placement="top" title="In active" onmouseover="$(this).tooltip('show')">In active</span></a>
+                                                    </span>                                       
+                                                </td>
+                                                <td style="text-align: center;">                                               
+                                                    <div class="btn-group">    
+                                                        <a href="javascript:;" data-modal-id='viewDetails{{listingUser.id}}' onclick="$('#' + $(this).attr('data-modal-id')).show();" data-toggle="tooltip" data-placement="top" title="View" onmouseover="$(this).tooltip('show')"><span class="label label-success arrowed-in-right arrowed">View</span></a> 
+                                                        <a ng-href="merchant/#/edit-new-user/{{listingUser.id}}" ><span class="label label-info arrowed-in-right arrowed" data-toggle="tooltip" data-placement="top" title="Edit" onmouseover="$(this).tooltip('show')">Edit</span></a>                                        
+                                                        <a href="javascript:;" ng-click="deleteUser(listingUser.id)"><span class="label label-danger arrowed-in" data-toggle="tooltip" data-placement="top" title="Delete" onmouseover="$(this).tooltip('show')">Delete</span></a>                                 
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr ng-hide="listingUsers.length"><td style="text-align:center; color:red;" colspan="8">No users are found.</td></tr>
+                                        </tbody>
+                                    </table>
+                                    <!--<div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="javascript:;">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="javascript:;">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="javascript:;">Next</a></li></ul></div></div></div>-->
+                                </div><!-- /.span -->
+                            </div><!-- /.row -->
+                        </div>
+                        <!-- #section:elements.form -->                          
+                        <!--<br class="clear"/>-->    
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div><!-- /.page-content -->   
+</div><!-- /.main-content -->
+
+
+
+<div class="modal fadeXX"  role="dialog" style="display: none;" ng-repeat="listingUser in listingUsers" id="viewDetails{{listingUser.id}}">
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content">         
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                <h4 class="modal-title">View User Details <span style="color: green; font-weight: bold;">[{{listingUser.name}}]</span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">  
+                    <table align='center' style="width: 100%;">                  
+                        <tr>
+                            <td style="padding: 10px;"><label>Name </label></td>
+                            <td style="padding: 10px;"><label>: {{listingUser.name}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Email </label></td>
+                            <td style="padding: 10px;"><label>: {{listingUser.email}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Phone Number </label> </td>
+                            <td style="padding: 10px;">: {{listingUser.phone}} </td>
+                        </tr>                                    
+                        <tr>
+                            <td style="padding: 10px;"><label>Access </label> </td>
+                            <td style="padding: 10px;">: {{(listingUser.access==1) ? "View Only" : (listingUser.access==2)? "Full Access":"No Access"}} </td>
+                        </tr>                                    
+                        <tr>
+                            <td style="padding: 10px;"><label>Created </label> </td>
+                            <td style="padding: 10px;">: {{listingUser.created| date}} </td>
+                        </tr>                                    
+                    </table>
+                </div>   
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger pull-right" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">
+                    <i class="ace-icon fa fa-times"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

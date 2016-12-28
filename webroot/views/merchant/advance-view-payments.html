@@ -1,0 +1,287 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #BBBBBB">
+    <div class="main-content-inner">
+        <div class="page-content">           
+            <div class="row">
+
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        View Payments <span style="color: green;">[{{webfront.title}}]</span>                         
+                    </h1>                    
+                </div>
+
+                <div class="content-main-area" style="padding: 20px;"> 
+
+                    <div id="flash-msg" tabindex="99" class="col-xs-12" style="display: block;"></div>
+
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+
+                        <div class="box-header">
+                            <form action="merchant/#/view-payments/2" onsubmit="return false;" ng-submit="advanceViewPayments()">
+                                <div class="row">
+                                    <div class="col-sm-4" style="padding: 5px;">
+                                        <select class="form-control input-sm" name="searchby" id='searchby' required="">
+                                            <option value="">Search By</option>
+                                            <option value="name">Name</option>
+                                            <option value="email">Email</option>                                      
+                                            <option value="phone">Phone</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5" style="padding: 5px;">
+                                        <input  type="text" required="" value="" placeholder="Search Keyword" id='keyword' class="form-control input-sm" name="keyword">
+                                    </div>
+                                    <div class="col-sm-3" style="padding: 5px;">
+                                        <button  class="btn btn-sm btn-default" type="submit" ><i class="fa fa-search"></i> Search</button>
+                                        <a class="btn btn-default btn-sm" href="javascript:;" onclick="$('#searchby').val(''), $('#keyword').val('');" ng-click="advanceViewPayments()" ><i class="fa fa-list"></i> View All</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="hr hr-24"></div>
+                        <!--<br>-->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-12">  
+                                    <div class="pull-right" style="margin:20px -8px;">  
+                                        <button ng-if="!chk_all" onclick="$('#chk_all').click();" class="btn btn-xs btn-default" title="Select All" >
+                                            <i  class="ace-icon fa fa-angle-down bigger-120"></i>
+                                            <span>Select All </span>              
+                                        </button>
+                                        <button  ng-if="chk_all" onclick="$('#chk_all').click();" class="btn btn-xs btn-default" title="Deselect All" >                                           
+                                            <i class="ace-icon fa fa-angle-up bigger-120"></i>                                                                         
+                                            <span>Deselect All</span>  
+                                        </button>
+                                        <button ng-click="deleteSelectedPayments()" class="btn btn-xs btn-danger" title="Delete All" >
+                                            <i class="ace-icon fa fa-trash bigger-120"></i>
+                                            Delete All                                    
+                                        </button>
+                                        <button ng-click="remindSelectedPayment()" class="btn btn-xs btn-success" title="Remind All">
+                                            <i class="ace-icon fa fa-envelope bigger-120"></i>
+                                            Remind All                                   
+                                        </button>                                
+                                    </div>
+                                </div>
+
+                                <table id="simple-table" class="table  table-bordered table-hover" style="width: 100%; overflow: scroll;">
+                                    <thead>
+                                        <tr>                                         
+                                            <th style="ttext-align: center; width: 20px;"> <input type="checkbox" ng-model="chk_all" id="chk_all" onclick="$('.chk_payment').not('[disabled]').prop('checked', $(this).is(':checked'));" /> </th>
+                                            <th style="text-align: left;"> Name </th>
+                                            <th style="text-align: left;"> Email </th>
+                                            <th style="text-align: left;"> Phone </th>  
+                                            <th style="text-align: center;"> Bill Amount </th>                                                
+                                            <th style="text-align: center;"> Status </th>
+                                            <th> Action </th>                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-init="advanceViewPayments()">
+                                        <tr ng-repeat="payment in payments" id="payment-{{payment.uniq_id}}">                                        
+                                            <td style="text-align: center; width: 20px;"> <input ng-disabled="payment.status == 1" type="checkbox" class="chk_payment" value="{{payment.uniq_id}}" /> </td>
+                                            <td style="text-align: left;"> {{payment.name}} </td>
+                                            <td style="text-align: left;"> {{payment.email}} </td>                                        
+                                            <td style="text-align: left;"> {{payment.phone}} </td>
+                                            <!--<td style="text-align: left;" ng-repeat="(key, value) in custom_fields"> Rs. {{payment.custom_fields[key]}} </td>-->                                       
+                                            <td style="text-align: right; padding-right: 20px;"> Rs. {{payment.fee + payment.convenience_fee_amount + payment.late_fee_amount}} </td>
+                                            <!--<td style="text-align: center;">{{payment.due_date| date}}</td>-->                                      
+                                            <td style="text-align: center;" class="hidden-480">
+                                                <span ng-if="payment.status == 1" class="label label-sm label-primary" style="padding-top: 4px;">Paid</span>
+                                                <span ng-if="payment.status == 0" class="label label-sm label-warning" style="padding-top: 4px;">Unpaid</span>
+                                            </td>  
+                                            <td style="width: auto;">
+                                                <a href="javascript:;" data-modal-id='viewPayment{{payment.id}}' onclick="$('#' + $(this).attr('data-modal-id')).show();"><span class="label label-success arrowed-in-right arrowed">View</span></a> 
+                                                <span ng-show="payment.status != 1">
+                                                    <!--<a href="javascript:;" data-modal-id='editPayment{{payment.id}}' onclick="$('#' + $(this).attr('data-modal-id')).show();"><span class="label label-info arrowed-in-right arrowed">Edit</span></a>-->                                        
+                                                    <!--<a href="javascript:;" ng-click="remindPayment(payment)" ><span class="label label-success arrowed-in-right arrowed">Remind</span></a>--> 
+                                                    <a href="javascript:;" ng-click="deletePayment(payment)" ><span class="label label-danger arrowed-in">Delete</span></a>                                        
+                                                </span>
+                                            </td> 
+                                        </tr>   
+                                        <tr ng-hide="payments.length"><td colspan="8" style="text-align:center; color: red;">No items found</td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="row" id='pagination'>
+                                    <div class="col-xs-3">
+                                        <div class="dataTables_info" role="status" aria-live="polite">{{counter}}</div>                                        
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="pagination-paginate">                                        
+                                            <ul class="pagination" ng-click="viewPaymentsPagination($event);" onclick="return false;">   
+                                                <!--Pagination Link Goes here -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- /.span -->
+                        </div><!-- /.row -->
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+
+
+
+<div class="modal fadeXX"  role="dialog" style="background: rgba(239, 240, 241, 0.5);" ng-repeat="payment in payments" id="viewPayment{{payment.id}}" >
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                <h3 class="modal-title">View Payment Details</h3>
+            </div>
+            <div class="modal-body" style="height: 65vh; overflow-y: auto; overflow-x: hidden;">
+                <div class="row" style=""> 
+                    <h4 class="modal-title" style="padding: 0 0 15px 5px;">Customer Details</h4>
+                    <table align='center' style="width: 100%;">                        
+                        <tr>
+                            <td style="padding: 10px; width: 40%;"><label> {{webfront.customer_name_alias}} </label></td>
+                            <td style="padding: 10px;"> : <label>{{payment.name}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>{{webfront.customer_email_alias}} </label></td>
+                            <td style="padding: 10px;"> : <label>{{payment.email}}</label></td>
+                        </tr>                        
+                        <tr>
+                            <td style="padding: 10px;"><label>{{webfront.customer_phone_alias}} </label></td>    
+                            <td style="padding: 10px;">:<label>{{payment.phone}}</label></td>
+                        </tr>
+
+                        <tr ng-repeat="payee_custom_field in payment.payee_custom_fields">
+                            <td style="padding: 10px;"><label>{{payee_custom_field.field}}</label></td>    
+                            <td style="padding: 10px;"> : <label>{{payee_custom_field.value}}</label></td>
+                        </tr>
+                    </table>
+
+                    <h4 class="modal-title" style="padding: 0 0 15px 5px;">Payment Details</h4>
+
+                    <table align='center' style="width: 100%;">
+                        <tr ng-repeat="payment_custom_field in payment.payment_custom_fields">
+                            <td style="padding: 10px; width: 40%;"><label>{{payment_custom_field.field}}</label></td>    
+                            <td style="padding: 10px;"> : <label>Rs. {{payment_custom_field.value}}</label></td>
+                        </tr>   
+                        <tr>
+                            <td style="padding: 10px;"><label>Convenience Fee </label> </td>    
+                            <td style="padding: 10px;"> : <label>Rs. {{payment.convenience_fee_amount}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Late Fee </label></td>    
+                            <td style="padding: 10px;"> : <label>Rs. {{payment.late_fee_amount}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>{{webfront.total_amount_alias}} </label></td>    
+                            <td style="padding: 10px;"> : <label>Rs. {{payment.fee + payment.convenience_fee_amount + payment.late_fee_amount}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Payment Cycle </label></td>    
+                            <td style="padding: 10px;"> : <label>{{webfront.payment_cycle_date|date}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Payment Status </label></td>    
+                            <td style="padding: 10px;"> : <label>{{payment.status==1 ? 'Paid' : 'Unpaid'}}</label></td>
+                        </tr>
+                        <tr ng-show="payment.status == 1">
+                            <td style="padding: 10px;"><label>Payment Date </label></td>    
+                            <td style="padding: 10px;"> : <label>{{payment.payment_date| date}}</label></td>
+                        </tr>
+                    </table>
+                </div>   
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger pull-right" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">
+                    <i class="ace-icon fa fa-times"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fadeXX"  role="dialog" style="background: rgba(239, 240, 241, 0.5);" ng-repeat="payment in payments" id="editPayment{{payment.id}}" >
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content"> 
+            <form action="merchant/payments/ajax-edit-payment" method="POST" id="editPaymentForm{{payment.id}}" data-payment-id="{{payment.id}}" ng-submit="updatePayment($event)">
+                <input type="hidden" name="id" value="{{payment.id}}" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                    <h3 class="modal-title">Edit Payment Details</h3>
+                </div>
+                <div class="modal-body" style="height: 65vh; overflow-y: auto; overflow-x: hidden;">
+
+                    <div id="edit-payment-success-{{payment.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" id="success-msg" class="alert alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;Payment details updated successfully!!.</p></div></div>
+                    <div id="edit-payment-error-{{payment.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" id="success-msg" class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;Some Error occurred. Please try again!!.</p></div></div>
+
+                    <div class="row" style="">  
+                        <table align='center' style="width: 100%;" class="edit-payment">                           
+                            <tr>
+                                <td style="padding: 10px; float: right;"><label>&nbsp;</label></td>
+                                <td style="padding: 10px;"> <h4 class="modal-title">Customer Details</h4> </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; float: right;"><label> {{webfront.customer_name_alias}} </label></td>
+                                <td style="padding: 10px;"> : <label>{{payment.name}}</label></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; float: right;"><label>{{webfront.customer_email_alias}} </label></td>
+                                <td style="padding: 10px;"> : <label>{{payment.email}}</label></td>
+                            </tr>                        
+                            <tr>
+                                <td style="padding: 10px; float: right;"><label>{{webfront.customer_phone_alias}} </label></td>    
+                                <td style="padding: 10px;">:<label>{{payment.phone}}</label></td>
+                            </tr>
+
+                            <tr ng-repeat="payee_custom_field in payment.payee_custom_fields">
+                                <td style="padding: 10px; float: right;"><label>{{payee_custom_field.field}}</label></td>    
+                                <td style="padding: 10px;"> : 
+                                    <label> 
+                                        <input type="hidden" name="payee_field_keys[]" value="{{payee_custom_field.field}}" />
+                                        <input type="text" name="payee_field_values[]" value="{{payee_custom_field.value}}" required="required" />
+                                    </label>
+                                </td>
+                            </tr>
+                            <!--
+                            <tr>
+                                <td colspan="2" style="text-align: center;"><h4>Payment Details</h4></td>
+                            </tr>
+                            -->
+                            <tr>
+                                <td style="padding: 10px; float: right;"><label>&nbsp;</label></td>
+                                <td style="padding: 10px;"> <h4 class="modal-title">Payment Details</h4> </td>
+                            </tr>
+                            <tr ng-repeat="payment_custom_field in payment.payment_custom_fields">
+                                <td style="padding: 10px; float: right;"><label>{{payment_custom_field.field}}</label></td>    
+                                <td style="padding: 10px;"> : 
+                                    <label> 
+                                        <input type="hidden" name="payment_field_keys[]" value="{{payment_custom_field.field}}" />
+                                        <input type="text" name="payment_field_values[]" value="{{payment_custom_field.value}}" required="required" />
+                                    </label>
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td style="padding: 10px; float: right;"><label> Bill Amount</label></td>
+                                <td style="padding: 10px;"> : <label><input type="text" name="fee" value="{{payment.fee}}" required="required" /></label></td>
+                            </tr>
+                        </table>
+                    </div>   
+                </div>  
+                <div class="modal-footer">               
+                    <button type="submit" class="btn btn-success"><i class="ace-icon fa fa-check bigger-110"></i> Update </button>    
+                    <button type="button" class="btn" onclick="$(this).parents('.modal').hide();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

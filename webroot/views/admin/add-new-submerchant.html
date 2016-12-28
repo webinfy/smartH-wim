@@ -1,0 +1,80 @@
+<div class="main-content" style="background: #BBBBBB;">
+    <div class="main-content-inner">
+        <div class="page-content">    
+            <!-- /.page-header -->
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Add New Sub-Merchant                         
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">
+                    <div class="content-main-area" style="padding: 20px;">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form name="merchantForm" class="form-horizontal" novalidate role="form" ng-submit="merchantForm.$valid && addSubMerchant()">
+
+                            <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                            <div class="form-group" ng-init="getAllMerchants()">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Select Parent Merchant  <span style="color: red;">*</span> :</label>
+                                <div class="col-sm-9">                                                                     
+                                    <select name="merchant_id" id="merchant_id" class="col-xs-10 col-sm-5 select2" ng-options="merchant.id as merchant.name  for merchant in merchants" ng-model="submerchant.merchant_id" required="required">
+                                        <option value="">Select Merchant</option>
+                                    </select>
+                                </div>
+                                <div ng-show="merchantForm.$submitted || merchantForm.merchant_id.$touched" style="color:red;">                                                   
+                                    <p ng-show="merchantForm.merchant_id.$error.required"><font color="red">&nbsp;&nbsp;Please select a Parent Merchant.</font></p>                                       
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Enter Sub-Merchant Name  <span style="color: red;">*</span> : </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="name"  placeholder="Submerchant Name" ng-model="submerchant.name" ng-minlength="5" class="col-xs-10 col-sm-5" required="required" autocomplete="off"/>
+                                    <div ng-show="merchantForm.$submitted || merchantForm.name.$touched" style="color:red;">                                                   
+                                        <p ng-show="merchantForm.name.$error.required"><font color="red">&nbsp;&nbsp;Name is required!</font></p>
+                                        <p ng-show="merchantForm.name.$error.minlength"><font color="red">&nbsp;&nbsp;Name is too short!</font></p>
+                                        <p ng-show="merchantForm.name.$error.pattern">&nbsp;&nbsp;Name should not contain whitespace or any special character!</p>
+                                    </div>                                    
+                                </div>
+                            </div>  
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Sub-Merchant Email  <span style="color: red;">*</span> : </label>
+                                <div class="col-sm-9">
+                                    <input type="email" name="email"  placeholder="Submerchant Email" ng-model="submerchant.email" class="col-xs-10 col-sm-5" required="required" autocomplete="off"/>
+                                    <div ng-show="merchantForm.$submitted || merchantForm.email.$touched" style="color:red;">                                                   
+                                        <p ng-show="merchantForm.email.$error.required"><font color="red">&nbsp;&nbsp;Email is required!</font></p>  
+                                        <p ng-show="merchantForm.email.$error.email"><font color="red">&nbsp;&nbsp;Please enter valid Email!</font></p>
+                                    </div>                                    
+                                </div>
+                            </div>   
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Sub-Merchant PAYUMID  <span style="color: red;">*</span> : </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="payumid"  placeholder="Submerchant PAYUMID" ng-model="submerchant.payumid" class="col-xs-10 col-sm-5" required="required" autocomplete="off"/>
+                                    <div ng-show="merchantForm.$submitted || merchantForm.payumid.$touched" style="color:red;">                                                   
+                                        <p ng-show="merchantForm.payumid.$error.required"><font color="red">&nbsp;&nbsp;PAYUMID is required!</font></p>                                       
+                                    </div>
+                                    <span id="payumid-avail" style="margin-left: 5px;color: green;font-weight: bold; display: none;"></span>
+                                </div>
+                            </div>   
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-md-9"> 
+                                    <button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Create </button>  &nbsp; &nbsp; &nbsp;
+                                    <a class="btn" href="admin/#/view-all-merchant" data-onclick="$('a[href=\'admin/#/view-all-merchant\']').click();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+

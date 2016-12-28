@@ -1,0 +1,469 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC;">
+    <div class="main-content-inner">   
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <!-- /section:settings.box -->
+            <div class="row">
+
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Edit Advanced Web Front                         
+                    </h1>                    
+                </div>               
+
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="content-main-area new-content-area">  
+
+                        <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                        <div class="tabbable col-xs-12 front-creation-tab-design">
+                            <!--Tab Header-->
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#website-content">
+                                        <i class="green ace-icon fa fa-home bigger-120"></i>
+                                        <span class="tab-data-hid">Website Content</span>
+                                        <span class="badge badge-success">1</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a data-toggle="tab" href="#payee-information">                                   
+                                        <i class="ace-icon fa fa-user bigger-120"></i>
+                                        <span class="tab-data-hid">Customer Fields</span>
+                                        <span class="badge badge-grey">2</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a data-toggle="tab" href="#payment-information">                                  
+                                        <i class="ace-icon fa fa-money bigger-120"></i>
+                                        <span class="tab-data-hid">Payment Fields</span>
+                                        <span class="badge badge-grey">3</span>
+                                    </a>
+                                </li>
+                                <!--                                <li class="active">                                    
+                                                                    <a data-toggle="tab" href="#download-excel">  
+                                                                        <i class="ace-icon fa fa-download bigger-120"></i>
+                                                                        Download Sample Excel
+                                                                        <span class="badge badge-grey">4</span>
+                                                                    </a>
+                                                                </li>-->
+                            </ul>
+                            <!--Tab Header End-->
+                            <div class="tab-content">
+
+
+                                <!--Web Front Information-->
+                                <div id="website-content" class="tab-pane fade in active">
+                                    <form name="editWebFrontForm1" class="form-horizontal" novalidate role="form" ng-submit="editWebFrontForm1.$valid && editWebfront(picFile)" ng-init="getProfileData1()">                                        
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">&nbsp;</label>
+                                            <div class="col-sm-9">
+                                                <p style="color: red; font-weight: bold;">All (*) fields are mandatory</p> 
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Webfront Name/Url <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="url" id="url" required=""  placeholder="Name" ng-model="webfront.url" ng-minlength="3" ng-pattern="/^[a-zA-Z0-9-]*$/" class="col-xs-10 col-sm-5" autocomplete="off" disabled/>
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.url.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm1.url.$error.required"><font color="red">&nbsp;&nbsp;Name is required!</font></p>
+                                                    <p ng-show="editWebFrontForm1.url.$error.minlength"><font color="red">&nbsp;&nbsp;Name is too short!</font></p>
+                                                    <p ng-show="editWebFrontForm1.url.$error.pattern">&nbsp;&nbsp;Name should not contain whitespace or any special character!</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="email" name="email" id="email" required="" placeholder="Email" ng-model="webfront.email" class="col-xs-10 col-sm-5" />
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.email.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm1.email.$error.required"><font color="red">&nbsp;&nbsp;Email is required!</font></p>
+                                                    <p ng-show="editWebFrontForm1.email.$error.email"><font color="red">&nbsp;&nbsp;Please enter valid Email!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Phone No. <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="phone" id="phone" required="" placeholder="Phone No." ng-model="webfront.phone" ng-minlength="10" maxlength="15" class="col-xs-10 col-sm-5 phone" />
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.phone.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm1.phone.$error.required"><font color="red">&nbsp;&nbsp;Phone number is required!</font></p>
+                                                    <p ng-show="editWebFrontForm1.phone.$error.minlength"><font color="red">&nbsp;&nbsp;Number is too short!</font></p>            
+                                                </div>
+                                            </div>
+                                        </div>   
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Address <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">                                           
+                                                <textarea name="address" class="col-xs-10 col-sm-5" required="" ng-model="webfront.address" style="padding-left: 5px;" placeholder="Address"></textarea>
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.address.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm1.address.$error.required"><font color="red">&nbsp;&nbsp;Address is required!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Title <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="title" id="name" required=""  placeholder="Title" ng-model="webfront.title" ng-minlength="3" class="col-xs-10 col-sm-5" autocomplete="off"/>
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.title.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm1.title.$error.required"><font color="red">&nbsp;&nbsp;Title is required!</font></p>
+                                                    <p ng-show="editWebFrontForm1.title.$error.minlength"><font color="red">&nbsp;&nbsp;Title is too short!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Description <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">                                           
+                                                <textarea name="description" class="col-xs-10 col-sm-5" required="" ng-model="webfront.description" style="padding-left: 5px;" placeholder="Description"></textarea>
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.description.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm1.description.$error.required"><font color="red">&nbsp;&nbsp;Description is required!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> &nbsp; </label>
+                                            <div class="col-sm-9">      
+                                                <img class="img-logo" ng-src="files/webfront_logo/{{webfront.logo}}" alt="{{webfront.logo}}" style=''/>
+                                            </div>
+                                        </div>
+
+                                        <!--
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Logo : </label>
+                                            <div class="col-sm-9">                            
+                                                <input type="file" id="logo" ngf-select ng-model="picFile" name="file" ngf-accept="'image/*'" class="col-xs-10 col-sm-5" style="padding: 5px 0;" >                                
+                                            </div>
+                                        </div>
+                                        -->
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Logo <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-4"> 
+                                                <div class="image-editor">
+                                                    <input type="file" class="cropit-image-input">
+                                                    <div class="cropit-preview"></div>
+                                                    <div class="image-size-label">
+                                                        Resize image
+                                                    </div>
+                                                    <input type="range" class="cropit-image-zoom-input">
+                                                    <input type="hidden" ng-model="webfront.file" name="image-data" class="hidden-image-data" />
+                                                    <!--<button class="rotate-ccw">Rotate counterclockwise</button>-->
+                                                    <!--<button class="rotate-cw">Rotate clockwise</button>-->
+                                                    <!--<button class="export">Export</button>-->
+                                                    <p><font color="red">Note : Please select image having size greater than 300x200px.</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Payment Cycle Date <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="payment_cycle_date" id="payment-cycle-date" required="" ng-model="webfront.payment_cycle_date" format="yyyy-mm-dd" placeholder="Payment Cycle Date" ng-minlength="3" class="col-xs-10 col-sm-5  datepicker" autocomplete="off"/>
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.payment_cycle_date.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm1.payment_cycle_date.$error.required"><font color="red">&nbsp;&nbsp;Payment Cycle Date is required!</font></p>                              
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--
+                                    
+                                       <div class="form-group">
+                                           <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Fee Amount : <span style="color: red;">*</span></label>
+                                           <div class="col-sm-9">
+                                               <input type="text" name="fee_amount" id="phone" required="" placeholder="Late Fee Amount" ng-model="webfront.fee_amount" class="col-xs-10 col-sm-5" />
+                                               <p ng-show="editWebFrontForm1.fee_amount.$error.required"><font color="red">&nbsp;&nbsp;Fee Amount is required!</font></p>                                               
+                                           </div>
+                                       </div>
+                                        -->
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Late Fee Amount : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="late_fee_amount" id="phone" required="" placeholder="Late Fee Amount" ng-model="webfront.late_fee_amount" class="col-xs-10 col-sm-5 decimal" />
+                                                <div ng-show="editWebFrontForm1.$submitted || editWebFrontForm1.late_fee_amount.$touched" style="color:red;">  
+                                                    <!--<p ng-show="editWebFrontForm1.late_fee_amount.$error.required"><font color="red">&nbsp;&nbsp;Late Fee Amount is required!</font></p>-->                                               
+                                                </div>
+                                            </div>
+                                        </div>  
+
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-3 col-md-9"> 
+                                                <a class="btn" href="merchant/#/advance-webfront-listing"> <i class="ace-icon fa fa-undo bigger-110"></i> Back </a>
+                                                <button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Next </button>  &nbsp; &nbsp; &nbsp;
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div> 
+                                <!--Web Front Information End-->
+
+                                <!--Payee Information-->
+                                <div id="payee-information" class="tab-pane fade">
+                                    <form name="editWebFrontForm2" class="form-horizontal" novalidate role="form" ng-submit="editWebFrontForm2.$valid && editCustomerFieldsAdvance()" >
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">&nbsp;</label>
+                                            <div class="col-sm-9">
+                                                <p style="color: red; font-weight: bold;">All (*) fields are mandatory</p> 
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger" id="error-msg" style="display: none;">
+                                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                                            <p><i class="ace-icon fa fa-times"></i> <span id="err-msg-content"></span></p>                            
+                                        </div>
+
+                                        <div class="alert alert-success" id="success-msg" style="display: none;">
+                                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                                            <p><i class="ace-icon fa fa-check"></i>&nbsp;Profile updated successfully!!.</p>                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Name <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="custom_name" id="custom_name" required=""  placeholder="Name" ng-model="webfront.customer_name_alias" ng-minlength="3" class="col-xs-10 col-sm-5" autocomplete="off"/>
+                                                <div ng-show="editWebFrontForm2.$submitted || editWebFrontForm2.custom_name.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm2.custom_name.$error.required"><font color="red">&nbsp;&nbsp;Name is required!</font></p>
+                                                    <p ng-show="editWebFrontForm2.custom_name.$error.minlength"><font color="red">&nbsp;&nbsp;Name is too short!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="custom_email" id="custom_email" required="" placeholder="Email" ng-model="webfront.customer_email_alias" class="col-xs-10 col-sm-5" />
+                                                <div ng-show="editWebFrontForm2.$submitted || editWebFrontForm2.custom_email.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm2.custom_email.$error.required"><font color="red">&nbsp;&nbsp;Email is required!</font></p>                                                
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">  Phone No. <span style="color: red;">*</span> : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="custom_phone" id="custom_phone" required="" placeholder="Phone No." ng-model="webfront.customer_phone_alias" ng-minlength="4" class="col-xs-10 col-sm-5" />
+                                                <div ng-show="editWebFrontForm2.$submitted || editWebFrontForm2.custom_phone.$touched" style="color:red;">  
+                                                    <p ng-show="editWebFrontForm2.custom_phone.$error.required"><font color="red">&nbsp;&nbsp;Phone number is required!</font></p>
+                                                    <p ng-show="editWebFrontForm2.custom_phone.$error.minlength"><font color="red">&nbsp;&nbsp;Number is too short!</font></p>
+                                                </div>
+                                            </div>
+                                        </div>   
+
+                                        <div class="form-group" ng-repeat="n in [1, 2, 3, 4, 5, 6]">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> CA{{n}} : </label>
+                                            <div class="col-sm-9"> 
+                                                <input type="text" name="ca{{n}}" id="ca{{n}}" ng-keyup="makeCustomerCheckBoxFalse(webfront.customer_fields, $index)" placeholder="Default Label" ng-model="webfront.customer_fields[$index].name" class="col-xs-10 col-sm-5 post1" autocomplete="off"/>
+                                                &nbsp;&nbsp;
+                                                <label>
+                                                    <input name="customer_checkbox" value="1" ng-click="customerChecked(webfront.customer_fields, $index)" class="ace" ng-model="webfront.customer_fields[$index].customer_checkbox" type="checkbox" ng-checked="webfront.customer_fields[$index].name" />
+                                                    <span class="lbl"></span>
+                                                </label>         
+                                                &nbsp;&nbsp;                                                  
+                                                <select name="input_type{{n}}" id="select-type-CA{{n}}"
+                                                        ng-model="webfront.customer_fields[$index].input_type" 
+                                                        ng-options="option.value as option.name for option in input_types" 
+                                                        ng-init="webfront.customer_fields[$index].input_type">
+                                                    <option value="">Type</option>
+                                                </select>
+
+                                                &nbsp;&nbsp;
+                                                <select name="validation_id{{n}}" id="select-validation-CA{{n}}"
+                                                        ng-model="webfront.customer_fields[$index].validation_id" 
+                                                        ng-options="option.value as option.name for option in validations" 
+                                                        ng-init="webfront.customer_fields[$index].validation_id">
+                                                    <option value="">Select Validation</option>
+                                                </select>                                                   
+                                            </div>
+                                            <!--For edit block coding starts-->
+                                            <div class="choice-div" ng-if="webfront.customer_fields[$index].webfront_field_values && (webfront.customer_fields[$index].input_type == 4 || webfront.customer_fields[$index].input_type == 3)">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Choices : </label>
+                                                <div class="col-sm-9">
+                                                    <div ng-repeat="textBox in webfront.customer_fields[$index].webfront_field_values" class="addtext-div">                                                       
+                                                        <input ng-model="textBox.value" class="col-xs-10 col-sm-5 addtext_box" type="text" id="{{textBox.id}}" required=""  placeholder="Value" autocomplete="off" style="width: 40%;">
+                                                        <span ng-show="webfront.customer_fields[$parent.$index].webfront_field_values.length > 1" ng-click="removeTextBox(webfront.customer_fields[$parent.$index].webfront_field_values, $index, textBox.id)" style="margin-left: 20px;cursor: pointer;"> <i title="Cancel this option!" class="raty-cancel cancel-off-png" data-alt="x"></i></span>
+                                                    </div>   
+                                                    <span class="btn btn-sm btn-success" ng-click="addTextBox(webfront.customer_fields[$index].webfront_field_values)"><i class="ace-icon fa fa-plus"></i> Add Option</span>
+                                                    <br class="clear"/>                                                     
+                                                </div>
+                                            </div>
+                                            <!--For edit block coding ends-->
+                                            <!--For add block coding starts-->
+                                            <div class="choice-div" ng-if="!webfront.customer_fields[$index].webfront_field_values && (webfront.customer_fields[$index].input_type == 4 || webfront.customer_fields[$index].input_type == 3)">
+                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Choices : </label>
+                                                <div class="col-sm-9">                                                 
+                                                    <div class="addtext-div" data-ng-repeat="textBox in customer_choices[$index]">                                                
+                                                        <input class="col-xs-10 col-sm-5 addtext_box" type="text" ng-model="textBox.value" required=""  placeholder="Value" autocomplete="off" style="width: 40%;">                                                       
+                                                        <span ng-show="customer_choices[$parent.$index].length > 1" ng-click="removeChoice(customer_choices[$parent.$index], $index)" style="margin-left: 20px;cursor: pointer;"> <i title="Cancel this option!" class="raty-cancel cancel-off-png" data-alt="x"></i></span>
+                                                    </div>
+                                                    <span class="btn btn-sm btn-success" ng-click="addNewChoice($index)"><i class="ace-icon fa fa-plus"></i> Add Option</span>                                                    
+                                                    <br class="clear"/>                                                     
+                                                </div>
+                                            </div>
+                                            <!--For add block coding ends-->
+                                        </div>                                                                 
+                                        <div class="form-group">
+                                            <div class="col-md-offset-3 col-md-9">  
+                                                <a onclick="$('a[href=\'#website-content\']').click();" class="btn" href="javascript:;"> <i class="ace-icon fa fa-undo bigger-110"></i> Back </a>
+                                                <button class="btn btn-info margin-left-less" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Next </button>  &nbsp; &nbsp; &nbsp;
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--Payee Information End-->
+                                <!--Payment Information-->
+                                <div id="payment-information" class="tab-pane fade">
+                                    <div style="margin-top: 10px;">
+                                        <div class="page-header" style="border-bottom: none">
+                                            <h1 style=" font-size: 17px; font-weight: bold;">                                          
+                                                Amount Collection Form
+                                                <i class="ace-icon fa fa-angle-double-right"></i>
+                                                <small>Specify payment descriptions, amounts and details</small>
+                                            </h1>
+                                        </div> 
+                                        <div class="area-box">                                      
+                                            <form ng-submit="addPaymentAttribute()" name="paymentAttributeForm">
+                                                <div class="panel-body panel-box">
+                                                    <div class="form-group">
+                                                        <label>Please add your Payment Values  by entering in  Payment Amount Name Text Box and Click on Save.</label>
+                                                    </div>
+                                                    <div class="form-group">    
+                                                        <label class="col-sm-2 control-label no-padding-left advance-add-pmt-amt" for="form-field-1">Add Payment Amount Name: </label>
+                                                        <div class="col-sm-9">
+                                                            <input ng-model="paymentAttributeData.name" type="text" name="amount_name" id="total_amount" required=""  placeholder="Add Payment Amount Name" class="col-xs-10 col-sm-5" autocomplete="off"/>
+                                                            <!--<p ng-show="webFrontForm.total_amount.$error.required"><font color="red">&nbsp;&nbsp;Total Amount is required!</font></p>-->                                                       
+                                                            &nbsp;&nbsp;
+                                                            <label>
+                                                                <input name="payment_checkbox" value="1" class="ace" ng-model="paymentAttributeData.isRequired" type="checkbox" />
+                                                                <span class="lbl"></span>
+                                                            </label>  
+                                                            &nbsp;&nbsp;       
+                                                            Mandatory(<span style="color: red;">*</span>)                                                                                             
+                                                        </div>
+                                                    </div>      
+                                                    <br class="clear"/>
+                                                    <p class="advance-pmt-type">Type :</p>
+                                                    <div class="advance-pmt-detail">
+                                                        <div class="radio">
+                                                            <label><input name="1" value="false" ng-model="paymentAttributeData.isUserEntered"  type="radio" ng-checked="true">Ask your customer to enter amount to pay</label>
+                                                        </div>
+                                                        <div class="radio">
+                                                            <label><input name="1" value="true" ng-model="paymentAttributeData.isUserEntered" type="radio"> Specify an amount for your customer to pay</label><span class="advance-pmt-customer-topay" ng-if="paymentAttributeData.isUserEntered == 'true'">Rs.&nbsp;</span>
+                                                            <input ng-if="paymentAttributeData.isUserEntered == 'true'" name="paymentValue" ng-model="paymentAttributeData.value" ng-pattern="/^[1-9][0-9]*([.,][\d]{1,2})?$/" required="required" type="text">
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-primary adv-payment-btn" type="submit" style="margin-left: 167px;border-radius: 5px;">Save</button>                                                                                 
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top: 20px;">
+                                        <div class="page-header" style="border-bottom: none">
+                                            <h1 style=" font-size: 17px; font-weight: bold;">                                           
+                                                <i class="ace-icon fa fa-angle-double-right"></i>
+                                                You have added {{webfront_payment_attributes_length}} Fields to Collect Amount
+                                            </h1>
+                                        </div>                                         
+                                        <div id="accordion" class="accordion-style1 panel-group">
+
+                                            <div class="panel panel-default" ng-repeat="payment_attribute in webfront_payment_attributes" id="payment-attribute-{{payment_attribute.id}}">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index}}">
+                                                            <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+                                                            &nbsp;Field {{$index + 1}}
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class="panel-collapse collapse" ng-class="{in: $first}" id="collapse{{$index}}">
+                                                    <div class="panel-body panel-box">
+                                                        <div class="form-group">    
+                                                            <label class="col-sm-2 control-label no-padding-left field-index" for="form-field-1">Field {{$index + 1}} : </label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="name" placeholder="Amount Name" ng-model="payment_attribute.name" ng-disabled="!editField_$index" class="col-xs-10 col-sm-5" autocomplete="off"/>
+                                                                <p ng-show="payment_attribute.name.$error.required"><font color="red">&nbsp;&nbsp;Total Amount is required!</font></p>
+                                                                &nbsp;&nbsp;
+                                                                <label>
+                                                                    <input name="is_required" value="1" class="ace" ng-model="payment_attribute.is_required" type="checkbox" ng-checked="payment_attribute.is_required == 1" ng-disabled="!editField_$index"/>
+
+                                                                    <span class="lbl"></span>
+                                                                    <!--<span class="lbl align-ckeck-box"></span>-->
+                                                                </label>  
+                                                                &nbsp;&nbsp;       
+                                                                Mandatory(<span style="color: red;">*</span>) 
+                                                                &nbsp;&nbsp;     
+                                                                <div class="btn-group new-btn-group">                                                             
+
+                                                                    <button class="btn btn-xs btn-info" ng-click="editField_$index = true">
+                                                                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                                    </button>
+
+                                                                    <button class="btn btn-xs btn-danger" ng-click="deletePaymentAttribute(payment_attribute.id)">
+                                                                        <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                                    </button>
+                                                                </div>                                                         
+                                                            </div>
+                                                        </div>     
+                                                        <br class="clear"/>
+                                                        <div ng-show="editField_$index">
+                                                            <p class="new-type">Type :</p>
+                                                            <div class="new-type-box">
+                                                                <div class="radio">
+                                                                    <label><input type="radio" name="response_{{$index + 1}}" data-ng-model="payment_attribute.is_user_entered" value="0"/>Ask your customer to enter amount to pay</label>
+                                                                </div>
+                                                                <div class="radio">
+                                                                    <label><input type="radio" name="response_{{$index + 1}}" data-ng-model="payment_attribute.is_user_entered" value="1"/> Specify an amount for your customer to pay</label><span style="margin-left: 10px;font-weight: bold;" ng-if="payment_attribute.is_user_entered == 1">Rs.&nbsp;</span><input type="text" name="value" id="value" required="" ng-model="payment_attribute.value"  placeholder="Value" autocomplete="off" ng-if="payment_attribute.is_user_entered == 1"/>
+                                                                </div>
+                                                            </div>
+                                                            <button class="btn btn-sm btn-primary new-blue-btn" ng-click="editPaymentAttribute(payment_attribute)" ng-click="editPaymentAttribute()">Save</button>
+                                                            <button class="btn btn-sm btn-primary"  style="margin-left: 5px;border-radius: 5px;" ng-click="editField_$index = false">Close</button>
+                                                        </div>
+                                                        <p class="specified-amount-p"  ng-if="payment_attribute.value"> Specified amount for your customer to pay:  Rs.&nbsp;{{payment_attribute.value}} </p>                                                  
+                                                    </div>
+
+                                                </div>
+
+
+
+                                            </div>
+
+                                            <div style="clear: both;">&nbsp;</div>
+                                            <span style='font-weight: bold;font-size: 15px;'>Total Amount: <span class="WebRupee">Rs. </span>{{total_amount}}</span>
+
+
+                                            <div class="form-group" style="float: right;">
+                                                <div class="col-md-offset-3 col-md-9">  
+                                                    <a onclick="$('a[href=\'#payee-information\']').click();" class="btn" href="javascript:;"> <i class="ace-icon fa fa-undo bigger-110"></i> Back </a>
+                                                    <button class="btn btn-info margin-left-less" ng-click="finishWebfront()" ><i class="ace-icon fa fa-check bigger-110"></i> Finish </button>  &nbsp; &nbsp; &nbsp;
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Payment Information End-->
+
+
+
+                                <!--                                <div id="download-excel" class="tab-pane fade in active">
+                                                               
+                                                                </div>-->
+
+                            </div>
+
+                        </div>
+                        <!-- #section:elements.form -->                          
+                        <!--<br class="clear"/>-->    
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->

@@ -1,0 +1,227 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC;">
+    <div class="main-content-inner">
+        <!-- #section:basics/content.breadcrumbs -->      
+
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">  
+
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Merchant Listing                         
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">      
+                    <div class="content-main-area" style="padding: 20px;">   
+                        <div class="alert alert-danger" id="view-error-msg" style="display: none;">
+                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                            <p><i class="ace-icon fa fa-times"></i>&nbsp;&nbsp;<span id="view-err-msg-content"></span></p>                            
+                        </div>
+
+                        <div class="alert alert-success" id="view-success-msg" style="display: none;">
+                            <button data-dismiss="alert" class="close" type="button"><i class="ace-icon fa fa-times"></i></button>
+                            <p><i class="ace-icon fa fa-check"></i>&nbsp;&nbsp;<span id="view-suc-msg-content"></span></p>                            
+                        </div>
+                        <!--
+                                                <div class="box-header">
+                                                    <form id="Search" name="search" method="get" action="">
+                                                        <div class="row">
+                                                            <div class="col-xs-12 col-sm-4">
+                                                                <select name="search_by" class="validate[required] form-control input-sm" id="SearchBY">
+                                                                    <option value="">Search By</option>
+                                                                    <option value="merchant_name">Branch Name</option>
+                                                                    <option value="due_amount">Bank</option>
+                                                                    <option value="due_date">IFSC Code</option>                                                                               
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-xs-12 col-sm-5">
+                                                                <input type="text" name="search_keyword" class="validate[required] form-control input-sm" placeholder="Search" value="">
+                                                            </div>
+                                                            <div class="col-xs-12 col-sm-3">
+                                                                <button type="submit" class="btn btn-sm btn-default"><i class="fa fa-search"></i> Search</button>
+                                                                <a href="javascript:;" class="btn btn-default btn-sm"><i class="fa fa-list"></i> View All</a>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <br/>-->
+                        <div class="clearfix">
+                            <div class="pull-right tableTools-container"></div>
+                        </div>                  
+
+                        <div>
+                            <table id="dynamic-table" class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>       
+                                        <th> Name </th>     
+                                        <th> Email </th>                                                                  
+                                        <th style="text-align: center;"> Created </th>
+                                        <th style="text-align: center;"> Status </th>
+                                        <th style="text-align: center;"> Actions </th>                                    
+                                    </tr>
+                                </thead>                                
+
+                                <tbody ng-init="getMerchants()">
+                                    <tr ng-repeat="merchant in merchants" id="merchant-id-{{merchant.id}}">           
+                                        <td> {{merchant.name}} </td>
+                                        <td> {{merchant.email}} </td>                                                                              
+                                        <td style="text-align: center;"> {{merchant.created| date : 'mediumDate'}} </td>
+                                        <th style="text-align: center;"> 
+                                            <span ng-if="merchant.is_active == 1">
+                                                <a href="javascript:;" ng-click="inActivateMerchant(merchant.id)"><span class="label label-sm label-success">Active</span></a>
+                                            </span>
+                                            <span ng-if="merchant.is_active == 0">
+                                                <a href="javascript:;" ng-click="activateMerchant(merchant.id)"><span class="label label-sm label-warning">In active</span></a>
+                                            </span>                                       
+                                        </th>
+                                        <td style="text-align: center;">
+                                            <a href="javascript:;" data-modal-id='viewDetails{{merchant.id}}' onclick="$('#' + $(this).attr('data-modal-id')).show();"><span class="label label-success arrowed-in-right arrowed">View</span></a> 
+                                            <a ng-href="admin/#/edit-merchant/{{merchant.id}}"><span class="label label-info arrowed-in-right arrowed">Edit</span></a>                                        
+                                            <a href="javascript:;" ng-click="deleteMerchant(merchant.id)"><span class="label label-danger arrowed-in">Delete</span></a>                                        
+                                        </td>
+                                    </tr>  
+                                    <tr ng-hide="merchants.length"><td style="text-align:center; color:red;" colspan="8">No data found.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                    </div>
+                </div><!-- /.page-content -->
+
+            </div>
+        </div><!-- /.main-content -->   
+    </div>
+</div>
+
+
+<div class="modal fadeXX" role="dialog" style="background: rgba(239, 240, 241, 0.5);display: none;" ng-repeat="merchant in merchants" id="viewDetails{{merchant.id}}" >
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content">         
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                <h4 class="modal-title">View Merchant Details <span style="color: green;">[{{merchant.name}}]</span></h4>
+            </div>
+            <div class="modal-body" style="height: 65vh; overflow-y: auto; overflow-x: hidden;">
+                <div class="row">  
+                    <table align='center' style="width: 100%;">
+                        <tr>
+                            <td style="padding: 10px;"><label> Society Name </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.name}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> Society Regd No. </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.regd_no}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> Email </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.email}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Phone Number </label> </td>
+                            <td style="padding: 10px;">: {{merchant.merchant_profile.phone}} </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> Address </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.address}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> City </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.city}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> State </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.state}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> Country </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.country}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Description </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.description}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> PayU Id </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.payuid}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> PayU Key </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.payu_key}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> PayU Salt </label></td>
+                            <td style="padding: 10px;"><label>: {{merchant.merchant_profile.payu_salt}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Convenience Fee </label></td>
+                            <td style="padding: 10px;"><label>: Rs. {{merchant.merchant_profile.convenience_fee_amount}}</label></td>
+                        </tr>
+                        <tr ng-if="merchant.merchant_profile.logo != ''">
+                            <td style="padding: 10px;"><label>Logo </label> </td>
+                            <td style="padding: 10px;">:  <img ng-src="files/merchant_logo/{{merchant.merchant_profile.logo}}" style="height: 62px; width: 78px;"/><br> </td>
+                        </tr>                       
+                        <tr>
+                            <td style="padding: 10px;"><label>Website </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.website == ''|| merchant.merchant_profile.website==null) ? 'NA' : merchant.merchant_profile.website}}</label></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label>Facebook Url </label> </td>
+                            <td style="padding: 10px;">: {{(merchant.merchant_profile.facebook_url == ''|| merchant.merchant_profile.facebook_url==null) ? 'NA' : merchant.merchant_profile.facebook_url}} </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><label> Twitter Url </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.twitter_url == ''|| merchant.merchant_profile.twitter_url==null) ? 'NA' : merchant.merchant_profile.twitter_url}}</label></td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 10px;" colspan="2"><label> First Person Contact Details : </label></td>                            
+                        </tr> 
+                        <tr>
+                            <td style="padding: 10px;"><label> Name </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.contact1_name == ''|| merchant.merchant_profile.contact1_name==null) ? 'NA' : merchant.merchant_profile.contact1_name}}</label></td>
+                        </tr> 
+                        <tr>
+                            <td style="padding: 10px;"><label> Email </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.contact1_email == ''|| merchant.merchant_profile.contact1_email==null) ? 'NA' : merchant.merchant_profile.contact1_email}}</label></td>
+                        </tr> 
+                        <tr>
+                            <td style="padding: 10px;"><label> Phone </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.contact1_phone == ''|| merchant.merchant_profile.contact1_email==null) ? 'NA' : merchant.merchant_profile.contact1_email}}</label></td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 10px;" colspan="2"><label> Second Person Contact Details : </label></td>                            
+                        </tr> 
+                        <tr>
+                            <td style="padding: 10px;"><label> Name </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.contact2_name == ''|| merchant.merchant_profile.contact2_name==null) ? 'NA' : merchant.merchant_profile.contact2_name}}</label></td>
+                        </tr> 
+                        <tr>
+                            <td style="padding: 10px;"><label> Email </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.contact2_email == ''|| merchant.merchant_profile.contact2_email==null) ? 'NA' : merchant.merchant_profile.contact2_email}}</label></td>
+                        </tr> 
+                        <tr>
+                            <td style="padding: 10px;"><label> Phone </label></td>
+                            <td style="padding: 10px;"><label>: {{(merchant.merchant_profile.contact2_phone == ''|| merchant.merchant_profile.contact2_email==null) ? 'NA' : merchant.merchant_profile.contact2_email}}</label></td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 10px;"><label>Created </label> </td>
+                            <td style="padding: 10px;">: {{merchant.created| date : 'mediumDate'}} </td>
+                        </tr>
+                    </table>
+                </div>   
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger pull-right" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">
+                    <i class="ace-icon fa fa-times"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

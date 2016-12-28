@@ -1,0 +1,76 @@
+<div class="main-content" style="background: #BBBBBB;">
+    <div class="main-content-inner">
+        <div class="page-content">    
+            <!-- /.page-header -->
+            <div class="row">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Split Settlement Mapping                         
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">
+                    <div class="content-main-area" style="padding: 20px; min-height: 250px;">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form name="merchantForm" ng-init="getSplitSettlement()" id="splitSettlement" class="form-horizontal" novalidate role="form" ng-submit="merchantForm.$valid && editSplitSettlement($event)">
+
+                            <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                            <div class="form-group" ng-init="getAllMerchants()">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Select Merchant : </label>
+                                <div class="col-sm-4">                                    
+                                    <select id="merchant_id" ng-options="merchant.id as merchant.name  for merchant in merchants" ng-model="split_settlement.merchant_id" ng-change="fetchWebfronts(split_settlement.merchant_id)"></select>
+                                    <!--                                
+                                    <select id="merchant_id" name="merchant_id" class="form-control" data-ng-model="split_settlement.merchant_id" ng-change="fetchWebfronts(split_settlement.merchant_id)">
+                                        <option value="">Select Merchant</option>
+                                        <option ng-selected="split_settlement.merchant_id == merchant.id" ng-repeat="merchant in merchants" value="{{merchant.id}}">{{merchant.name}}</option>
+                                    </select>
+                                    -->
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-show="split_settlement.merchant_id">
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Select Webfront : </label>
+                                <div class="col-sm-4">
+                                    <select id="webfront_id" ng-options="webfront.id as webfront.title  for webfront in webfronts" ng-model="split_settlement.webfront_id" ng-change="fetchPaymentFields(split_settlement.webfront_id)"></select>
+                                    <!--
+                                    <select id="webfront_id" class="form-control" name="webfront_id" ng-model="split_settlement.webfront_id" ng-change="fetchPaymentFields(split_settlement.webfront_id)">
+                                        <option value="">Select Webfront</option> 
+                                        <option ng-repeat="webfront in webfronts" value="{{webfront.id}}">{{webfront.url}}</option>
+                                    </select>
+                                    -->
+                                </div>
+                            </div>
+
+                            <fieldset ng-show="payment_fileds.length" style="border: 1px solid #CCC; margin: 15px 0; padding-top: 10px; background: #CCC;">                              
+
+                                <div class="form-group" ng-repeat="payment_filed in payment_fileds">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> {{payment_filed.name}} : </label>
+                                    <div class="col-sm-4">                                        
+                                        <select class="form-control" name="payment_filed[{{payment_filed.id}}]">
+                                            <option value="">Default Merchant</option>                                                                                  
+                                            <option ng-repeat="submerchant in submerchants" value="{{submerchant.id}}">{{submerchant.name}}</option>                                                                                  
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-md-9"> 
+                                    <button ng-disabled="!payment_fileds" class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> Submit </button>  &nbsp; &nbsp; &nbsp;
+                                    <a class="btn" href="admin/#/view-all-merchant" data-onclick="$('a[href=\'admin/#/view-all-merchant\']').click();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </a>
+                                </div>
+                            </div>
+
+
+                        </form>
+
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+

@@ -1,0 +1,218 @@
+<!-- /section:basics/sidebar -->
+<div class="main-content" style="background: #CCC">
+    <div class="main-content-inner">   
+        <div class="page-content">
+
+
+            <!--Import File Section Start-->
+            <div class="row" style="display: none;" id="upload-excel-section">
+                <!-- /section:settings.box -->
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px;">
+                        Upload Excel <span style="color: green;">[{{webfront.title}}]</span>                                 
+                    </h1>                    
+                </div>
+                <div class="col-xs-12">  
+                    <div class="content-main-area" style="padding: 20px;">
+                        <form name="myForm" class="form-horizontal" novalidate role="form" ng-submit="myForm.$valid && importExcel(excelFile)">
+                            <div id="upload-flash-msg"></div>
+                            <div class="row">  
+
+                                <div class="col-xs-6 col-sm-6">
+                                    <label for="id-date-picker-1" style="font-weight: bold;">Payment Cycle Date <!--<span style="font-size: 13px;">(Late fee will be applied for payment made after this)</span><span style="color: red;">*</span>--></label>                  
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <input type="text" id="payment_cycle_date" ng-model="payment_cycle_date" name="payment_cycle_date" required="required" class="form-control datepicker" placeholder="Payment Cycle Date" autocomplete="off" />
+                                            <div ng-show="myForm.$submitted || myForm.payment_cycle_date.$touched" style="color:red;"> 
+                                                <p ng-show="myForm.payment_cycle_date.$error.required">Please enter last payment date.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                 
+
+                                <div class="col-xs-6 col-sm-6">
+                                    <label for="fileinput" style="font-weight: bold;">Browse File  &nbsp;<span style="color: red;">*(Excel or CSV Only)</span></label>                  
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <input type="file" id="fileinput" name="excelFile" ngf-select  ng-model="excelFile" class="form-controlXX" required="required" />                                       
+                                            <div ng-show="myForm.$submitted || myForm.excelFile.$touched" style="color:red;"> 
+                                                <p ng-show="myForm.excelFile.$error.required">Please browse file to upload.</p>                                              
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+
+                            </div>    
+
+                            <div class="space-4"></div>
+                            <div class="hr hr-24"></div>  
+
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9" style="text-align: right;">
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="ace-icon fa fa-check bigger-110"></i>
+                                        Import
+                                    </button>                                    
+                                    &nbsp; &nbsp; &nbsp;
+                                    <a  onclick="$('#upload-excel-section').hide(), $('#uploaded-file-section').show()" href="javascript:;" class="btn">
+                                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                                        Back
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->  
+            </div>
+            <!--Import File Section End-->
+
+            <!--Uploaded File Section Start-->                      
+            <div class="row" id="uploaded-file-section">
+                <div class="page-header" style="margin-left: 0px;border-bottom: none;">
+                    <h1 style="margin-top: 8px; margin-left: 15px; display: inline-block;">
+                        View Uploads <span style="color: green;">[{{webfront.title}}]</span>                     
+                    </h1>    
+                    <a onclick="$('#upload-excel-section').show(), $('#uploaded-file-section').hide()" href="javascript:;" style="margin-top: 8px; margin-right: 15px; display: inline-block; float: right; color: white;" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Upload New Excel" onmouseover="$(this).tooltip('show')"><i class="fa fa-plus"></i> Upload New Excel </a>
+                </div>
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="content-main-area" style="padding: 20px;">     
+
+                        <div id="flash-msg" tabindex="99" class="col-xs-12 " style="display: block;"></div>
+
+                        <div class="tabbable col-xs-12 front-creation-tab-design">
+                            <div class="row">  
+
+                                <table id="simple-table" class="table  table-bordered table-hover" style="width: 100%; overflow: scroll;">
+                                    <thead>
+                                        <tr>  
+                                            <th style="text-align: center;"> Payment Cycle Date </th>
+                                            <th style="text-align: left; width: 20%;"> File </th>
+                                            <th style="text-align: center;"> Customer Count </th> 
+                                            <th style="text-align: center;"> Upload Date </th>
+                                            <th style="text-align: center;"> Action </th>                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-init="viewUploads()">
+                                        <tr ng-repeat="uploaded_payment_file in uploaded_payment_files" id="uploaded-payment-file-{{uploaded_payment_file.id}}">                                        
+                                            <td style="text-align: center;"> {{uploaded_payment_file.payment_cycle_date| date}} </td>
+                                            <td style="text-align: left;"> {{uploaded_payment_file.file}} </td>                                        
+                                            <td style="text-align: center;"> {{uploaded_payment_file.upload_count}} </td>
+                                            <td style="text-align: center;"> {{uploaded_payment_file.created| date}} </td>
+                                            <td style="text-align: center; width: auto;">
+                                                <a href="javascript:;" data-id="{{uploaded_payment_file.id}}" onclick="$('#appendRecord' + $(this).attr('data-id')).show()" data-toggle="tooltip" data-placement="top" title="Append Records" onmouseover="$(this).tooltip('show')"><span class="label label-info arrowed-in-right arrowed">Append Records</span></a> 
+                                                <a href="merchant/#/view-payments/{{uploaded_payment_file.id}}?title={{webfront.title}}" data-toggle="tooltip" data-placement="top" title="Reports" onmouseover="$(this).tooltip('show')"><span class="label label-warning arrowed-in-right arrowed">Reports</span></a> 
+                                                <a href="javascript:;" data-id="{{uploaded_payment_file.id}}" onclick="$('#reuseUpload' + $(this).attr('data-id')).show(), $('.datepicker').datepicker({format: 'yyyy-mm-dd'});" data-toggle="tooltip" data-placement="top" title="Reuse" onmouseover="$(this).tooltip('show')"><span class="label label-success arrowed-in-right arrowed">Reuse</span></a> 
+                                                <a href="javascript:;" ng-click="deleteUploadedFile(uploaded_payment_file)" data-toggle="tooltip" data-placement="top" title="Delete" onmouseover="$(this).tooltip('show')"><span class="label label-danger arrowed-in">Delete</span></a>                                        
+                                            </td> 
+                                        </tr>   
+                                        <tr ng-hide="uploaded_payment_files.length"><td colspan="8" style="text-align:center; color: red;">No File Uploaded Yet </td></tr>
+                                    </tbody>
+                                </table>            
+
+                            </div><!-- /.row --> 
+                        </div>
+                        <!-- #section:elements.form -->                          
+                        <!--<br class="clear"/>-->    
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+            <!--Uploaded File Section End-->     
+
+        </div><!-- /.page-content -->
+    </div>
+</div><!-- /.main-content -->
+
+
+
+
+
+
+
+<!-- Append Records Started-->
+<div class="modal fadeXX"  role="dialog" style="background: rgba(239, 240, 241, 0.5); display: none;" ng-repeat="uploaded_payment_file in uploaded_payment_files" id="appendRecord{{uploaded_payment_file.id}}" >
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content"> 
+            <form enctype="multipart/form-data" method="POST" id="append_records_form{{uploaded_payment_file.id}}" data-uploaded_payment_file_id="{{uploaded_payment_file.id}}" ng-submit="appendRecords($event)">
+                <input type="hidden" name="id" value="{{uploaded_payment_file.id}}" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                    <h3 class="modal-title">Append Records</h3>
+                </div>
+                <div class="modal-body" style="min-height: 25vh; overflow-y: auto; overflow-x: hidden;">
+                    <div id="append_records_success_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" class="alert alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;Payment details updated successfully!!.</p></div></div>
+                    <div id="append_records_error_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;<span class="msg">Some Error occurred. Please try again!!.</span></p></div></div>
+                    <div class="row">  
+                        <table align='center' style="width: 100%;" class="edit-uploaded_payment_file">    
+                            <tr style="background: #FFF;">
+                                <td style="padding: 10px; float: right;"><label> Payment Cycle Date</label></td>
+                                <td style="padding: 10px;"> : <label>{{uploaded_payment_file.payment_cycle_date| date}}</label></td>
+                            </tr>
+                            <tr style="background: #FFF;">
+                                <td style="padding: 10px; float: right;"><label> Upload Excel/CSV </label></td>
+                                <td style="padding: 10px;"> : <label><input type="file" name="file" required="required" /></label></td>
+                            </tr>
+                            <tr style="background: #FFF;">
+                                <td colspan="2" style="padding: 10px;font-size:12px;"> 
+                                    <p>Note :  You are going to add more customers for this payment cycle.</p>    
+                                </td>
+                            </tr> 
+                        </table>
+                    </div>   
+                </div>  
+                <div class="modal-footer">               
+                    <button type="submit" class="btn btn-success"><i class="ace-icon fa fa-check bigger-110"></i> Submit </button>    
+                    <button type="button" class="btn" onclick="$(this).parents('.modal').hide();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Append Records Ended-->
+
+
+<!-- Reuse Upload Started-->
+<div class="modal fadeXX"  role="dialog" style="background: rgba(239, 240, 241, 0.5); display: none;" ng-repeat="uploaded_payment_file in uploaded_payment_files" id="reuseUpload{{uploaded_payment_file.id}}" >
+    <div class="modal-dialog">    
+        <!-- Modal content-->
+        <div class="modal-content"> 
+            <form method="POST" id="upload_reuse_{{uploaded_payment_file.id}}" data-uploaded_payment_file-id="{{uploaded_payment_file.id}}" ng-submit="uploadReuse($event)">
+                <input type="hidden" name="id" value="{{uploaded_payment_file.id}}" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="$(this).parents('.modal').hide();">&times;</button>
+                    <h3 class="modal-title">Reuse Upload</h3>
+                </div>
+                <div class="modal-body" style="min-height: 25vh; overflow-y: auto; overflow-x: hidden;">
+
+                    <div id="reuse_upload_success_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"><div style="display: block;" id="success-msg" class="alert alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><i class="ace-icon fa fa-check"></i>&nbsp;Copied Successfully!!.</p></div></div>
+                    <div id="reuse_upload_error_{{uploaded_payment_file.id}}" tabindex="99" class="col-xs-12 " style="display: none;"></div>
+
+                    <div class="row" style="">  
+                        <table align='center' style="width: 100%;" class="edit-uploaded_payment_file">   
+                            <tr style="background: #FFF;">
+                                <td style="padding: 10px; float: right;"><label> Payment Cycle Date </label></td>
+                                <td style="padding: 10px;"> : <label><input type="text" name="payment_cycle_date" value="" placeholder="Please enter payment cycle date" class="form-control datepicker" required="required" style="width: 250px;" /></label></td>
+                            </tr>
+                            <tr style="background: #FFF;">                                
+                                <td colspan="2" style="padding: 10px; text-align: center; color: red; font-weight: bold;"> * Please enter the payment cycle date to reuse this upload. </td>
+                            </tr>
+                            <tr style="background: #FFF;">
+                                <td colspan="2" style="padding: 10px;font-size:12px;"> 
+                                    <p>Note :  You are going to reuse the same customers for a new payment cycle.</p>
+                                    <p>* Please enter the payment cycle date to reuse this upload.</p> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>   
+                </div>  
+                <div class="modal-footer">               
+                    <button type="submit" class="btn btn-success"><i class="ace-icon fa fa-check bigger-110"></i> Reuse </button>    
+                    <button type="button" class="btn" onclick="$(this).parents('.modal').hide();"> <i class="ace-icon fa fa-undo bigger-110"></i> Cancel </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Reuse Upload Ended-->
